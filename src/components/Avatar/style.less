@@ -1,0 +1,83 @@
+@import '../../styles/theme.less';
+
+@xs-size: 24px;
+@small-size: 28px;
+@meidum-size: 36px;
+@large-size: 48px;
+@xl-size: 64px;
+
+@xs-font-size: 8px;
+@small-font-size: 12px;
+@meidum-font-size: 14px;
+@large-font-size: 16px;
+@xl-font-size: 20px;
+
+.tbox-avatar-withname {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  font-size: 0;
+  padding: 4px;
+  border-radius: 16px;
+  align-items: center;
+  cursor: pointer;
+  height: 32px;
+  &:hover {
+    background: @gray-4;
+  }
+  .tbox-avatar-name {
+    font-size: 14px;
+    margin: 0 16px 0 8px;
+    vertical-align: bottom;
+  }
+  .tbox-avatar-image {
+    display: inline-block;
+    margin-left: 4px;
+  }
+}
+.tbox-avatar-image {
+  color: #fff;
+  display: inline-block;
+  text-align: center;
+  border-radius: 50%;
+  width: @xs-size;
+  height: @xs-size;
+  line-height: @xs-size;
+  position: relative;
+  .tbox-avatar-img, .tbox-avatar-name {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: block;
+  }
+}
+.tbox-avatar-image-xs {
+  width: @xs-size;
+  height: @xs-size;
+  line-height: @xs-size;
+  font-size: @xs-font-size;
+}
+.tbox-avatar-image-small {
+  width: @small-size;
+  height: @small-size;
+  line-height: @small-size;
+  font-size: @small-font-size;
+}
+.tbox-avatar-image-medium {
+  width: @meidum-size;
+  height: @meidum-size;
+  line-height: @meidum-size;
+  font-size: @meidum-font-size;
+}
+.tbox-avatar-image-large {
+  width: @large-size;
+  height: @large-size;
+  line-height: @large-size;
+  font-size: @large-font-size;
+}
+.tbox-avatar-image-xl {
+  width: @xl-size;
+  height: @xl-size;
+  line-height: @xl-size;
+  font-size: @xl-font-size;
+}

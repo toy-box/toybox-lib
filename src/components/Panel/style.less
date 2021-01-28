@@ -1,0 +1,19 @@
+.tbox-panel {
+  display: flex;
+  margin: 10px 0;
+  min-height: 40px;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  .tbox-panel--left, .tbox-panel--right {
+    display: flex;
+    button, form {
+      + button, + form {
+        margin-left: 10px;
+      }
+    }
+  }
+  .tbox-panel--right {
+    justify-content: end;
+  }
+}

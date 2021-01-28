@@ -1,0 +1,133 @@
+@mask-color: #bfbfbf;
+@mask-active-color: #8c8c8c;
+@serach-background: #f7f7f7;
+
+.tbox-icon-search {
+  position: relative;
+  transition: all .3s ease-out!important;
+  .tbox-icon-search-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+  .tbox-search {
+    &.tbox-search-focus {
+      width: 100%;
+    }
+    &.tbox-search-hold {
+      width: 100%;
+    }
+    &.tbox-search-fold {
+      width: 32px;
+      .tbox-search-input {
+        border: none;
+        width: 32px;
+        .ant-input-prefix {
+          display: none;
+        }
+      }
+    }
+    .tbox-search-input {
+      width: 100%;
+      transition: border-color .3s ease-out;
+      transition: width 0.5s;
+    }
+  }
+}
+.tbox-search {
+  &.tbox-nav-search {
+    position: relative;
+    display: inline-flex;
+    border-radius: 16px;
+    background: @serach-background;
+    width: 280px;
+    height: 32px;
+    overflow: hidden;
+    .tbox-search-mask {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      left: 12px;
+      height: 100%;
+      cursor: text;
+      font-size: 14px;
+      transition: color .3s ease-out;
+      animation: moveToRight 168ms;
+      animation-fill-mode: forwards;
+      animation-timing-function: linear;
+      color: @mask-color;
+      .tbox-search-mask-text {
+        margin-left: 4px;
+      }
+    }
+    .ant-input {
+      background-color: transparent;
+    }
+    .ant-input-affix-wrapper {
+      background-color: transparent;
+      border: none;
+      padding-left: 26px;
+      &:hover {
+        background-color: transparent;
+        border: none;
+      }
+    }
+    &:hover {
+      .tbox-search-mask {
+        color: @mask-active-color;
+      }
+    }
+    &.tbox-search-focus {
+      .tbox-search-mask {
+        animation: moveToLeft 218ms;
+        animation-fill-mode: forwards;
+        animation-timing-function: ease;
+        .tbox-search-mask-text {
+          animation: hiddenText 218ms;
+          animation-fill-mode: forwards;
+          animation-timing-function: ease;
+        }
+      }
+    }
+  }
+}
+
+@keyframes moveToLeft {
+  0% {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  100% {
+    left: 12px;
+    transform: translateX(0);
+  }
+}
+
+@keyframes moveToRight {
+    0% {
+    left: 12px;
+    transform: translateX(0);
+  }
+  100% {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes hiddenText {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    min-height: 0;
+    visibility: hidden;
+    position: absolute;
+  }
+}

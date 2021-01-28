@@ -1,0 +1,13 @@
+@card-margin: 16px;
+
+.tbox-card-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .tbox-card-container {
+    margin-bottom: @card-margin;
+    + .tbox-card-container {
+      margin-left: @card-margin;
+    }
+  }
+}
