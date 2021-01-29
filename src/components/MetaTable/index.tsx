@@ -16,11 +16,29 @@ import './style.less';
 export type RowData = Record<string, any>;
 
 export interface MetaTableProps extends Pick<TableProps<RowData>, 'rowKey' | 'rowSelection' | 'expandable' | 'pagination' | 'loading' | 'dataSource' | 'bordered' | 'size' | 'showHeader' | 'summary'> {
+  /**
+  * @description 字段源属性
+  */
   columnMetas: ColumnMeta[];
+  /**
+  * @description 自定义字段组件
+  */
   columnComponents?: Record<string, (...args: any) => React.ReactNode>;
+  /**
+  * @description 操作字段组件配置
+  */
   operateItems?: OperateItem[];
+  /**
+  * @description 当表格查询条件变化时
+  */
   onChange: (pagination: TablePaginationConfig, filters?: any, sorter?: any) => void;
+  /**
+  * @description 行自定义class
+  */
   rowClassName?: (record: RowData, index: number) => string;
+  /**
+  * @description 表格标题
+  */
   title?: (dataSource: RowData[]) => ReactNode;
 }
 
