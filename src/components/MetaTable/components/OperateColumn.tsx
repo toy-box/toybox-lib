@@ -1,21 +1,20 @@
 import React, { FC, useMemo } from 'react';
 import { Button, Dropdown, Menu } from 'antd';
-import { ButtonProps } from 'antd/lib/button';
 import { MoreFill } from '@airclass/icons';
-
-export interface OperateColumnProps {
-  text: { [key: string]: any };
-  record: { [key: string]: any };
-  index: number;
-  operateItems: OperateItem[];
-}
+import { ButtonProps } from 'antd/lib/button';
 
 export type OperateItem = ButtonProps & {
   text?: string;
   icon?: string;
   color?: string;
-  callback?: (record: Record<string, any> , index: number) => void;
+  callback?: (record: Record<string, any>, index: number) => void;
   disabled?: (text: any, record: Record<string, any>, index: number) => boolean | boolean;
+}
+export interface OperateColumnProps {
+  text: { [key: string]: any };
+  record: { [key: string]: any };
+  index: number;
+  operateItems: OperateItem[];
 }
 
 export const operateFactory = (operateItems: OperateItem[], fc: FC<{ text: any; record: { [key: string]: any }; index: number, operateItems: OperateItem[] }>) => {

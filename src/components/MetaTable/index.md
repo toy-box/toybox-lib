@@ -314,5 +314,4 @@ export default () => {
 }
 ```
 
-<API src="./index.tsx"></API>
-<API src="./components/OperateColumn.tsx"></API>
+<API></API>
