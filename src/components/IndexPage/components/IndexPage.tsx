@@ -22,6 +22,8 @@ const LIST_RENDER = 'listRender';
 export interface PageResult {
   list: Record<string, any>[];
   total: number;
+  pageSize?: number;
+  current?: number;
 }
 
 export interface Pageable {
@@ -32,9 +34,9 @@ export interface Pageable {
 export type IndexMode = 'table' | 'list' | 'card';
 
 export interface IndexPageProps {
+  objectMeta: BusinessObjectMeta;
   title?: string;
   subTitle?: string;
-  objectMeta: BusinessObjectMeta;
   operateItems?: OperateItem[];
   visibleColumns?: ColumnVisible[];
   searchOption?: {
@@ -46,9 +48,15 @@ export interface IndexPageProps {
   viewMode?: IndexMode[];
   className?: string;
   columnComponents?: Record<string, (...args: any) => ReactNode>;
+  /**
+   * @description 是否更具请求参数修改url
+   * @default false
+   */
   urlQuery?: boolean,
-  renderContent?: (...args: any) => ReactNode;
+  selectionToggle?: boolean,
+  defaultSelectionType?: 'checkbox',
   loadData: (pageable: Pageable, fieldsValue: Record<string, any>) => Promise<PageResult>;
+  renderContent?: (...args: any) => ReactNode;
   viewLink?: (...arg: any) => string;
 }
 
@@ -76,6 +84,8 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
   className,
   style,
   columnComponents = {},
+  selectionToggle,
+  defaultSelectionType,
   renderContent,
   viewLink,
   loadData,
@@ -85,7 +95,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
   const [query, setQuery] = useQuery();
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>([]);
   const [selectedRows, setSelectedRows] = useState<RowData[]>([]);
-  const [selectionType, setSelectionType] = useState<'checkbox' | 'radio'>();
+  const [selectionType, setSelectionType] = useState(defaultSelectionType);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
   const [showAdvanceSearch, setShowAdvanceSearch] = useState(false);
   const { search, tableProps } = useAntdTable(
@@ -195,11 +205,15 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
 
   const leftPanel = useMemo(() => {
     return <React.Fragment>
-      <Button
-        type="text"
-        onClick={toggleSelection}
-        icon={selectionType == null ? <CheckboxMultipleLine /> : <CheckboxMultipleFill />}
-      />
+      {
+        selectionToggle
+          ? <Button
+            type="text"
+            onClick={toggleSelection}
+            icon={selectionType == null ? <CheckboxMultipleLine /> : <CheckboxMultipleFill />}
+          />
+          : null
+      }
       {
         (viewMode || []).length > 1 ? modeMenu : null
       }
