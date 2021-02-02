@@ -39,7 +39,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.intersection": "^4.4.0",
     "lodash.throttle": "^4.1.1",
-    "moment": "2.24.0",
+    "moment": "^2.27.0",
     "qs": "^6.9.6",
     "react": "^16.12.0",
     "react-router": "^5.2.0",
@@ -73,6 +73,6 @@
     "yorkie": "^2.0.0"
   },
   "resolutions": {
-    "moment": "2.24.0"
+    "moment": "2.27.0"
   }
 }
