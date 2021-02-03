@@ -8,8 +8,9 @@ import React, {
 } from 'react';
 import { Empty } from 'antd';
 import { useSize, useScroll, useThrottleFn } from 'ahooks';
-import { Notification, NotificationMessage } from './Notification';
+import { Notification } from './Notification';
 import LoadingWrapper from '../../LoadingWrapper';
+import { NotificationMessage } from './interface';
 
 export interface InboxContentProps {
   onPick: (message: NotificationMessage) => void;

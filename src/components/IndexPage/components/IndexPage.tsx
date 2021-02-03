@@ -1,14 +1,28 @@
-import React, { useMemo, useImperativeHandle, Ref, useState, useCallback, ReactNode, ForwardRefRenderFunction } from 'react';
+import React, {
+  useMemo,
+  useImperativeHandle,
+  Ref,
+  useState,
+  useCallback,
+  ReactNode,
+  ForwardRefRenderFunction,
+} from 'react';
 import { Form, Button, Dropdown, Menu } from 'antd';
 import classNames from 'classnames';
-import { CheckboxMultipleLine, CheckboxMultipleFill, ListUnordered, TableLine, ArrowDownSLine } from '@airclass/icons';
+import {
+  CheckboxMultipleLine,
+  CheckboxMultipleFill,
+  ListUnordered,
+  TableLine,
+  ArrowDownSLine,
+} from '@airclass/icons';
 import useAntdTable from '../hooks/useTable';
 import { ContentWrapper } from './ContentWrapper';
 import MetaTable from '../../MetaTable';
 import { default as Panel, PanelItem, PanelItemProps } from '../../Panel';
 import { BusinessObjectMeta } from '../../../types/interface';
 import { OperateItem } from '../../MetaTable/components/OperateColumn';
-import { IndexSearch, SearchFindParam } from './IndexSearch';
+import IndexSearch from './IndexSearch';
 import PageHeader from '../../PageHeader';
 import { FieldType } from '../../Fields/interface';
 import { AdvanceSearch } from './advanceSearch';
@@ -16,6 +30,7 @@ import { RowData } from '../../../types/interface';
 import { useQuery } from '../../../hooks';
 
 import '../style.less';
+import { SearchFindParam } from './interface';
 
 const LIST_RENDER = 'listRender';
 
@@ -41,7 +56,7 @@ export interface IndexPageProps {
   visibleColumns?: ColumnVisible[];
   searchOption?: {
     findParams: SearchFindParam[];
-  }
+  };
   style?: any;
   panelItems?: IndexPagePanelItemProps[];
   mode?: IndexMode;
@@ -52,10 +67,13 @@ export interface IndexPageProps {
    * @description 是否更具请求参数修改url
    * @default false
    */
-  urlQuery?: boolean,
-  selectionToggle?: boolean,
-  defaultSelectionType?: 'checkbox',
-  loadData: (pageable: Pageable, fieldsValue: Record<string, any>) => Promise<PageResult>;
+  urlQuery?: boolean;
+  selectionToggle?: boolean;
+  defaultSelectionType?: 'checkbox';
+  loadData: (
+    pageable: Pageable,
+    fieldsValue: Record<string, any>,
+  ) => Promise<PageResult>;
   renderContent?: (...args: any) => ReactNode;
   viewLink?: (...arg: any) => string;
 }
@@ -69,31 +87,36 @@ export interface ColumnVisible {
 
 export type IndexPagePanelItemProps = PanelItemProps & {
   selection?: boolean;
-}
+};
 
-const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
-  title,
-  subTitle,
-  objectMeta,
-  operateItems,
-  visibleColumns,
-  panelItems,
-  mode = 'table',
-  viewMode,
-  searchOption,
-  className,
-  style,
-  columnComponents = {},
-  selectionToggle,
-  defaultSelectionType,
-  renderContent,
-  viewLink,
-  loadData,
-  urlQuery
-}, ref: Ref<any>) => {
+const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
+  {
+    title,
+    subTitle,
+    objectMeta,
+    operateItems,
+    visibleColumns,
+    panelItems,
+    mode = 'table',
+    viewMode,
+    searchOption,
+    className,
+    style,
+    columnComponents = {},
+    selectionToggle,
+    defaultSelectionType,
+    renderContent,
+    viewLink,
+    loadData,
+    urlQuery,
+  },
+  ref: Ref<any>,
+) => {
   const [queryForm] = Form.useForm();
   const [query, setQuery] = useQuery();
-  const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
+    [],
+  );
   const [selectedRows, setSelectedRows] = useState<RowData[]>([]);
   const [selectionType, setSelectionType] = useState(defaultSelectionType);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
@@ -103,7 +126,10 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
     {
       defaultPageSize: 10,
       form: queryForm,
-      defaultParams: [{ pageSize: query.pageSize || 20, current: query.current }, query] as any,
+      defaultParams: [
+        { pageSize: query.pageSize || 20, current: query.current },
+        query,
+      ] as any,
     },
     urlQuery ? setQuery : undefined,
   );
@@ -116,18 +142,18 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
   }, [selectionType]);
 
   const rowSelection = useMemo(
-    () => selectionType != null
-      ? ({
-        selectedRowKeys,
-        selectionType,
-        onChange: (keys: (string | number)[], rows: RowData[]) => {
-          setSelectedRowKeys(keys),
-          setSelectedRows(rows);
-        }
-      })
-      : undefined,
-    [selectedRowKeys, selectionType, setSelectedRowKeys]
-  )
+    () =>
+      selectionType != null
+        ? {
+            selectedRowKeys,
+            selectionType,
+            onChange: (keys: (string | number)[], rows: RowData[]) => {
+              setSelectedRowKeys(keys), setSelectedRows(rows);
+            },
+          }
+        : undefined,
+    [selectedRowKeys, selectionType, setSelectedRowKeys],
+  );
 
   useImperativeHandle(
     ref,
@@ -141,12 +167,14 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
 
   const columnMetas = useMemo(() => {
     if (currentMode === 'list') {
-      return [{
-        key: objectMeta.key,
-        component: LIST_RENDER,
-        name: objectMeta.name,
-        type: FieldType.BUSINESS_OBJECT,
-      }];
+      return [
+        {
+          key: objectMeta.key,
+          component: LIST_RENDER,
+          name: objectMeta.name,
+          type: FieldType.BUSINESS_OBJECT,
+        },
+      ];
     }
     if (visibleColumns != null) {
       return visibleColumns.map(col => {
@@ -157,20 +185,31 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
             fixed: col.fixed,
             align: col.align,
             component: col.component,
-            link: fieldMeta.key === objectMeta.titleKey ? viewLink : undefined
+            link: fieldMeta.key === objectMeta.titleKey ? viewLink : undefined,
           },
           fieldMeta,
         );
       });
     }
-    return Object.keys(objectMeta.properties)
-      .map(key => Object.assign(
-        objectMeta.properties[key],
-        { link: key === objectMeta.titleKey ? viewLink : undefined }
-      ));
-  }, [currentMode, objectMeta.key, objectMeta.name, objectMeta.properties, objectMeta.titleKey, viewLink, visibleColumns]);
+    return Object.keys(objectMeta.properties).map(key =>
+      Object.assign(objectMeta.properties[key], {
+        link: key === objectMeta.titleKey ? viewLink : undefined,
+      }),
+    );
+  }, [
+    currentMode,
+    objectMeta.key,
+    objectMeta.name,
+    objectMeta.properties,
+    objectMeta.titleKey,
+    viewLink,
+    visibleColumns,
+  ]);
 
-  const components: Record<string, (...args: any) => ReactNode> = useMemo(() => {
+  const components: Record<
+    string,
+    (...args: any) => ReactNode
+  > = useMemo(() => {
     if (currentMode === 'list' && renderContent) {
       return {
         [LIST_RENDER]: renderContent,
@@ -181,118 +220,146 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps>  = ({
 
   // 显示模式切换菜单
   const modeMenu = useMemo(() => {
-    const currentIcon = currentMode === 'list' ? <ListUnordered /> : <TableLine />;
+    const currentIcon =
+      currentMode === 'list' ? <ListUnordered /> : <TableLine />;
     const menuItems = (viewMode || []).map((itemMode, idx) => {
-      return <Menu.Item
-        key={idx}
-        onClick={() => setCurrentMode(itemMode)}
-        icon={itemMode === 'list' ? <ListUnordered /> : <TableLine />}
-      >
-        { itemMode === 'list' ? '列表' : '表格' }
-      </Menu.Item>;
+      return (
+        <Menu.Item
+          key={idx}
+          onClick={() => setCurrentMode(itemMode)}
+          icon={itemMode === 'list' ? <ListUnordered /> : <TableLine />}
+        >
+          {itemMode === 'list' ? '列表' : '表格'}
+        </Menu.Item>
+      );
     });
-    const menu = (
-      <Menu>
-        {menuItems}
-      </Menu>
+    const menu = <Menu>{menuItems}</Menu>;
+    return (
+      <Dropdown overlay={menu}>
+        <Button type="text" icon={currentIcon}>
+          <ArrowDownSLine />
+        </Button>
+      </Dropdown>
     );
-    return <Dropdown overlay={menu}>
-      <Button type="text" icon={currentIcon}>
-        <ArrowDownSLine />
-      </Button>
-    </Dropdown>
   }, [currentMode, viewMode]);
 
   const leftPanel = useMemo(() => {
-    return <React.Fragment>
-      {
-        selectionToggle
-          ? <Button
+    return (
+      <React.Fragment>
+        {selectionToggle ? (
+          <Button
             type="text"
             onClick={toggleSelection}
-            icon={selectionType == null ? <CheckboxMultipleLine /> : <CheckboxMultipleFill />}
+            icon={
+              selectionType == null ? (
+                <CheckboxMultipleLine />
+              ) : (
+                <CheckboxMultipleFill />
+              )
+            }
           />
-          : null
-      }
-      {
-        (viewMode || []).length > 1 ? modeMenu : null
-      }
-      {
-        searchOption
-          ? <IndexSearch
-              form={queryForm}
-              submit={search.submit}
-              findParams={searchOption.findParams}
-              showAdvance={showAdvanceSearch}
-              triggerAdvance={() => setShowAdvanceSearch(!showAdvanceSearch)}
-            />
-          : null
-      }
-    </React.Fragment>
-  }, [queryForm, modeMenu, showAdvanceSearch, setShowAdvanceSearch, searchOption, selectionType, search.submit, toggleSelection, viewMode]);
+        ) : null}
+        {(viewMode || []).length > 1 ? modeMenu : null}
+        {searchOption ? (
+          <IndexSearch
+            form={queryForm}
+            submit={search.submit}
+            findParams={searchOption.findParams}
+            showAdvance={showAdvanceSearch}
+            triggerAdvance={() => setShowAdvanceSearch(!showAdvanceSearch)}
+          />
+        ) : null}
+      </React.Fragment>
+    );
+  }, [
+    queryForm,
+    modeMenu,
+    showAdvanceSearch,
+    setShowAdvanceSearch,
+    searchOption,
+    selectionType,
+    search.submit,
+    toggleSelection,
+    viewMode,
+  ]);
 
   const advanceSearch = useMemo(() => {
-    return searchOption && showAdvanceSearch
-      ? <AdvanceSearch
-          className={classNames('advance-search', { active: showAdvanceSearch})}
-          form={queryForm}
-          submit={search.submit}
-          findParams={searchOption.findParams}
-        />
-      : null
+    return searchOption && showAdvanceSearch ? (
+      <AdvanceSearch
+        className={classNames('advance-search', { active: showAdvanceSearch })}
+        form={queryForm}
+        submit={search.submit}
+        findParams={searchOption.findParams}
+      />
+    ) : null;
   }, [searchOption, showAdvanceSearch, search.submit, queryForm]);
 
   const rightPanel = useMemo(() => {
     return (panelItems || [])
       .filter(item => !item.selection || selectionType != null)
-      .map((item, index) => (
-        <PanelItem key={index} {...item} />
-      ));
+      .map((item, index) => <PanelItem key={index} {...item} />);
   }, [panelItems, selectionType]);
 
-  const tablePanel = useMemo(() => (rightPanel != null || leftPanel != null)
-    ? <React.Fragment>
-        <Panel left={leftPanel} right={rightPanel} />
-      </React.Fragment>
-    : null,
-    [rightPanel, leftPanel]
+  const tablePanel = useMemo(
+    () =>
+      rightPanel != null || leftPanel != null ? (
+        <React.Fragment>
+          <Panel left={leftPanel} right={rightPanel} />
+        </React.Fragment>
+      ) : null,
+    [rightPanel, leftPanel],
   );
 
   const IndexContent = useCallback(() => {
     switch (currentMode) {
       case 'table':
-        return <MetaTable
-          rowKey={objectMeta.idKey}
-          operateItems={operateItems}
-          columnMetas={columnMetas}
-          rowSelection={rowSelection}
-          columnComponents={components}
-          {...tableProps}
-        />
+        return (
+          <MetaTable
+            rowKey={objectMeta.idKey}
+            operateItems={operateItems}
+            columnMetas={columnMetas}
+            rowSelection={rowSelection}
+            columnComponents={components}
+            {...tableProps}
+          />
+        );
       case 'list':
-        return <MetaTable
-          rowKey={objectMeta.idKey}
-          operateItems={operateItems}
-          columnMetas={columnMetas}
-          rowSelection={rowSelection}
-          columnComponents={components}
-          {...tableProps}
-        />;
+        return (
+          <MetaTable
+            rowKey={objectMeta.idKey}
+            operateItems={operateItems}
+            columnMetas={columnMetas}
+            rowSelection={rowSelection}
+            columnComponents={components}
+            {...tableProps}
+          />
+        );
       default:
         return null;
     }
-  }, [currentMode, objectMeta.idKey, operateItems, columnMetas, rowSelection, components, tableProps]);
+  }, [
+    currentMode,
+    objectMeta.idKey,
+    operateItems,
+    columnMetas,
+    rowSelection,
+    components,
+    tableProps,
+  ]);
 
   return (
-    <div className={classNames('tbox-page', 'tbox-index-page', className)} style={style}>
-      {title && <PageHeader title={title} subTitle={subTitle} /> }
-      { advanceSearch }
+    <div
+      className={classNames('tbox-page', 'tbox-index-page', className)}
+      style={style}
+    >
+      {title && <PageHeader title={title} subTitle={subTitle} />}
+      {advanceSearch}
       <ContentWrapper>
-        { tablePanel }
+        {tablePanel}
         <IndexContent />
       </ContentWrapper>
     </div>
-  )
-}
+  );
+};
 
 export default React.forwardRef(IndexPage);

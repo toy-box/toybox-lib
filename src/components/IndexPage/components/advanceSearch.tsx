@@ -2,9 +2,9 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { Form, Select, Input, Col, Row, Button } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import styled from 'styled-components';
-import { SearchFindParam, OptionItem } from './IndexSearch';
 import { default as SelectPro } from '../../SelectPro';
 import DatePickerPro from '../../DatePickerPro';
+import { SearchFindParam, OptionItem } from './interface';
 
 export interface AdvanceSearchProps {
   form: FormInstance<any>;

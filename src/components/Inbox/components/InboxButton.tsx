@@ -13,7 +13,7 @@ export type InboxButtonProps = InboxProps & {
   icon?: ReactNode;
 };
 
-export const InboxButton: FC<InboxButtonProps> = ({
+const InboxButton: FC<InboxButtonProps> = ({
   remove,
   read,
   loadMore,
@@ -26,9 +26,12 @@ export const InboxButton: FC<InboxButtonProps> = ({
   icon,
   hasMore,
 }) => {
-  const handleRead = useCallback(async (id: string) => {
-    await read(id);
-  }, [read]);
+  const handleRead = useCallback(
+    async (id: string) => {
+      await read(id);
+    },
+    [read],
+  );
 
   return (
     <Popover
@@ -57,4 +60,6 @@ export const InboxButton: FC<InboxButtonProps> = ({
       />
     </Popover>
   );
-}
+};
+
+export default InboxButton;

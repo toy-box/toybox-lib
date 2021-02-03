@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
-import { Avatar as AntAvatar } from 'antd';
+import { Avatar as AntAvatar, Tooltip } from 'antd';
 import classNames from 'classnames';
-
+import AvatarGroup from './components/AvatarGroup';
+import './style.less';
 export interface AvatarProps {
   name: string;
   className?: string;
@@ -11,33 +12,62 @@ export interface AvatarProps {
   onClick?: (...args: any) => void;
 }
 
+export type AvatarSize = 'xs' | 'small' | 'medium' | 'large' | 'xl';
+
 export interface ImageAvatarProps {
   name: string;
   img?: string;
   className?: string;
   style?: any;
-  size?: 'xs' | 'small' | 'medium' | 'large' | 'xl';
+  size?: AvatarSize;
   colorSets?: string[];
+  tooltip?: boolean;
 }
 
-const DEFAULT_COLOR_SETS = ['#BC61CF', '#F26666', '#F29A52', '#F4C329', '#CBD057', '#289ED3', '#29B3F0'];
+const DEFAULT_COLOR_SETS = [
+  '#BC61CF',
+  '#F26666',
+  '#F29A52',
+  '#F4C329',
+  '#CBD057',
+  '#289ED3',
+  '#29B3F0',
+];
 const DEFAULT_SIZE = 'medium';
 
-function AvatarWithName({ name, className, style, img, colorSets = DEFAULT_COLOR_SETS }: AvatarProps) {
-  return <div className={classNames('tbox-avatar-withname', className)} style={style}>
-    <Avatar name={name} img={img} size="xs" colorSets={colorSets} />
-    <span className="tbox-avatar-name">{name}</span>
-  </div>
+function AvatarWithName({
+  name,
+  className,
+  style,
+  img,
+  colorSets = DEFAULT_COLOR_SETS,
+}: AvatarProps) {
+  return (
+    <div
+      className={classNames('tbox-avatar-withname', className)}
+      style={style}
+    >
+      <Avatar name={name} img={img} size="xs" colorSets={colorSets} />
+      <span className="tbox-avatar-name">{name}</span>
+    </div>
+  );
 }
 
-
-function Avatar({ name, img, className, style, size = DEFAULT_SIZE, colorSets = DEFAULT_COLOR_SETS }: ImageAvatarProps) {
+function Avatar({
+  name,
+  img,
+  className,
+  style,
+  size = DEFAULT_SIZE,
+  colorSets = DEFAULT_COLOR_SETS,
+  tooltip,
+}: ImageAvatarProps) {
   const background = useMemo(() => {
-    return colorSets[Math.random() % colorSets.length];
+    return colorSets[Math.floor(Math.random() * 100) % colorSets.length];
   }, [colorSets]);
 
   const showSize = useMemo(() => {
-    switch(size) {
+    switch (size) {
       case 'xs':
         return 24;
       case 'small':
@@ -60,23 +90,39 @@ function Avatar({ name, img, className, style, size = DEFAULT_SIZE, colorSets = 
       if (name.length < 2) {
         return name;
       }
-      return name.substr(name.length-2, 2);
+      return name.substr(name.length - 2, 2);
     }
     const spacePos = name.indexOf('_');
     if (spacePos > 0) {
       return name[0] + name[spacePos];
     }
-    return name.substr(0,2);
+    return name.substr(0, 2);
   }, [name]);
 
-  return (
-    <AntAvatar className={className} size={showSize} src={img} style={{ background, ...style }}>
+  return tooltip ? (
+    <Tooltip title={name}>
+      <AntAvatar
+        className="tbox-avatar"
+        size={showSize}
+        src={img}
+        style={{ background, ...style }}
+      >
+        {showName}
+      </AntAvatar>
+    </Tooltip>
+  ) : (
+    <AntAvatar
+      className="tbox-avatar"
+      size={showSize}
+      src={img}
+      style={{ background, ...style }}
+    >
       {showName}
     </AntAvatar>
-  )
+  );
 }
 
-
 Avatar.AvatarWithName = AvatarWithName;
+Avatar.AvatarGroup = AvatarGroup;
 
 export default Avatar;
