@@ -5,16 +5,16 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import moment, { Moment } from 'moment';
-import { DatePicker } from 'antd';
-import { DatePickerProps } from 'antd/lib/date-picker';
+import dayjs, { Dayjs } from 'dayjs';
+import DatePicker from '../DatePicker';
+import { PickerProps } from 'antd/lib/date-picker/generatePicker';
 
-export type DatePickerProProps = DatePickerProps & {
-  value?: Moment | string;
-  defaultValue?: Moment | string;
-  defaultPickerValue?: Moment | string;
+export type DatePickerProProps = PickerProps<Dayjs> & {
+  value?: Dayjs | string;
+  defaultValue?: Dayjs | string;
+  defaultPickerValue?: Dayjs | string;
   stringValue?: boolean;
-  onChange?: (date: Moment | string | null, dateString: string) => void;
+  onChange?: (date: Dayjs | string | null, dateString: string) => void;
 };
 
 const DatePickerPro: ForwardRefRenderFunction<any, DatePickerProProps> = (
@@ -23,19 +23,17 @@ const DatePickerPro: ForwardRefRenderFunction<any, DatePickerProProps> = (
 ) => {
   const inputRef = useRef<any>();
   const innerValue = useMemo(() => {
-    return value != null ? (moment(value) as Moment) : undefined;
+    return value != null ? dayjs(value) : undefined;
   }, [value]);
   const innerDefaultValue = useMemo(() => {
-    return defaultValue != null ? (moment(defaultValue) as Moment) : undefined;
+    return defaultValue != null ? dayjs(defaultValue) : undefined;
   }, [defaultValue]);
   const innerDefaultPickerValue = useMemo(() => {
-    return defaultPickerValue != null
-      ? (moment(defaultPickerValue) as Moment)
-      : undefined;
+    return defaultPickerValue != null ? dayjs(defaultPickerValue) : undefined;
   }, [defaultPickerValue]);
 
   const handleChange = useCallback(
-    (date: Moment | null, dateString: string) => {
+    (date: Dayjs | null, dateString: string) => {
       onChange && onChange(stringValue ? dateString : date, dateString);
     },
     [onChange, stringValue],
