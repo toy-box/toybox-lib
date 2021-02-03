@@ -28,9 +28,9 @@ import { FieldType } from '../../Fields/interface';
 import { AdvanceSearch } from './advanceSearch';
 import { RowData } from '../../../types/interface';
 import { useQuery } from '../../../hooks';
+import { SearchFindParam } from './interface';
 
 import '../style.less';
-import { SearchFindParam } from './interface';
 
 const LIST_RENDER = 'listRender';
 

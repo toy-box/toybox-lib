@@ -5,16 +5,21 @@ import { Notification4Line } from '@airclass/icons';
 
 import '../style.less';
 
-
-export type InboxBadgeProps = {
+export interface InboxBadgeProps {
   className?: string;
   style?: Record<string, any>;
   icon?: ReactNode;
   count: number;
   color?: string;
-};
+}
 
-export const InboxBadge: FC<InboxBadgeProps> = ({ count, style, className, icon, color }) => {
+export const InboxBadge: FC<InboxBadgeProps> = ({
+  count,
+  style,
+  className,
+  icon,
+  color,
+}) => {
   return (
     <div className={classNames('tbox-inbox-badge', className)} style={style}>
       <Badge count={count} style={color ? { background: color } : undefined}>
@@ -22,4 +27,4 @@ export const InboxBadge: FC<InboxBadgeProps> = ({ count, style, className, icon,
       </Badge>
     </div>
   );
-}
+};

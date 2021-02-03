@@ -42,12 +42,19 @@ export interface FieldMetaProfile extends FieldMeta {
   disabled?: boolean;
   mode?: 'read' | 'update' | 'edit';
   remote?: (key: string, params?: any) => Promise<OptionItem[]>;
-  remoteByValue?: (value: ReactText | ReactText[], params?: any) => Promise<OptionItem>;
+  remoteByValue?: (
+    value: ReactText | ReactText[],
+    params?: any,
+  ) => Promise<OptionItem>;
 }
 
 export interface FieldOption {
   label: string;
   value: string;
+}
+export interface OptionItem {
+  label: React.ReactNode;
+  value: React.ReactText;
 }
 
 export type ColumnMeta = {
@@ -55,7 +62,7 @@ export type ColumnMeta = {
   fixed?: boolean;
   align?: 'left' | 'right' | 'center';
   link?: (...args: any) => string | string;
-} & FieldMeta
+} & FieldMeta;
 
 export type MetaPageMode = 'list' | 'view';
 

@@ -1,10 +1,15 @@
-import React, { useRef, useEffect, useImperativeHandle, ForwardRefRenderFunction } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useImperativeHandle,
+  ForwardRefRenderFunction,
+} from 'react';
 import { Select } from 'antd';
-import { OptionItem } from './IndexSearch';
-import useFetchOptions from '../../Fields/Select/hooks/useFetchOptions';
+import { OptionItem } from './interface';
+import useFetchOptions from '../../../hooks/useFetchOptions';
 
 export interface RemoteSelectProps {
-  value?: SelectValue;
+  value?: string | number;
   placeholder?: string;
   remote: (query: string) => Promise<OptionItem[]>;
   onChange?: (value: string | number) => void;
@@ -14,8 +19,10 @@ export interface RemoteSelectProps {
 
 type SelectValue = React.ReactText | React.ReactText[];
 
-
-const RemoteSelect: ForwardRefRenderFunction<any, RemoteSelectProps> = ({ value, placeholder, style, allowClear, remote, onChange }, ref) => {
+const RemoteSelect: ForwardRefRenderFunction<any, RemoteSelectProps> = (
+  { value, placeholder, style, allowClear, remote, onChange },
+  ref,
+) => {
   const inputRef = useRef<any>();
   const [loading, remoteOptions, fetchData] = useFetchOptions(remote);
   useEffect(() => {
@@ -30,18 +37,20 @@ const RemoteSelect: ForwardRefRenderFunction<any, RemoteSelectProps> = ({ value,
     fetchData,
   }));
 
-  return <Select
-    ref={inputRef}
-    value={value}
-    style={style}
-    loading={loading}
-    placeholder={placeholder}
-    options={remoteOptions}
-    onSearch={fetchData}
-    onChange={onChange}
-    allowClear={allowClear}
-    showSearch
-  />
-}
+  return (
+    <Select
+      ref={inputRef}
+      value={value}
+      style={style}
+      loading={loading}
+      placeholder={placeholder}
+      options={remoteOptions}
+      onSearch={fetchData}
+      onChange={onChange}
+      allowClear={allowClear}
+      showSearch
+    />
+  );
+};
 
 export default React.forwardRef(RemoteSelect);

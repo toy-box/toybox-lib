@@ -8,18 +8,13 @@ import React, {
   useEffect,
   useCallback,
   ReactText,
-  ReactNode,
 } from 'react';
 import { default as Select, SelectProps } from 'antd/lib/select';
 import SizeContext from 'antd/lib/config-provider/SizeContext';
 import debounce from 'lodash.debounce';
 import intersection from 'lodash.intersection';
-import useFetchOptions from './hooks/useFetchOptions';
-
-export interface OptionItem {
-  label: React.ReactNode;
-  value: React.ReactText;
-}
+import useFetchOptions from '../../hooks/useFetchOptions';
+import { OptionItem } from '@/types/interface';
 
 type SelectValue = React.ReactText | React.ReactText[];
 
@@ -34,7 +29,10 @@ export interface SelectProProps extends Omit<SelectProps<SelectValue>, 'mode'> {
   selectProps?: any;
   style?: any;
   remote?: (key: string, params?: any) => Promise<OptionItem[]>;
-  remoteByValue?: (value: ReactText | ReactText[], params?: any) => Promise<OptionItem>;
+  remoteByValue?: (
+    value: ReactText | ReactText[],
+    params?: any,
+  ) => Promise<OptionItem>;
   readMode?: boolean;
 }
 
@@ -94,22 +92,27 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     return value;
   }, [initialed, remote, value]);
 
-  const current = useMemo(
-    () => {
-      if (mode === 'multiple') {
-        return mergeOptions ? mergeOptions.filter(opt => ((innerValue as React.ReactText[]) || []).some(v => v === opt.value)) : null;
-      }
-      return mergeOptions ? mergeOptions.find(opt => opt.value === innerValue) : null;
-    },
-    [mode, mergeOptions, innerValue],
-  );
+  const current = useMemo(() => {
+    if (mode === 'multiple') {
+      return mergeOptions
+        ? mergeOptions.filter(opt =>
+            ((innerValue as React.ReactText[]) || []).some(
+              v => v === opt.value,
+            ),
+          )
+        : null;
+    }
+    return mergeOptions
+      ? mergeOptions.find(opt => opt.value === innerValue)
+      : null;
+  }, [mode, mergeOptions, innerValue]);
 
   const values = useMemo(() => {
     if (Array.isArray(current)) {
       return current.map(opt => opt.label);
     }
     return current ? current.label : null;
-  }, [current])
+  }, [current]);
 
   useImperativeHandle(ref, () => ({
     ...(inputRef.current || {}),
@@ -143,24 +146,26 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
   );
 
   if (readMode) {
-    return <span>{Array.isArray(values) ? (values).join(', ') : values}</span>;
+    return <span>{Array.isArray(values) ? values.join(', ') : values}</span>;
   }
-  return <Select
-    value={innerValue}
-    onChange={debounce(handleChange, 500)}
-    defaultValue={defaultValue}
-    showSearch={remote != null}
-    size={size}
-    onSearch={fetchData}
-    loading={loading}
-    placeholder={placeholder}
-    ref={inputRef}
-    options={mergeOptions}
-    filterOption={false}
-    mode={mode}
-    disabled={disabled}
-    {...selectProps}
-  />
+  return (
+    <Select
+      value={innerValue}
+      onChange={debounce(handleChange, 500)}
+      defaultValue={defaultValue}
+      showSearch={remote != null}
+      size={size}
+      onSearch={fetchData}
+      loading={loading}
+      placeholder={placeholder}
+      ref={inputRef}
+      options={mergeOptions}
+      filterOption={false}
+      mode={mode}
+      disabled={disabled}
+      {...selectProps}
+    />
+  );
 };
 
 export default React.forwardRef(SelectPro);

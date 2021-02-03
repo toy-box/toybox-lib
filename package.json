@@ -3,6 +3,7 @@
   "version": "0.1.5",
   "author": "DivXPro",
   "license": "GPL-3.0-only",
+  "homepage": "https://toy-box.github.io/toybox-lib",
   "repository": "https://github.com/toy-box/toybox-lib",
   "scripts": {
     "start": "dumi dev",
