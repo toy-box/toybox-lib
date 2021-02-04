@@ -7,6 +7,7 @@ export { default as DatePicker } from './DatePicker';
 export { default as Calendar } from './Calendar';
 export { default as TimePicker } from './TimePicker';
 export { default as CardList } from './CardList';
+export { default as Container } from './Container';
 export { default as DropdownMenu } from './DropdownMenu';
 export { default as Fields } from './Fields';
 export { default as Header } from './Header';

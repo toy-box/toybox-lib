@@ -1,5 +1,9 @@
 import React, { FC, useCallback, ReactNode } from 'react';
 import { Popover } from 'antd';
+import {
+  RenderFunction,
+  getRenderPropValue,
+} from 'antd/lib/_util/getRenderPropValue';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import arrayMove from 'array-move';
 import { SelectItem, ValueType } from './interface';
@@ -10,7 +14,7 @@ import './style.less';
 type ActionType = 'hover' | 'click' | 'focus';
 
 export interface SortableSelectProps {
-  title: ReactNode;
+  title: ReactNode | RenderFunction;
   trigger?: ActionType | ActionType[];
   dataSource: SelectItem[];
   value: ValueType;
@@ -98,7 +102,7 @@ const SortableSelect: FC<SortableSelectProps> = ({
 
   return (
     <Popover
-      title={title}
+      title={getRenderPropValue(title)}
       trigger={trigger}
       overlayClassName="popover-no-padding popover-no-arrow"
       content={content}

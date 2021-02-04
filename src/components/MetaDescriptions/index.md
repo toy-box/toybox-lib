@@ -1,7 +1,6 @@
+## MetaDescriptions 元数据描述列表
 
-## MetaDescriptions
-
-Demo:
+### 基本用法
 
 ```tsx
 import React from 'react';
@@ -22,22 +21,22 @@ const objectMeta = {
     open: {
       key: 'open',
       name: '开放状态',
-      type: 'boolean'
+      type: 'boolean',
     },
     name: {
       key: 'name',
       name: '名称',
-      type: 'string'
+      type: 'string',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -48,18 +47,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
+};
 
 const data = {
   id: '1234',
@@ -68,12 +67,16 @@ const data = {
   amount: 2000,
   user: {
     id: 'xxx',
-    name: '熊丽'
-  }
-}
+    name: '熊丽',
+  },
+};
 
 export default () => {
   const fieldMetas = useBusinessObjectMeta(objectMeta);
-  return <MetaDescriptons fieldItemMetas={fieldMetas} data={data} mode="read" />
-}
+  return (
+    <MetaDescriptons fieldItemMetas={fieldMetas} data={data} mode="read" />
+  );
+};
 ```
+
+<API></API>

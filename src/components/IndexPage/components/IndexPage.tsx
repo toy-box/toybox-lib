@@ -15,7 +15,7 @@ import {
   ListUnordered,
   TableLine,
   ArrowDownSLine,
-  LayoutColumnFill,
+  LayoutColumnLine,
 } from '@airclass/icons';
 import useAntdTable from '../hooks/useTable';
 import { ContentWrapper } from './ContentWrapper';
@@ -57,6 +57,7 @@ export interface IndexPageProps {
   subTitle?: string;
   operateItems?: OperateItem[];
   visibleColumns: ColumnVisible[];
+  visibleColumnSet?: boolean;
   searchOption?: {
     findParams: SearchFindParam[];
   };
@@ -100,6 +101,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     objectMeta,
     operateItems,
     visibleColumns,
+    visibleColumnSet,
     panelItems,
     mode = 'table',
     viewMode,
@@ -125,27 +127,26 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   const [selectionType, setSelectionType] = useState(defaultSelectionType);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
   const [showAdvanceSearch, setShowAdvanceSearch] = useState(false);
-  // 所有的字段可以
-  const metaColumnKeys = useMemo(
-    () => Object.keys(objectMeta.properties).map(key => key),
-    [objectMeta],
-  );
 
   // 可配置的字段key
+  const metaColumnKeys = useMemo(() => visibleColumns.map(col => col.key), [
+    visibleColumns,
+  ]);
+
   const defaultColumnKeys = useMemo(
     () => visibleColumns.filter(col => col.visiable).map(col => col.key),
-    [metaColumnKeys, visibleColumns],
+    [visibleColumns],
   );
 
   const defaultDataSource = useMemo(() => {
-    return defaultColumnKeys.map(key => {
+    return metaColumnKeys.map(key => {
       const column = objectMeta.properties[key];
       return {
         label: column.name,
         value: column.key,
       };
     });
-  }, [defaultColumnKeys, objectMeta]);
+  }, [metaColumnKeys, objectMeta]);
 
   const [dataSource, setDataSource] = useState<SelectItem[]>(defaultDataSource);
   const [visibleKeys, setVisibleKeys] = useState(defaultColumnKeys);
@@ -224,11 +225,6 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         );
       })
       .filter(c => c != null);
-    // return Object.keys(objectMeta.properties).map(key =>
-    //   Object.assign(objectMeta.properties[key], {
-    //     link: key === objectMeta.titleKey ? viewLink : undefined,
-    //   }),
-    // );
   }, [
     currentMode,
     dataSource,
@@ -329,7 +325,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   }, [searchOption, showAdvanceSearch, search.submit, queryForm]);
 
   const columnSet = useMemo(() => {
-    return (
+    return visibleColumnSet ? (
       <SortableSelect
         title="配置表格字段"
         dataSource={dataSource}
@@ -342,11 +338,17 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         multiple
       >
         <Button type="text">
-          <LayoutColumnFill />
+          <LayoutColumnLine />
         </Button>
       </SortableSelect>
-    );
-  }, [dataSource, visibleKeys, setVisibleKeys, setDataSource]);
+    ) : null;
+  }, [
+    visibleColumnSet,
+    dataSource,
+    visibleKeys,
+    setVisibleKeys,
+    setDataSource,
+  ]);
 
   const rightPanel = useMemo(() => {
     return (

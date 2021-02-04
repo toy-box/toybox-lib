@@ -38,7 +38,13 @@ const AvatarGroup: FC<AvatarGroupProps> = ({
       {dataSource.map(
         (avatar, idx) =>
           idx <= maxCount - 1 && (
-            <Avatar name={avatar.name} img={avatar.img} size="xs" tooltip />
+            <Avatar
+              name={avatar.name}
+              img={avatar.img}
+              size="xs"
+              key={idx}
+              tooltip
+            />
           ),
       )}
       {more}
