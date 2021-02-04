@@ -28,6 +28,7 @@ const Container: FC<ContainerProps> = ({
   className,
   activeKey,
   extraContent,
+  centered,
 }) => {
   const [tabKey, setTabKey] = useState(activeKey || contents[0].key);
   const activeItem = useMemo(() => {
