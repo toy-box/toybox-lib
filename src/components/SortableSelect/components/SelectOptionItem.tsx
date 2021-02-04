@@ -1,15 +1,19 @@
-import React, { FC, ReactNode, useCallback, useContext, useMemo } from 'react';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import classNames from 'classnames';
 import { MenuLine, CheckLine } from '@airclass/icons';
+import { Draggable } from 'react-beautiful-dnd';
 import { SelectItem } from '../interface';
 import SortableSelectContext from '../context';
 
-export type SelectOptionItemProps = SelectItem;
+export type SelectOptionItemProps = SelectItem & {
+  index: number;
+};
 
 const SelectOptionItem: FC<SelectOptionItemProps> = ({
   label,
   value,
   disabled,
+  index,
 }) => {
   const context = useContext(SortableSelectContext);
   const checked = useMemo(() => {
@@ -20,18 +24,26 @@ const SelectOptionItem: FC<SelectOptionItemProps> = ({
   }, [context.value]);
 
   const handleCheck = useCallback(() => {
-    context.checkValue && context.checkValue(value, !checked);
+    if (!disabled) {
+      context.checkValue && context.checkValue(value);
+    }
   }, [context.checkValue]);
-  const HandleIcon = MenuLine;
+
   return (
-    <li
-      className={classNames('select-item', checked, disabled)}
-      onClick={handleCheck}
-    >
-      <HandleIcon className="drag-handle" />
-      <div className="select-item__label">{label}</div>
-      <CheckLine className="check" />
-    </li>
+    <Draggable draggableId={value.toString()} index={index}>
+      {provided => (
+        <li
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          className={classNames('tbox-sortable-select--item', { disabled })}
+          onClick={handleCheck}
+        >
+          <MenuLine {...provided.dragHandleProps} className="drag-handle" />
+          <div className="select-item__label">{label}</div>
+          <CheckLine className={classNames('selec-item__check', { checked })} />
+        </li>
+      )}
+    </Draggable>
   );
 };
 

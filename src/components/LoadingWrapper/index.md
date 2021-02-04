@@ -1,5 +1,4 @@
-
-## LoadingWrapper
+## LoadingWrapper 加载容器
 
 Demo:
 
@@ -14,9 +13,13 @@ export default () => {
   const toggle = useCallback(() => {
     setLoading(!loading);
   }, [loading]);
-  return <div>
-    <LoadingWrapper loading={loading}><h1>load completed ...</h1></LoadingWrapper>
-    <Button onClick={toggle}>toggle</Button>
-  </div>
+  return (
+    <div>
+      <LoadingWrapper loading={loading}>
+        <h1>load completed ...</h1>
+      </LoadingWrapper>
+      <Button onClick={toggle}>toggle</Button>
+    </div>
+  );
 };
 ```

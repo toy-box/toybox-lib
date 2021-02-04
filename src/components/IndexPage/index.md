@@ -1,5 +1,4 @@
-
-## IndexPage
+## IndexPage 索引列表页
 
 ### 基本用法:
 
@@ -22,17 +21,17 @@ const objectMeta = {
     name: {
       key: 'name',
       name: '名称',
-      type: 'string'
+      type: 'string',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -43,19 +42,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
-
+};
 
 const data = [
   {
@@ -65,8 +63,8 @@ const data = [
     amount: 2000,
     user: {
       id: 'xxx',
-      name: '熊丽'
-    }
+      name: '熊丽',
+    },
   },
   {
     id: '1235',
@@ -75,39 +73,58 @@ const data = [
     amount: 1300,
     user: {
       id: 'xxx2',
-      name: '熊丽2'
-    }
+      name: '熊丽2',
+    },
   },
   {
     id: '1236',
     name: '实收',
     billCycle: '2020-03-03',
-    amount: 1500
-  }
+    amount: 1500,
+  },
+];
+
+const visibleColumns = [
+  {
+    key: 'name',
+    visiable: true,
+  },
+  {
+    key: 'billCycle',
+    visiable: true,
+  },
+  {
+    key: 'amount',
+    visiable: true,
+  },
 ];
 
 export default () => {
   const loadData = () => {
     const result = {
       list: data,
-      total: 3
+      total: 3,
     };
-    const promise = new Promise<{ list: { [key: string]: any }[], total: number }>(function (resolve) {
-      setTimeout(function () {
+    const promise = new Promise<{
+      list: { [key: string]: any }[];
+      total: number;
+    }>(function(resolve) {
+      setTimeout(function() {
         resolve(result);
       }, 1000);
     });
     return promise;
-  }
+  };
 
-  return <IndexPage
-    objectMeta={objectMeta}
-    loadData={loadData}
-  />
-}
+  return (
+    <IndexPage
+      visibleColumns={visibleColumns}
+      objectMeta={objectMeta}
+      loadData={loadData}
+    />
+  );
+};
 ```
-
-
 
 ### 多选控制:
 
@@ -131,17 +148,17 @@ const objectMeta = {
     name: {
       key: 'name',
       name: '名称',
-      type: 'string'
+      type: 'string',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -152,19 +169,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
-
+};
 
 const data = [
   {
@@ -174,8 +190,8 @@ const data = [
     amount: 2000,
     user: {
       id: 'xxx',
-      name: '熊丽'
-    }
+      name: '熊丽',
+    },
   },
   {
     id: '1235',
@@ -184,15 +200,30 @@ const data = [
     amount: 1300,
     user: {
       id: 'xxx2',
-      name: '熊丽2'
-    }
+      name: '熊丽2',
+    },
   },
   {
     id: '1236',
     name: '实收',
     billCycle: '2020-03-03',
-    amount: 1500
-  }
+    amount: 1500,
+  },
+];
+
+const visibleColumns = [
+  {
+    key: 'name',
+    visiable: true,
+  },
+  {
+    key: 'billCycle',
+    visiable: true,
+  },
+  {
+    key: 'amount',
+    visiable: true,
+  },
 ];
 
 export default () => {
@@ -200,26 +231,31 @@ export default () => {
   const loadData = () => {
     const result = {
       list: data,
-      total: 3
+      total: 3,
     };
-    const promise = new Promise<{ list: { [key: string]: any }[], total: number }>(function (resolve) {
-      setTimeout(function () {
+    const promise = new Promise<{
+      list: { [key: string]: any }[];
+      total: number;
+    }>(function(resolve) {
+      setTimeout(function() {
         resolve(result);
       }, 1000);
     });
     return promise;
-  }
+  };
 
-  return <div>
-    <IndexPage
-      selectionToggle={selectionToggle}
-      objectMeta={objectMeta}
-      loadData={loadData}
-    />
-  </div>;
-}
+  return (
+    <div>
+      <IndexPage
+        visibleColumns={visibleColumns}
+        selectionToggle={selectionToggle}
+        objectMeta={objectMeta}
+        loadData={loadData}
+      />
+    </div>
+  );
+};
 ```
-
 
 ### 按钮控制:
 
@@ -242,17 +278,17 @@ const objectMeta = {
     name: {
       key: 'name',
       name: '名称',
-      type: 'string'
+      type: 'string',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -263,19 +299,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
-
+};
 
 const data = [
   {
@@ -285,8 +320,8 @@ const data = [
     amount: 2000,
     user: {
       id: 'xxx',
-      name: '熊丽'
-    }
+      name: '熊丽',
+    },
   },
   {
     id: '1235',
@@ -295,30 +330,48 @@ const data = [
     amount: 1300,
     user: {
       id: 'xxx2',
-      name: '熊丽2'
-    }
+      name: '熊丽2',
+    },
   },
   {
     id: '1236',
     name: '实收',
     billCycle: '2020-03-03',
-    amount: 1500
-  }
+    amount: 1500,
+  },
+];
+
+const visibleColumns = [
+  {
+    key: 'name',
+    visiable: true,
+  },
+  {
+    key: 'billCycle',
+    visiable: true,
+  },
+  {
+    key: 'amount',
+    visiable: true,
+  },
 ];
 
 export default () => {
   const loadData = () => {
     const result = {
       list: data,
-      total: 3
+      total: 3,
     };
-    const promise = new Promise<{ list: { [key: string]: any }[], total: number }>(function (resolve) {
-      setTimeout(function () {
+    const promise = new Promise<{
+      list: { [key: string]: any }[];
+      total: number;
+    }>(function(resolve) {
+      setTimeout(function() {
         resolve(result);
       }, 1000);
     });
     return promise;
-  }
+  };
 
   const panelItems = [
     {
@@ -327,10 +380,10 @@ export default () => {
         items: [
           {
             text: 'Create',
-            type: 'primary'
-          }
-        ]
-      }
+            type: 'primary',
+          },
+        ],
+      },
     },
     {
       type: 'dropdownMenu',
@@ -342,16 +395,19 @@ export default () => {
           {
             text: 'bulkDelete',
             danger: true,
-          }
-        ]
-      }
-    }
+          },
+        ],
+      },
+    },
   ];
 
-  return <IndexPage
-    objectMeta={objectMeta}
-    loadData={loadData}
-    panelItems={panelItems}
-  />
-}
+  return (
+    <IndexPage
+      visibleColumns={visibleColumns}
+      objectMeta={objectMeta}
+      loadData={loadData}
+      panelItems={panelItems}
+    />
+  );
+};
 ```

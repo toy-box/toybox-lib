@@ -6,4 +6,4 @@ export interface SelectItem {
   disabled?: boolean;
 }
 
-export type ValueType = string | number | (string | number)[] | undefined;
+export type ValueType = string | string[] | undefined;

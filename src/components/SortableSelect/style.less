@@ -1,0 +1,65 @@
+@import '../../styles/theme.less';
+
+.tbox-sortable-select {
+  .select-menu {
+    list-style: none;
+    padding-left: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+}
+
+.tbox-sortable-select--item {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  width: 100%;
+  padding: 8px 16px;
+  font-size: 14px;
+  box-sizing: border-box;
+  user-select: none;
+  align-items: center;
+  min-height: 36px;
+  &.picked {
+    background: @gray-3;
+  }
+  .drag-handle {
+    margin-right: 10px;
+    cursor: move !important;
+  }
+  .select-item__label {
+    flex-grow: 1;
+    text-align: left;
+  }
+  .selec-item__check {
+    font-size: 16px;
+    opacity: 0;
+    margin-left: 10px;
+    &.checked {
+      opacity: 1;
+    }
+  }
+  .select-item__label,
+  .selec-item__check {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  &:hover {
+    background: @gray-3;
+  }
+  &.disabled {
+    &:hover {
+      cursor: not-allowed;
+    }
+    .select-item__label,
+    .selec-item__check {
+      &:hover {
+        cursor: not-allowed;
+      }
+    }
+    .selec-item__check {
+      color: @gray-6;
+    }
+  }
+}

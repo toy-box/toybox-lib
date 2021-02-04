@@ -1,5 +1,4 @@
-
-## MetaTable
+## MetaTable 元数据表格
 
 ### 基本用法:
 
@@ -22,17 +21,17 @@ const objectMeta = {
     name: {
       key: 'name',
       name: '名称',
-      type: 'string'
+      type: 'string',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -43,19 +42,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
-
+};
 
 const data = [
   {
@@ -65,8 +63,8 @@ const data = [
     amount: 2000,
     user: {
       id: 'xxx',
-      name: '熊丽'
-    }
+      name: '熊丽',
+    },
   },
   {
     id: '1235',
@@ -75,34 +73,29 @@ const data = [
     amount: 1300,
     user: {
       id: 'xxx2',
-      name: '熊丽2'
-    }
+      name: '熊丽2',
+    },
   },
   {
     id: '1236',
     name: '实收',
     billCycle: '2020-03-03',
-    amount: 1500
-  }
+    amount: 1500,
+  },
 ];
 
 export default () => {
   const columnMetas = useMemo(() => {
-    return Object.keys(objectMeta.properties)
-      .map(key => Object.assign(
-        objectMeta.properties[key],
-      ));
+    return Object.keys(objectMeta.properties).map(key =>
+      Object.assign(objectMeta.properties[key]),
+    );
   }, [objectMeta]);
 
-  return <MetaTable
-    dataSource={data}
-    columnMetas={columnMetas}
-  />
-}
+  return <MetaTable dataSource={data} columnMetas={columnMetas} />;
+};
 ```
 
 ### 行操作
-
 
 ```tsx
 import React, { useMemo } from 'react';
@@ -123,17 +116,17 @@ const objectMeta = {
     name: {
       key: 'name',
       name: '名称',
-      type: 'string'
+      type: 'string',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -144,19 +137,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
-
+};
 
 const data = [
   {
@@ -166,8 +158,8 @@ const data = [
     amount: 2000,
     user: {
       id: 'xxx',
-      name: '熊丽'
-    }
+      name: '熊丽',
+    },
   },
   {
     id: '1235',
@@ -176,37 +168,53 @@ const data = [
     amount: 1300,
     user: {
       id: 'xxx2',
-      name: '熊丽2'
-    }
+      name: '熊丽2',
+    },
   },
   {
     id: '1236',
     name: '实收',
     billCycle: '2020-03-03',
-    amount: 1500
-  }
+    amount: 1500,
+  },
 ];
 
 export default () => {
   const columnMetas = useMemo(() => {
-    return Object.keys(objectMeta.properties)
-      .map(key => Object.assign(
-        objectMeta.properties[key],
-      ));
+    return Object.keys(objectMeta.properties).map(key =>
+      Object.assign(objectMeta.properties[key]),
+    );
   }, [objectMeta]);
 
-  return <MetaTable
-    dataSource={data}
-    columnMetas={columnMetas}
-    operateItems={[
-      { text: 'view', type: 'primary', size: 'small', callback: (record, index) => console.log(recode, index) },
-      { text: 'edit', type: 'dashed', size: 'small', callback: (record, index) => console.log(recode, index) },
-      { text: 'remove', type: 'text', size: 'small', danger: true, callback: (record, index) => console.log(recode, index) }
-    ]}
-  />
-}
+  return (
+    <MetaTable
+      dataSource={data}
+      columnMetas={columnMetas}
+      operateItems={[
+        {
+          text: 'view',
+          type: 'primary',
+          size: 'small',
+          callback: (record, index) => console.log(recode, index),
+        },
+        {
+          text: 'edit',
+          type: 'dashed',
+          size: 'small',
+          callback: (record, index) => console.log(recode, index),
+        },
+        {
+          text: 'remove',
+          type: 'text',
+          size: 'small',
+          danger: true,
+          callback: (record, index) => console.log(recode, index),
+        },
+      ]}
+    />
+  );
+};
 ```
-
 
 ### 自定义字段组件:
 
@@ -230,17 +238,17 @@ const objectMeta = {
       key: 'name',
       name: '名称',
       type: 'string',
-      component: 'name'
+      component: 'name',
     },
     billCycle: {
       key: 'billCycle',
       name: '账期',
-      type: 'date'
+      type: 'date',
     },
     amount: {
       key: 'amount',
       name: '金额',
-      type: 'number'
+      type: 'number',
     },
     user: {
       key: 'user',
@@ -251,19 +259,18 @@ const objectMeta = {
         id: {
           key: 'id',
           name: 'ID',
-          type: 'string'
+          type: 'string',
         },
         name: {
           key: 'name',
           name: '用户名',
-          type: 'string'
-        }
-      }
+          type: 'string',
+        },
+      },
     },
   },
   titleKey: 'name',
-}
-
+};
 
 const data = [
   {
@@ -273,8 +280,8 @@ const data = [
     amount: 2000,
     user: {
       id: 'xxx',
-      name: '熊丽'
-    }
+      name: '熊丽',
+    },
   },
   {
     id: '1235',
@@ -283,35 +290,49 @@ const data = [
     amount: 1300,
     user: {
       id: 'xxx2',
-      name: '熊丽2'
-    }
+      name: '熊丽2',
+    },
   },
   {
     id: '1236',
     name: '实收',
     billCycle: '2020-03-03',
-    amount: 1500
-  }
+    amount: 1500,
+  },
 ];
 
-const nameComponent: React.FC<{ text: string, record: any }> = ({ text, record }) => {
-  return <div style={{ background: 'lightblue', color: 'gray', border: '1px solid blue' }}>{text}</div>;
-}
+const nameComponent: React.FC<{ text: string; record: any }> = ({
+  text,
+  record,
+}) => {
+  return (
+    <div
+      style={{
+        background: 'lightblue',
+        color: 'gray',
+        border: '1px solid blue',
+      }}
+    >
+      {text}
+    </div>
+  );
+};
 
 export default () => {
   const columnMetas = useMemo(() => {
-    return Object.keys(objectMeta.properties)
-      .map(key => Object.assign(
-        objectMeta.properties[key],
-      ));
+    return Object.keys(objectMeta.properties).map(key =>
+      Object.assign(objectMeta.properties[key]),
+    );
   }, [objectMeta]);
 
-  return <MetaTable
-    dataSource={data}
-    columnMetas={columnMetas}
-    columnComponents={{ name: nameComponent }}
-  />
-}
+  return (
+    <MetaTable
+      dataSource={data}
+      columnMetas={columnMetas}
+      columnComponents={{ name: nameComponent }}
+    />
+  );
+};
 ```
 
 <API></API>

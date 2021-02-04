@@ -15,6 +15,7 @@ import {
   ListUnordered,
   TableLine,
   ArrowDownSLine,
+  LayoutColumnFill,
 } from '@airclass/icons';
 import useAntdTable from '../hooks/useTable';
 import { ContentWrapper } from './ContentWrapper';
@@ -31,6 +32,8 @@ import { useQuery } from '../../../hooks';
 import { SearchFindParam } from './interface';
 
 import '../style.less';
+import SortableSelect from '@/components/SortableSelect';
+import { SelectItem, ValueType } from '@/components/SortableSelect/interface';
 
 const LIST_RENDER = 'listRender';
 
@@ -53,7 +56,7 @@ export interface IndexPageProps {
   title?: string;
   subTitle?: string;
   operateItems?: OperateItem[];
-  visibleColumns?: ColumnVisible[];
+  visibleColumns: ColumnVisible[];
   searchOption?: {
     findParams: SearchFindParam[];
   };
@@ -83,6 +86,7 @@ export interface ColumnVisible {
   fixed?: boolean;
   align?: 'left' | 'right' | 'center';
   component?: string;
+  visiable?: boolean;
 }
 
 export type IndexPagePanelItemProps = PanelItemProps & {
@@ -121,6 +125,31 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   const [selectionType, setSelectionType] = useState(defaultSelectionType);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
   const [showAdvanceSearch, setShowAdvanceSearch] = useState(false);
+  // 所有的字段可以
+  const metaColumnKeys = useMemo(
+    () => Object.keys(objectMeta.properties).map(key => key),
+    [objectMeta],
+  );
+
+  // 可配置的字段key
+  const defaultColumnKeys = useMemo(
+    () => visibleColumns.filter(col => col.visiable).map(col => col.key),
+    [metaColumnKeys, visibleColumns],
+  );
+
+  const defaultDataSource = useMemo(() => {
+    return defaultColumnKeys.map(key => {
+      const column = objectMeta.properties[key];
+      return {
+        label: column.name,
+        value: column.key,
+      };
+    });
+  }, [defaultColumnKeys, objectMeta]);
+
+  const [dataSource, setDataSource] = useState<SelectItem[]>(defaultDataSource);
+  const [visibleKeys, setVisibleKeys] = useState(defaultColumnKeys);
+
   const { search, tableProps } = useAntdTable(
     loadData,
     {
@@ -176,32 +205,35 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         },
       ];
     }
-    if (visibleColumns != null) {
-      return visibleColumns.map(col => {
-        const fieldMeta = objectMeta.properties[col.key];
+    return dataSource
+      .filter(col => visibleKeys.some(k => k === col.value))
+      .map(col => {
+        const fieldMeta = objectMeta.properties[col.value];
+        const column = visibleColumns.find(
+          c => c.key === col.value,
+        ) as ColumnVisible;
         return Object.assign(
           {
-            key: col.key,
-            fixed: col.fixed,
-            align: col.align,
-            component: col.component,
+            key: column.key,
+            fixed: column.fixed,
+            align: column.align,
+            component: column.component,
             link: fieldMeta.key === objectMeta.titleKey ? viewLink : undefined,
           },
           fieldMeta,
         );
-      });
-    }
-    return Object.keys(objectMeta.properties).map(key =>
-      Object.assign(objectMeta.properties[key], {
-        link: key === objectMeta.titleKey ? viewLink : undefined,
-      }),
-    );
+      })
+      .filter(c => c != null);
+    // return Object.keys(objectMeta.properties).map(key =>
+    //   Object.assign(objectMeta.properties[key], {
+    //     link: key === objectMeta.titleKey ? viewLink : undefined,
+    //   }),
+    // );
   }, [
     currentMode,
-    objectMeta.key,
-    objectMeta.name,
-    objectMeta.properties,
-    objectMeta.titleKey,
+    dataSource,
+    visibleKeys,
+    objectMeta,
     viewLink,
     visibleColumns,
   ]);
@@ -286,7 +318,9 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   const advanceSearch = useMemo(() => {
     return searchOption && showAdvanceSearch ? (
       <AdvanceSearch
-        className={classNames('advance-search', { active: showAdvanceSearch })}
+        className={classNames('advance-search', {
+          actdataSourceive: showAdvanceSearch,
+        })}
         form={queryForm}
         submit={search.submit}
         findParams={searchOption.findParams}
@@ -294,11 +328,38 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     ) : null;
   }, [searchOption, showAdvanceSearch, search.submit, queryForm]);
 
+  const columnSet = useMemo(() => {
+    return (
+      <SortableSelect
+        title="配置表格字段"
+        dataSource={dataSource}
+        value={visibleKeys}
+        onChange={(keys: ValueType) => {
+          console.log('keys', keys);
+          setVisibleKeys(keys as string[]);
+        }}
+        onSortEnd={setDataSource}
+        multiple
+      >
+        <Button type="text">
+          <LayoutColumnFill />
+        </Button>
+      </SortableSelect>
+    );
+  }, [dataSource, visibleKeys, setVisibleKeys, setDataSource]);
+
   const rightPanel = useMemo(() => {
-    return (panelItems || [])
-      .filter(item => !item.selection || selectionType != null)
-      .map((item, index) => <PanelItem key={index} {...item} />);
-  }, [panelItems, selectionType]);
+    return (
+      <React.Fragment>
+        {(panelItems || [])
+          .filter(item => !item.selection || selectionType != null)
+          .map((item, index) => (
+            <PanelItem key={index} {...item} />
+          ))}
+        {columnSet}
+      </React.Fragment>
+    );
+  }, [columnSet, panelItems, selectionType]);
 
   const tablePanel = useMemo(
     () =>

@@ -14,7 +14,7 @@ import SizeContext from 'antd/lib/config-provider/SizeContext';
 import debounce from 'lodash.debounce';
 import intersection from 'lodash.intersection';
 import useFetchOptions from '../../hooks/useFetchOptions';
-import { OptionItem } from '@/types/interface';
+import { OptionItem } from '../../types/interface';
 
 type SelectValue = React.ReactText | React.ReactText[];
 
