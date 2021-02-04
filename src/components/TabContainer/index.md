@@ -1,10 +1,10 @@
-## TabContainer 容器
+## TabContainer 标签页容器
 
 ### 基础使用
 
 ```tsx
 import React from 'react';
-import { Container } from '@toy-box/toybox-lib';
+import { TabContainer } from '@toy-box/toybox-lib';
 
 export default () => {
   const contents = [
@@ -29,7 +29,7 @@ export default () => {
       content: () => <p>content d</p>,
     },
   ];
-  return <Container contents={contents} />;
+  return <TabContainer contents={contents} />;
 };
 ```
 
@@ -37,7 +37,7 @@ export default () => {
 
 ```tsx
 import React from 'react';
-import { Container } from '@toy-box/toybox-lib';
+import { TabContainer } from '@toy-box/toybox-lib';
 
 export default () => {
   const contents = [
@@ -63,7 +63,7 @@ export default () => {
       disabled: true,
     },
   ];
-  return <Container contents={contents} activeKey={'c'} />;
+  return <TabContainer contents={contents} activeKey={'c'} />;
 };
 ```
 
@@ -71,7 +71,7 @@ export default () => {
 
 ```tsx
 import React from 'react';
-import { Container } from '@toy-box/toybox-lib';
+import { TabContainer } from '@toy-box/toybox-lib';
 import { Button } from 'antd';
 import { MoreFill } from '@airclass/icons';
 
@@ -100,7 +100,7 @@ export default () => {
     },
   ];
   return (
-    <Container
+    <TabContainer
       contents={contents}
       extraContent={
         <Button type="text">

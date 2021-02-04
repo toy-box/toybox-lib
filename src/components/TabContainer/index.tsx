@@ -15,7 +15,7 @@ export interface ContentItem {
   disabled?: boolean;
 }
 
-export interface ContainerProps {
+export interface TabContainerProps {
   contents: ContentItem[];
   className?: string;
   activeKey?: string;
@@ -23,7 +23,7 @@ export interface ContainerProps {
   centered?: boolean;
 }
 
-const Container: FC<ContainerProps> = ({
+const TabContainer: FC<TabContainerProps> = ({
   contents,
   className,
   activeKey,
@@ -56,4 +56,4 @@ const Container: FC<ContainerProps> = ({
   );
 };
 
-export default Container;
+export default TabContainer;
