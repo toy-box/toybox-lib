@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 export interface SelectItem {
   label: ReactNode;
-  value: string | number;
+  value: string;
   disabled?: boolean;
 }
 
