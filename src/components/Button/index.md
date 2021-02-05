@@ -14,12 +14,17 @@ export default () => <Button tooltip="tooltip">this is a button</Button>;
 
 ```tsx
 import React from 'react';
+import { Space } from 'antd';
 import { Button } from '@toy-box/toybox-lib';
 import { HomeFill } from '@airclass/icons';
 import 'antd/dist/antd.css';
 
 export default () => (
-  <Button.Icon type="primary" tooltip="Home" icon={<HomeFill />} />
+  <Space>
+    <Button.Icon icon={<HomeFill />} />
+    <Button.Icon type="primary" tooltip="Home" icon={<HomeFill />} />
+    <Button.Icon type="primary" icon={<HomeFill />} circle />
+  </Space>
 );
 ```
 

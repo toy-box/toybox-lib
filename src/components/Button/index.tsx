@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Button as AntButton, Tooltip } from 'antd';
 import { ButtonProps as AntButtonProps } from 'antd/lib/button';
 import { MoreFill } from '@airclass/icons';

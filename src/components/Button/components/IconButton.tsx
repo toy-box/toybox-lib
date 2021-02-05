@@ -14,11 +14,21 @@ export interface IconButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   disabled?: boolean;
   size?: IconSize;
+  circle?: boolean;
   loading?: boolean;
 }
 
 const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
-  { icon, type = 'default', tooltip, onClick, disabled, size, loading = false },
+  {
+    icon,
+    type = 'default',
+    tooltip,
+    onClick,
+    disabled,
+    size,
+    loading = false,
+    circle,
+  },
   ref,
 ) => {
   const buttonRef = (ref as any) || React.createRef<HTMLElement>();
@@ -40,6 +50,7 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
   const classes = classNames('tbox-icon-button', `tbox-icon-button-${type}`, {
     [`tbox-icon-button-${size}`]: size,
     disabled,
+    circle,
   });
 
   return tooltip ? (
