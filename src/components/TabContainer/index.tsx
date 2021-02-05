@@ -19,7 +19,7 @@ export interface TabContainerProps {
   contents: ContentItem[];
   className?: string;
   activeKey?: string;
-  extraContent: ReactNode | RenderFunction;
+  extraContent?: ReactNode | RenderFunction;
   centered?: boolean;
 }
 

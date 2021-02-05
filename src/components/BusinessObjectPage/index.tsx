@@ -11,22 +11,33 @@ const { TabPane } = Tabs;
 
 export interface BusinessObjectPageProps {
   showTitle: boolean;
-  businessObjectMeta: BusinessObjectMeta
+  businessObjectMeta: BusinessObjectMeta;
   data: Record<string, any>;
   onBack?: () => void;
-  extend?: ExtendRender[];
+  extraContent?: ExtraRender[];
   className?: string;
 }
 
-export interface ExtendRender {
+export interface ExtraRender {
   name: string;
-  render: (businessObjectMeta: BusinessObjectMeta, data: Record<string, any>) => ReactNode;
+  render: (
+    businessObjectMeta: BusinessObjectMeta,
+    data: Record<string, any>,
+  ) => ReactNode;
 }
 
-const ExtendContent: FC<{views: { name: string, node: ReactNode }[]}> = ({views}) => {
-  return <Tabs defaultActiveKey="0">
-    {views.map((v, idx) => <TabPane key={idx.toString()} tab={v.name}>{v.node}</TabPane>)}
-  </Tabs>
+const ExtendContent: FC<{ views: { name: string; node: ReactNode }[] }> = ({
+  views,
+}) => {
+  return (
+    <Tabs defaultActiveKey="0">
+      {views.map((v, idx) => (
+        <TabPane key={idx.toString()} tab={v.name}>
+          {v.node}
+        </TabPane>
+      ))}
+    </Tabs>
+  );
 };
 
 const BusinessObjectPage: FC<BusinessObjectPageProps> = ({
@@ -34,49 +45,63 @@ const BusinessObjectPage: FC<BusinessObjectPageProps> = ({
   businessObjectMeta,
   data,
   onBack,
-  extend,
+  extraContent,
   className,
 }) => {
-  const objectName = useMemo(
-    () => data[businessObjectMeta.titleKey || 'id'],
-    [businessObjectMeta.titleKey, data]
-  );
+  const objectName = useMemo(() => data[businessObjectMeta.titleKey || 'id'], [
+    businessObjectMeta.titleKey,
+    data,
+  ]);
 
   const title = useMemo(
-    () => businessObjectMeta.name != null
-      ? businessObjectMeta.name
-      : objectName,
-    [businessObjectMeta.name, objectName]
+    () =>
+      businessObjectMeta.name != null ? businessObjectMeta.name : objectName,
+    [businessObjectMeta.name, objectName],
   );
 
   const subTitle = useMemo(
-    () => businessObjectMeta.name != null
-      ? objectName
-      : null,
-    [businessObjectMeta.name, objectName]
+    () => (businessObjectMeta.name != null ? objectName : null),
+    [businessObjectMeta.name, objectName],
   );
 
   const fieldItemsMeta = useObjectMeta(businessObjectMeta);
   const extendContent = useMemo(() => {
-    if (extend != null && extend.length > 0) {
-      const views: { name: string, node: ReactNode }[] = [];
+    if (extraContent != null && extraContent.length > 0) {
+      const views: { name: string; node: ReactNode }[] = [];
       views.push({
         name: '详细信息',
-        node: <MetaDescriptons fieldItemMetas={fieldItemsMeta} mode="read" data={data} />
+        node: (
+          <MetaDescriptons
+            fieldItemMetas={fieldItemsMeta}
+            mode="read"
+            data={data}
+          />
+        ),
       });
-      views.push(...extend.map(e => ({ name: e.name, node: e.render(businessObjectMeta, data)})))
+      views.push(
+        ...extraContent.map(e => ({
+          name: e.name,
+          node: e.render(businessObjectMeta, data),
+        })),
+      );
       return <ExtendContent views={views} />;
-    } 
-    return <MetaDescriptons fieldItemMetas={fieldItemsMeta} mode="read" data={data} />
-  }, [businessObjectMeta, data, extend, fieldItemsMeta]);
+    }
+    return (
+      <MetaDescriptons
+        fieldItemMetas={fieldItemsMeta}
+        mode="read"
+        data={data}
+      />
+    );
+  }, [businessObjectMeta, data, extraContent, fieldItemsMeta]);
   return (
     <div className={classNames('tbox-page', className)}>
-      {showTitle ? <PageHeader title={title} subTitle={subTitle} onBack={onBack} /> : null }
-      <ContentWrapper>
-        { extendContent }
-      </ContentWrapper>
+      {showTitle ? (
+        <PageHeader title={title} subTitle={subTitle} onBack={onBack} />
+      ) : null}
+      <ContentWrapper>{extendContent}</ContentWrapper>
     </div>
   );
-}
+};
 
 export default BusinessObjectPage;
