@@ -5,10 +5,13 @@ import React, {
   useMemo,
 } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { DatePickerProps } from 'antd/lib/date-picker';
 import DatePicker from '../../DatePicker';
 import { FieldProps } from '../interface';
 import { parseValueToMoment } from '../../../utils';
+
+dayjs.extend(LocalizedFormat);
 
 export interface FieldDateProps extends FieldProps {
   placeholder?: string;
@@ -56,10 +59,12 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     value,
   ]);
 
+  const text = useMemo(() => dayjs(value).format(format), [value, format]);
+
   if (mode === 'read') {
     return (
       <span ref={ref} onClick={onClick}>
-        {value != null ? dayjs(value).format(format) : '-'}
+        {value != null ? text : '-'}
       </span>
     );
   }
