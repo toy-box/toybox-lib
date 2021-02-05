@@ -312,11 +312,10 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   ]);
 
   const advanceSearch = useMemo(() => {
+    const classes = classNames('advance-search', { active: showAdvanceSearch });
     return searchOption && showAdvanceSearch ? (
       <AdvanceSearch
-        className={classNames('advance-search', {
-          actdataSourceive: showAdvanceSearch,
-        })}
+        className={classes}
         form={queryForm}
         submit={search.submit}
         findParams={searchOption.findParams}
