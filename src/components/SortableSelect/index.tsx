@@ -85,9 +85,9 @@ const SortableSelect: FC<SortableSelectProps> = ({
                 >
                   {dataSource.map((item, index) => (
                     <SelectOptionItem
-                      {...item}
                       index={index}
                       key={`item-${item.value}`}
+                      {...item}
                     />
                   ))}
                   {provided.placeholder}

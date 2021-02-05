@@ -31,11 +31,14 @@ const SelectOptionItem: FC<SelectOptionItemProps> = ({
 
   return (
     <Draggable draggableId={value.toString()} index={index}>
-      {provided => (
+      {(provided, snapshot) => (
         <li
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className={classNames('tbox-sortable-select--item', { disabled })}
+          className={classNames('tbox-sortable-select--item', {
+            disabled,
+            draging: snapshot.isDragging,
+          })}
           onClick={handleCheck}
         >
           <MenuLine {...provided.dragHandleProps} className="drag-handle" />
