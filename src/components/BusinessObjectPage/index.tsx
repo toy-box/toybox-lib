@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import PageHeader from '../PageHeader';
 import { BusinessObjectMeta } from '../../types/interface';
 import MetaDescriptons from '../MetaDescriptions';
+import TabContainer from '../TabContainer';
 import useObjectMeta from '../../hooks/useBusinessObjectMeta';
-import { ContentWrapper } from '../IndexPage/components/ContentWrapper';
 
 const { TabPane } = Tabs;
 
@@ -19,26 +19,13 @@ export interface BusinessObjectPageProps {
 }
 
 export interface ExtraRender {
-  name: string;
+  key: string;
+  title: string;
   render: (
     businessObjectMeta: BusinessObjectMeta,
     data: Record<string, any>,
   ) => ReactNode;
 }
-
-const ExtendContent: FC<{ views: { name: string; node: ReactNode }[] }> = ({
-  views,
-}) => {
-  return (
-    <Tabs defaultActiveKey="0">
-      {views.map((v, idx) => (
-        <TabPane key={idx.toString()} tab={v.name}>
-          {v.node}
-        </TabPane>
-      ))}
-    </Tabs>
-  );
-};
 
 const BusinessObjectPage: FC<BusinessObjectPageProps> = ({
   showTitle,
@@ -65,41 +52,30 @@ const BusinessObjectPage: FC<BusinessObjectPageProps> = ({
   );
 
   const fieldItemsMeta = useObjectMeta(businessObjectMeta);
-  const extendContent = useMemo(() => {
+  const extra = useMemo(() => {
     if (extraContent != null && extraContent.length > 0) {
-      const views: { name: string; node: ReactNode }[] = [];
-      views.push({
-        name: '详细信息',
-        node: (
-          <MetaDescriptons
-            fieldItemMetas={fieldItemsMeta}
-            mode="read"
-            data={data}
-          />
-        ),
-      });
-      views.push(
-        ...extraContent.map(e => ({
-          name: e.name,
-          node: e.render(businessObjectMeta, data),
-        })),
-      );
-      return <ExtendContent views={views} />;
+      const contents = extraContent.map((content, index) => ({
+        key: content.key,
+        title: content.title,
+        content: content.render(businessObjectMeta, data),
+      }));
+      return <TabContainer contents={contents} />;
     }
-    return (
-      <MetaDescriptons
-        fieldItemMetas={fieldItemsMeta}
-        mode="read"
-        data={data}
-      />
-    );
+    return null;
   }, [businessObjectMeta, data, extraContent, fieldItemsMeta]);
   return (
     <div className={classNames('tbox-page', className)}>
       {showTitle ? (
         <PageHeader title={title} subTitle={subTitle} onBack={onBack} />
       ) : null}
-      <ContentWrapper>{extendContent}</ContentWrapper>
+      {
+        <MetaDescriptons
+          fieldItemMetas={fieldItemsMeta}
+          mode="read"
+          data={data}
+        />
+      }
+      {extra}
     </div>
   );
 };
