@@ -1,6 +1,14 @@
-import React, { FC, useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  FC,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Search2Line } from '@airclass/icons';
-import { Button, Input } from 'antd';
+import { Input } from 'antd';
+import Button from '../../Button';
 import classNames from 'classnames';
 import { SearchProps } from './Search';
 
@@ -22,29 +30,38 @@ export const IconSearch: FC<IconSearchProps> = ({
   onClear,
   placeholder,
   allowClear = true,
-  disabled = false
+  disabled = false,
+  children,
 }) => {
   const [focus, setFocus] = useState(autoFocus);
   const inputRef = useRef<Input>(null);
 
   useEffect(() => {
     autoFocus && inputRef?.current?.focus();
-  }, [autoFocus])
+  }, [autoFocus]);
 
-  const innerOnChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.type === 'click' && (event.target.value === '' || event.target.value == null)) {
-      onClear && onClear();
-    }
-    onChange && onChange(event.target.value);
-  }, [onChange, onClear]);
+  const innerOnChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (
+        event.type === 'click' &&
+        (event.target.value === '' || event.target.value == null)
+      ) {
+        onClear && onClear();
+      }
+      onChange && onChange(event.target.value);
+    },
+    [onChange, onClear],
+  );
 
-  const innerOnSearch = useCallback((event: any) => {
-    onSearch && onSearch(event.target.value);
-  }, [onSearch]);
-
+  const innerOnSearch = useCallback(
+    (event: any) => {
+      onSearch && onSearch(event.target.value);
+    },
+    [onSearch],
+  );
 
   const prefix = useMemo(() => {
-    return <Search2Line />
+    return <Search2Line />;
   }, []);
 
   const handleFocus = useCallback(() => {
@@ -55,7 +72,11 @@ export const IconSearch: FC<IconSearchProps> = ({
   }, []);
 
   const holdInput = useMemo(() => {
-    return focus || (inputRef?.current?.input.value != null && inputRef?.current?.input.value !== '');
+    return (
+      focus ||
+      (inputRef?.current?.input.value != null &&
+        inputRef?.current?.input.value !== '')
+    );
   }, [focus]);
 
   const notEmpty = useMemo(() => value != null && value !== '', [value]);
@@ -63,19 +84,21 @@ export const IconSearch: FC<IconSearchProps> = ({
 
   return (
     <div className="tbox-icon-search">
-      {
-        showInput
-          ? null
-          : <Button
-              className="tbox-icon-search-icon"
-              type="text"
-              onClick={() => inputRef.current?.focus()}
-              icon={<Search2Line />}
-            />
-      }
-      <div className={classNames('tbox-search', showInput ? 'tbox-search-hold' : 'tbox-search-fold')}>
+      {showInput ? null : (
+        <Button.Icon
+          className="tbox-icon-search-icon"
+          onClick={() => inputRef.current?.focus()}
+          icon={children || <Search2Line />}
+        />
+      )}
+      <div
+        className={classNames(
+          'tbox-search',
+          showInput ? 'tbox-search-hold' : 'tbox-search-fold',
+        )}
+      >
         <Input
-          className='tbox-search-input'
+          className="tbox-search-input"
           ref={inputRef}
           prefix={prefix}
           defaultValue={defaultValue}
@@ -91,5 +114,5 @@ export const IconSearch: FC<IconSearchProps> = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import '../style.less';
 
 export type IconType = 'primary' | 'danger' | 'default';
-export type IconSize = 'xs' | 'small' | 'medium';
+export type SizeType = 'small' | 'medium' | 'large';
 type Loading = number | boolean;
 
 export interface IconButtonProps {
@@ -13,9 +13,10 @@ export interface IconButtonProps {
   tooltip?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   disabled?: boolean;
-  size?: IconSize;
+  size?: SizeType;
   circle?: boolean;
   loading?: boolean;
+  className?: string;
 }
 
 const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
@@ -28,6 +29,7 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
     size,
     loading = false,
     circle,
+    className,
   },
   ref,
 ) => {
@@ -47,11 +49,28 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
     }
   };
 
-  const classes = classNames('tbox-icon-button', `tbox-icon-button-${type}`, {
-    [`tbox-icon-button-${size}`]: size,
-    disabled,
-    circle,
-  });
+  let sizeCls = '';
+  switch (size) {
+    case 'large':
+      sizeCls = 'lg';
+      break;
+    case 'small':
+      sizeCls = 'sm';
+      break;
+    default:
+      break;
+  }
+
+  const classes = classNames(
+    className,
+    'tbox-icon-button',
+    `tbox-icon-button-${type}`,
+    {
+      [`tbox-icon-button-${sizeCls}`]: sizeCls,
+      disabled,
+      circle,
+    },
+  );
 
   return tooltip ? (
     <Tooltip title={tooltip}>
@@ -76,4 +95,4 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
   );
 };
 
-export default IconButton;
+export default React.forwardRef<unknown, IconButtonProps>(IconButton);

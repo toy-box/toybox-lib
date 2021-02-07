@@ -1,15 +1,49 @@
 @import '../../styles/theme.less';
 
+@small-padding-horizontal: 0;
+@base-padding-horizontal: 9px;
+@large-padding-horizontal: 12px;
+
+@small-padding-vertical: 5px;
+@base-padding-vertical: 9px;
+@large-padding-vertical: 12px;
+
+.button-size(@height; @padding-horizontal; @font-size; @border-radius) {
+  @padding-vertical: max(
+    (round(((@height - @font-size * @line-height-base) / 2) * 10) / 10) -
+      @border-width-base,
+    0
+  );
+  height: @height;
+  padding: @padding-vertical @padding-horizontal;
+  font-size: @font-size;
+  border-radius: @border-radius;
+}
+
 .tbox-icon-button {
-  padding: 2px 0;
-  height: 26px;
-  min-width: 26px;
-  font-size: 14px;
   background-color: transparent;
   border-radius: 4px;
   border-style: none;
+  min-width: 24px;
+  .button-size(
+    @btn-height-base; @base-padding-horizontal; @font-size-base;
+      @btn-border-radius-base
+  );
+  &-lg {
+    .button-size(
+      @btn-height-lg; @large-padding-horizontal; @btn-font-size-lg;
+        @btn-border-radius-base
+    );
+  }
+  &-sm {
+    .button-size(
+      @btn-height-sm; @small-padding-horizontal; @btn-font-size-sm;
+        @btn-border-radius-sm
+    );
+  }
   &:hover {
     cursor: pointer;
+    background: @btn-text-hover-bg;
   }
   &:focus {
     outline: none;
