@@ -26,6 +26,7 @@ export { default as Search } from './Search';
 export { default as SelectPro } from './SelectPro';
 export { default as RelativeTime } from './RelativeTime';
 export { default as SortableSelect } from './SortableSelect';
+export { default as SingleInputGroup } from './SingleInputGroup';
 
 export { NotificationMessage } from './Inbox/components/interface';
 export { SearchFindParam } from './IndexPage/components/interface';
