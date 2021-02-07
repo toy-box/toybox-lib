@@ -154,6 +154,7 @@ const Inbox = ({
       {
         text: '标记所有消息为已读',
         icon: <CheckDoubleFill />,
+        type: 'item',
         callback: async () => {
           if (readAll != null) {
             await readAll();
@@ -163,6 +164,7 @@ const Inbox = ({
       },
       {
         text: '删除所有已读消息',
+        type: 'item',
         icon: <DeleteBinLine />,
         danger: true,
         callback: async () => {
