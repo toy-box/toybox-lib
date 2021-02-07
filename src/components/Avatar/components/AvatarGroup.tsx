@@ -6,8 +6,16 @@ import Avatar from '..';
 import '../style.less';
 
 export interface AvatarGroupProps {
+  /**
+   * @description  头像组数据
+   * @default []
+   */
   dataSource: AvatarData[];
   onClickMore?: () => void;
+  /**
+   * @description  最大显示数
+   * @default 4
+   */
   maxCount?: number;
 }
 

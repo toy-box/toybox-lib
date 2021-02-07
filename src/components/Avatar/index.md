@@ -72,3 +72,11 @@ export default () => {
   );
 };
 ```
+
+<API></API>
+
+> Avatar
+
+<API src="./components/AvatarGroup.tsx"></API>
+
+> Avatar.Group
