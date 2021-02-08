@@ -1,0 +1,28 @@
+@import '../../styles/theme.less';
+
+.tbox-single-input-group {
+  display: flex;
+  padding: 0 16px;
+  > input {
+    border: none;
+    border-bottom: 1px solid @input-border-color;
+    min-width: 0;
+    height: 40px;
+    line-height: 40px;
+    font-size: 24px;
+    font-weight: 400;
+    flex: 0 1 auto;
+    padding: 6px 0;
+    text-align: center;
+    outline: none;
+    &.active {
+      border-bottom-color: @primary-color;
+    }
+    &.error {
+      border-bottom-color: @error-color;
+    }
+    + input {
+      margin-left: 10px;
+    }
+  }
+}

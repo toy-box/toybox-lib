@@ -1,17 +1,22 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
-
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import classNames from 'classnames';
+import './style.less';
 export interface SingleInputGroupProps {
   value?: string[];
   size?: number;
-  onlyNumber?: boolean;
+  type?: 'number' | 'string';
   onChange?: (value: string[]) => void;
+  onActive?: (value: string[]) => void;
+  error?: boolean;
 }
 
 const SingleInputGroup: FC<SingleInputGroupProps> = ({
   value,
   size = 6,
-  onlyNumber,
+  type = 'string',
   onChange,
+  onActive,
+  error,
 }) => {
   const [refs, setRefs] = useState<any>([]);
 
@@ -25,15 +30,24 @@ const SingleInputGroup: FC<SingleInputGroupProps> = ({
     return _values;
   }, [value]);
 
+  const active = useMemo(() => {
+    return (
+      value != null &&
+      value.length === size &&
+      value.every(v => v !== '' && v != null)
+    );
+  }, [value, size]);
+
   const handleKeyPress = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-      if (!/\d/.test(event.key)) {
-        // values[index] = value ? value[index] : '';
-        onChange &&
-          onChange(values.map((v, idx) => (idx === index ? event.key : v)));
+      if (type === 'number' && !/\d/.test(event.key)) {
+        return;
       } else {
         onChange &&
           onChange(values.map((v, idx) => (idx === index ? event.key : v)));
+        if (index < size - 1) {
+          refs[index + 1].focus();
+        }
       }
     },
     [values],
@@ -55,8 +69,14 @@ const SingleInputGroup: FC<SingleInputGroupProps> = ({
     [values, refs],
   );
 
+  useEffect(() => {
+    if (active && value != null) {
+      onActive && onActive(value);
+    }
+  }, [active, value, onActive]);
+
   return (
-    <div className="tbox-quick-input">
+    <div className="tbox-single-input-group">
       {values.map((v, index) => (
         <input
           key={`qi-${index}`}
@@ -64,6 +84,7 @@ const SingleInputGroup: FC<SingleInputGroupProps> = ({
           ref={input => (refs[index] = input)}
           maxLength={1}
           onKeyPress={e => handleKeyPress(e, index)}
+          className={classNames({ active: v.length > 0, error })}
           onKeyUp={e => handleKeyUp(e, index)}
         />
       ))}
