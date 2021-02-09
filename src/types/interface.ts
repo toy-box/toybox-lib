@@ -1,4 +1,5 @@
 import { ReactText } from 'react';
+import { SortOrder } from 'antd/lib/table/interface';
 import { OptionItem } from '../components/Fields/select';
 import { FieldType } from '../components/Fields/interface';
 
@@ -52,16 +53,14 @@ export interface FieldOption {
   label: string;
   value: string;
 }
-export interface OptionItem {
-  label: React.ReactNode;
-  value: React.ReactText;
-}
 
 export type ColumnMeta = {
   component?: string;
   fixed?: boolean;
   align?: 'left' | 'right' | 'center';
   link?: (...args: any) => string | string;
+  sorter?: boolean;
+  sortDirections?: SortOrder[];
 } & FieldMeta;
 
 export type MetaPageMode = 'list' | 'view';
