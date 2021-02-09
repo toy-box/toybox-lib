@@ -6,12 +6,7 @@ import React, {
 import { FieldProps } from '../interface';
 import SelectPro, { SelectProProps } from '../../SelectPro';
 
-export interface OptionItem {
-  label: React.ReactNode;
-  value: React.ReactText;
-}
-
-type SelectValue = React.ReactText | React.ReactText[];
+export type SelectValue = React.ReactText | React.ReactText[];
 
 export interface FieldSelectProps
   extends Omit<FieldProps, 'onChange' | 'value'>,
@@ -21,14 +16,7 @@ export interface FieldSelectProps
 }
 
 const FieldSelect: ForwardRefRenderFunction<any, FieldSelectProps> = (
-  {
-    mode,
-    fieldProps,
-    field,
-    multiple,
-    onClick,
-    ...otherProps
-  },
+  { mode, fieldProps, field, multiple, onClick, ...otherProps },
   ref,
 ) => {
   const inputRef = useRef<any>();

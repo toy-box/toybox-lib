@@ -9,8 +9,7 @@ import { default as FieldCheckGroup } from './CheckGroup';
 import { default as FieldPercent } from './Percent';
 import { default as FieldBoolean } from './Boolean';
 import { default as FieldBusinessObject } from './BusinessObject';
-import { FieldMeta } from '../../types/interface';
-import { OptionItem } from './select';
+import { FieldMeta, OptionItem } from '../../types/interface';
 
 export type FieldMode = 'read' | 'edit' | 'update';
 
@@ -23,10 +22,16 @@ export interface FieldProps {
   onClick?: () => void;
   onChange?: (...args: any) => void;
   remote?: (key: string, params?: any) => Promise<OptionItem[]>;
-  remoteByValue?: (value: ReactText | ReactText[], params?: any) => Promise<OptionItem>;
+  remoteByValue?: (
+    value: ReactText | ReactText[],
+    params?: any,
+  ) => Promise<OptionItem>;
 }
 
-export type FieldMap = Record<string, React.FC<FieldProps> | React.ForwardRefExoticComponent<FieldProps & any>>;
+export type FieldMap = Record<
+  string,
+  React.FC<FieldProps> | React.ForwardRefExoticComponent<FieldProps & any>
+>;
 
 export enum FieldType {
   INTEGER = 'integer',
@@ -43,7 +48,6 @@ export enum FieldType {
   MULTI_OPTION = 'multiOption',
   DOCUMENT = 'document',
 }
-
 
 export const defaultFieldMap: FieldMap = {
   string: FieldString,
