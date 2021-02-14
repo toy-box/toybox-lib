@@ -1,26 +1,34 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import {
-  ColumnsType,
+  ColumnType,
   DefaultRecordType,
   RowClassName,
 } from 'rc-table/lib/interface';
 import ColumnRow from './components/ColumnRow';
-import { TableContext, TableContextProps } from './context/tableContext';
+import { TableContext } from './context/tableContext';
+import './style.less';
 
 export interface VericalTableProps<RecordType extends DefaultRecordType> {
-  columns: ColumnsType<DefaultRecordType>;
+  bordered?: boolean;
+  columns: ColumnType<DefaultRecordType>[];
+  columnWidth?: number;
+  headWidth?: number;
   dataSource: DefaultRecordType[];
-  componentWidth?: number;
-  rowClassName?: string | RowClassName<DefaultRecordType>;
+  ellipsis?: boolean;
   expandedRowClassName?: RowClassName<DefaultRecordType>;
+  loading?: boolean | ReactNode;
+  rowClassName?: string | RowClassName<DefaultRecordType>;
 }
 
 function VericalTable<RecordType = DefaultRecordType>({
-  dataSource,
+  bordered,
   columns,
-  componentWidth,
-  rowClassName,
+  columnWidth,
+  headWidth,
+  dataSource,
+  ellipsis,
   expandedRowClassName,
+  rowClassName,
 }: VericalTableProps<RecordType>) {
   const tableContextValue = useMemo(
     () => ({
@@ -28,18 +36,32 @@ function VericalTable<RecordType = DefaultRecordType>({
       rowClassName,
       expandedRowClassName,
       columns,
-      componentWidth,
+      columnWidth,
+      headWidth,
     }),
-    [rowClassName, expandedRowClassName, columns, componentWidth],
+    [rowClassName, expandedRowClassName, columns, columnWidth, headWidth],
   );
-  return;
-  <TableContext.Provider value={tableContextValue}>
-    <table className="tbox-vertical-table">
-      {columns.map((column, index) => (
-        <ColumnRow column={column} records={dataSource} key={index} />
-      ))}
-    </table>
-  </TableContext.Provider>;
+  // const records = useMemo(() => {
+  //   columns.map(column => {
+  //     const record = dataSource.map(row => {
+  //       const dataIndex = column.dataIndex || column.key;
+  //       return dataIndex != null ? getPathValue(row, dataIndex) : null;
+  //     });
+  //   });
+  // }, [columns]);
+  return (
+    <TableContext.Provider value={tableContextValue}>
+      <div className="tbox-vertical-table">
+        <table>
+          <tbody>
+            {columns.map((column, index) => (
+              <ColumnRow column={column} records={dataSource} key={index} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </TableContext.Provider>
+  );
 }
 
 export default VericalTable;

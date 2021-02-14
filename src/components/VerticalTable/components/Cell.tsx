@@ -45,7 +45,7 @@ export interface CellProps<RecordType extends DefaultRecordType> {
   rowSpan?: number;
   ellipsis?: CellEllipsisType;
   align?: AlignType;
-
+  width?: number;
   shouldCellUpdate?: (record: RecordType, prevRecord: RecordType) => boolean;
 
   // Fixed
@@ -60,9 +60,7 @@ export interface CellProps<RecordType extends DefaultRecordType> {
   /** @private Used for `expandable` with nest tree */
   appendNode?: React.ReactNode;
   additionalProps?: React.HTMLAttributes<HTMLElement>;
-
   rowType?: 'header' | 'body' | 'footer';
-
   isSticky?: boolean;
 }
 
@@ -87,12 +85,13 @@ function Cell<RecordType extends DefaultRecordType>(
     additionalProps = {},
     ellipsis,
     align,
+    width,
     rowType,
     isSticky,
   }: CellProps<RecordType>,
   ref: React.Ref<any>,
 ) {
-  const cellPrefixCls = 'tbox-cell';
+  const cellPrefixCls = 'tbox-vertical-table-content';
 
   // ==================== Child Node ====================
   let cellProps: CellType<RecordType> = {};
@@ -169,6 +168,12 @@ function Cell<RecordType extends DefaultRecordType>(
     alignStyle.textAlign = align;
   }
 
+  // ====================== Width =======================
+  const widthStyle: React.CSSProperties = {};
+  if (width) {
+    widthStyle.width = `${width}px`;
+  }
+
   // ====================== Render ======================
   let title: string | undefined = undefined;
   const ellipsisConfig: CellEllipsisType | undefined =
@@ -212,6 +217,7 @@ function Cell<RecordType extends DefaultRecordType>(
       ...alignStyle,
       ...fixedStyle,
       ...cellStyle,
+      ...widthStyle,
     },
     ref: isRefComponent(Component) ? ref : null,
   };
