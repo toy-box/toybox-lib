@@ -1,0 +1,87 @@
+@import '~antd/lib/style/themes/index.less';
+
+@table-prefix-cls: ~'tbox-vertical-table';
+
+.@{table-prefix-cls} {
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  border-radius: @table-border-radius-base @table-border-radius-base 0 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: auto hidden;
+  > table {
+    table-layout: fixed;
+    width: 100%;
+    > tbody {
+      > tr {
+        &:first-child {
+          > td {
+            border-top: @border-width-base @border-style-base
+              @table-border-color;
+          }
+        }
+      }
+    }
+  }
+  &-small {
+    tbody {
+      > tr {
+        > td {
+          padding: 8px;
+        }
+      }
+    }
+  }
+  &-middle {
+    tbody {
+      > tr {
+        > td {
+          padding: 12px 8px;
+        }
+      }
+    }
+  }
+  &-thead {
+    position: relative;
+    padding: @table-padding-vertical @table-padding-horizontal;
+    overflow-wrap: break-word;
+
+    color: @table-header-color;
+    font-weight: 500;
+    text-align: left;
+    background: @table-header-bg;
+    border-bottom: @border-width-base @border-style-base @table-border-color;
+    transition: background 0.3s ease;
+
+    &[colspan]:not([colspan='1']) {
+      text-align: center;
+    }
+  }
+  &-content {
+    position: relative;
+    padding: @table-padding-vertical @table-padding-horizontal;
+    border-bottom: @border-width-base @border-style-base @table-border-color;
+    &:not(:last-child) {
+      border-right: @border-width-base @border-style-base @table-border-color;
+    }
+    &-fix-left,
+    &-fix-right {
+      position: -webkit-sticky !important;
+      position: sticky !important;
+      z-index: @zindex-table-fixed;
+    }
+    &-fix-left-first::after,
+    &-fix-left-last::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: -1px;
+      width: 30px;
+      transform: translateX(100%);
+      transition: box-shadow 0.3s;
+      content: '';
+      pointer-events: none;
+    }
+  }
+}

@@ -1,21 +1,13 @@
 import React, { FC, useMemo, useCallback, ReactNode } from 'react';
 import { Table } from 'antd';
 import { TablePaginationConfig, TableProps } from 'antd/lib/table';
-import { ColumnsType } from 'antd/lib/table/interface';
-import { DateColumn } from './components/DateColumn';
-import { ObjectColumn } from './components/ObjectColumn';
-import { DefaultColumn } from './components/DefaultColumn';
-import { BooleanColumn } from './components/BooleanColumn';
-import { SingleOptionColumn } from './components/SingleOptionColumn';
-import {
-  OperateItem,
-  OperateDropdown,
-  operateFactory,
-} from './components/OperateColumn';
+import { OperateItem } from './components/OperateColumn';
 import { ColumnFCProps } from './interface';
 import { ColumnMeta } from '../../types/interface';
 
 import './style.less';
+import { metaRender } from '../../utils/meta';
+import { DefaultColumnRenderMap } from './components';
 
 export type RowData = Record<string, any>;
 
@@ -72,18 +64,6 @@ export const columnFactory = (
   };
 };
 
-const defaultColumnsComponents: Record<string, React.FC<ColumnFCProps>> = {
-  businessObject: ObjectColumn,
-  date: DateColumn,
-  datetime: DateColumn,
-  document: ObjectColumn,
-  object: ObjectColumn,
-  singleOption: SingleOptionColumn,
-  boolean: BooleanColumn,
-  string: DefaultColumn,
-  number: DefaultColumn,
-};
-
 const MetaTable: FC<MetaTableProps> = ({
   rowKey = 'id',
   size,
@@ -101,60 +81,27 @@ const MetaTable: FC<MetaTableProps> = ({
   onChange,
   rowClassName,
 }) => {
-  const mergeColumnComponents = useMemo(() => {
-    return Object.assign(defaultColumnsComponents, columnComponents);
+  const mergeRenders = useMemo(() => {
+    return Object.assign(DefaultColumnRenderMap, columnComponents);
   }, [columnComponents]);
-
-  const pickComponent = useCallback(
-    (columnMeta: ColumnMeta) => {
-      if (columnMeta.component != null) {
-        return columnFactory(
-          columnMeta,
-          mergeColumnComponents[columnMeta.component],
-        );
-      }
-      if (
-        columnMeta.type === 'businessObject' ||
-        columnMeta.type === 'object' ||
-        columnMeta.type === 'document'
-      ) {
-        return columnFactory(
-          columnMeta,
-          mergeColumnComponents[columnMeta.key] ||
-            mergeColumnComponents['businessObject'],
-        );
-      }
-      return columnFactory(
-        columnMeta,
-        mergeColumnComponents[columnMeta.type] || DefaultColumn,
-      );
-    },
-    [mergeColumnComponents],
-  );
 
   const makeColumns = useCallback(
     (columnMetas: ColumnMeta[]) => {
-      const columns: ColumnsType<RowData> = columnMetas.map(columnMeta => {
+      const columns = columnMetas.map(columnMeta => {
         return {
           key: columnMeta.key,
           title: columnMeta.name,
           dataIndex: columnMeta.key,
-          render: pickComponent(columnMeta),
-          sorter: columnMeta.sorter,
+          render: metaRender(
+            columnMeta,
+            mergeRenders,
+            DefaultColumnRenderMap['string'],
+          ),
         };
       });
-      if (operateItems != null && operateItems.length > 0) {
-        columns.push({
-          key: 'meta-table-operate',
-          title: '',
-          dataIndex: 'meta-table-operate',
-          align: 'right',
-          render: operateFactory(operateItems, OperateDropdown),
-        });
-      }
       return columns;
     },
-    [operateItems, pickComponent],
+    [mergeRenders],
   );
 
   const columns = useMemo(() => makeColumns(columnMetas), [
