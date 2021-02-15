@@ -9,31 +9,31 @@ import React, {
   useCallback,
   ReactText,
 } from 'react';
+import { Divider, Input } from 'antd';
 import { default as Select, SelectProps } from 'antd/lib/select';
 import SizeContext from 'antd/lib/config-provider/SizeContext';
 import debounce from 'lodash.debounce';
 import intersection from 'lodash.intersection';
 import useFetchOptions from '../../hooks/useFetchOptions';
-import { OptionItem } from '../../types/interface';
+import { OptionItem, OptionReturnType } from '../../types/interface';
+import { Search2Line } from '@airclass/icons';
 
-type SelectValue = React.ReactText | React.ReactText[];
+export declare type SelectValue = React.ReactText | React.ReactText[];
 
-export interface SelectProProps extends Omit<SelectProps<SelectValue>, 'mode'> {
+export interface SelectProProps extends SelectProps<SelectValue> {
   value?: SelectValue;
   defaultValue?: SelectValue;
-  placeholder?: string;
   params?: any;
-  disabled?: boolean;
-  options?: OptionItem[];
-  mode?: 'multiple' | 'tags';
-  selectProps?: any;
-  style?: any;
   remote?: (key: string, params?: any) => Promise<OptionItem[]>;
   remoteByValue?: (
     value: ReactText | ReactText[],
     params?: any,
   ) => Promise<OptionItem>;
   readMode?: boolean;
+  /**
+   * @default true
+   */
+  optionSearch?: boolean;
 }
 
 const defaultRemote = () =>
@@ -48,13 +48,13 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     placeholder,
     params,
     mode,
-    disabled,
     options,
-    selectProps,
     readMode,
     onChange,
     remote,
     remoteByValue,
+    optionSearch = true,
+    ...otherProps
   },
   ref,
 ) => {
@@ -65,6 +65,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
   const [initOptions, setInitOptions] = useState<OptionItem[]>([]);
   const [initialed, setInitialed] = useState(false);
   const inputRef = useRef<any>();
+  const searchRef = useRef<any>();
   const size = useContext(SizeContext);
 
   const mergeOptions = useMemo(() => {
@@ -87,7 +88,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
 
   const innerValue = useMemo(() => {
     if (remote && !initialed) {
-      return null;
+      return;
     }
     return value;
   }, [initialed, remote, value]);
@@ -139,21 +140,42 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
   }, [current, initialed, fetchData, params, remote, remoteByValue, value]);
 
   const handleChange = useCallback(
-    (value: React.ReactText, options: OptionItem | OptionItem[]) => {
-      onChange && onChange(value, options);
+    (value: SelectValue, option: OptionReturnType) => {
+      onChange && onChange(value, option);
     },
     [onChange],
+  );
+
+  const dropdownRender = (menu: React.ReactElement) => {
+    return optionSearch ? (
+      <React.Fragment>
+        <Input ref={searchRef} prefix={<Search2Line />} bordered={false} />
+        <Divider style={{ margin: '4px 0' }} />
+        {menu}
+      </React.Fragment>
+    ) : (
+      { menu }
+    );
+  };
+
+  const handleOpen = useCallback(
+    (open: boolean) => {
+      if (open) {
+        setTimeout(() => searchRef && searchRef.current.focus(), 300);
+      }
+    },
+    [searchRef],
   );
 
   if (readMode) {
     return <span>{Array.isArray(values) ? values.join(', ') : values}</span>;
   }
+
   return (
     <Select
       value={innerValue}
       onChange={debounce(handleChange, 500)}
       defaultValue={defaultValue}
-      showSearch={remote != null}
       size={size}
       onSearch={fetchData}
       loading={loading}
@@ -162,8 +184,9 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       options={mergeOptions}
       filterOption={false}
       mode={mode}
-      disabled={disabled}
-      {...selectProps}
+      dropdownRender={dropdownRender}
+      onDropdownVisibleChange={handleOpen}
+      {...otherProps}
     />
   );
 };

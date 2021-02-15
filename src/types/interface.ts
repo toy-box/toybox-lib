@@ -1,8 +1,14 @@
 import { ReactText } from 'react';
 import { SortOrder } from 'antd/lib/table/interface';
+import {
+  OptionData,
+  OptionGroupData,
+  OptionsType,
+} from 'rc-select/lib/interface';
 import { FieldType } from '../components/Fields/interface';
 
 export type RowData = Record<string, any>;
+export declare type Key = string | number;
 
 export interface BusinessObjectMeta {
   key: string;
@@ -53,10 +59,11 @@ export interface FieldOption {
   value: string;
 }
 
-export interface OptionItem {
-  label: React.ReactNode;
-  value: React.ReactText;
-}
+export type OptionItem = OptionData;
+
+export type OptionItemsType = OptionsType;
+
+export type OptionReturnType = OptionsType | OptionData | OptionGroupData;
 
 export type ColumnMeta = {
   component?: string;
