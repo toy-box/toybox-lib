@@ -4,9 +4,11 @@ import {
   DefaultRecordType,
   RowClassName,
 } from 'rc-table/lib/interface';
+import classNames from 'classnames';
 import ColumnRow from './components/ColumnRow';
 import { TableContext } from './context/tableContext';
 import './style.less';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
 export interface VericalTableProps<RecordType extends DefaultRecordType> {
   bordered?: boolean;
@@ -18,17 +20,19 @@ export interface VericalTableProps<RecordType extends DefaultRecordType> {
   expandedRowClassName?: RowClassName<DefaultRecordType>;
   loading?: boolean | ReactNode;
   rowClassName?: string | RowClassName<DefaultRecordType>;
+  size?: SizeType;
 }
 
 function VericalTable<RecordType = DefaultRecordType>({
   bordered,
   columns,
   columnWidth,
-  headWidth,
   dataSource,
   ellipsis,
   expandedRowClassName,
+  headWidth,
   rowClassName,
+  size,
 }: VericalTableProps<RecordType>) {
   const tableContextValue = useMemo(
     () => ({
@@ -41,9 +45,12 @@ function VericalTable<RecordType = DefaultRecordType>({
     }),
     [rowClassName, expandedRowClassName, columns, columnWidth, headWidth],
   );
+  const classes = classNames('tbox-vertical-table', {
+    [`tbox-vertical-table-${size}`]: size,
+  });
   return (
     <TableContext.Provider value={tableContextValue}>
-      <div className="tbox-vertical-table">
+      <div className={classes}>
         <table>
           <tbody>
             {columns.map((column, index) => (
