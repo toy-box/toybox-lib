@@ -1,6 +1,6 @@
 ## VerticalTable 垂直表格
 
-#### 基本用法
+### 基本用法
 
 ```tsx
 import React from 'react';
@@ -78,7 +78,7 @@ export default () => {
 };
 ```
 
-#### 表格尺寸
+### 表格尺寸
 
 ```tsx
 import React from 'react';
@@ -168,3 +168,5 @@ export default () => {
   );
 };
 ```
+
+<API></API>
