@@ -41,14 +41,6 @@ function VericalTable<RecordType = DefaultRecordType>({
     }),
     [rowClassName, expandedRowClassName, columns, columnWidth, headWidth],
   );
-  // const records = useMemo(() => {
-  //   columns.map(column => {
-  //     const record = dataSource.map(row => {
-  //       const dataIndex = column.dataIndex || column.key;
-  //       return dataIndex != null ? getPathValue(row, dataIndex) : null;
-  //     });
-  //   });
-  // }, [columns]);
   return (
     <TableContext.Provider value={tableContextValue}>
       <div className="tbox-vertical-table">

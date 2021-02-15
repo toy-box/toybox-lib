@@ -17,7 +17,8 @@ export interface TableContextProps<RecordType = DefaultRecordType> {
 
   columns: ColumnsType<RecordType>;
   flattenColumns?: readonly ColumnType<RecordType>[];
-
+  columnWidth?: number;
+  headWidth?: number;
   componentWidth?: number;
   tableLayout?: TableLayout;
   fixColumn?: boolean;

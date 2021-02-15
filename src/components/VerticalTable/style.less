@@ -13,6 +13,16 @@
   > table {
     table-layout: fixed;
     width: 100%;
+    > tbody {
+      > tr {
+        &:first-child {
+          > td {
+            border-top: @border-width-base @border-style-base
+              @table-border-color;
+          }
+        }
+      }
+    }
   }
   &-thead {
     position: relative;
@@ -54,15 +64,6 @@
       transition: box-shadow 0.3s;
       content: '';
       pointer-events: none;
-    }
-  }
-  > tbody {
-    > tr {
-      &:first-child {
-        > td {
-          border-top: @border-width-base @border-style-base @table-border-color;
-        }
-      }
     }
   }
 }

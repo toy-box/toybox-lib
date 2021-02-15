@@ -67,6 +67,13 @@ const columns = [
 ];
 
 export default () => {
-  return <VerticalTable dataSource={data} columns={columns} />;
+  return (
+    <VerticalTable
+      columnWidth={120}
+      headWidth={100}
+      dataSource={data}
+      columns={columns}
+    />
+  );
 };
 ```

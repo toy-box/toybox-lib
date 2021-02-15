@@ -7,15 +7,11 @@ export interface ColumnRowProps<RecordType> {
   column: ColumnType<RecordType>;
   render?: ColumnType<RecordType>['render'];
   records: RecordType[];
-  headWidth?: number;
-  columnWidth?: number;
 }
 
 function ColumnRow<RecordType extends object = any>({
   column,
   records,
-  headWidth,
-  columnWidth,
 }: ColumnRowProps<RecordType>) {
   const tableContext = useContext(TableContext);
   const alignStyle = {
@@ -28,14 +24,13 @@ function ColumnRow<RecordType extends object = any>({
     return (
       <Cell
         className="tbox-vertical-table-thead"
-        width={headWidth}
+        width={tableContext?.headWidth}
         fixLeft={1}
         firstFixLeft
       >
         {column.title}
       </Cell>
     );
-    // return <td className="tbox-vertical-table-thead" style={style}>{column.title}</td>;
   };
   return (
     <tr>
@@ -45,7 +40,9 @@ function ColumnRow<RecordType extends object = any>({
           key={index}
           record={record}
           index={index}
-          width={columnWidth}
+          ellipsis={column.ellipsis}
+          render={column.render}
+          width={tableContext?.columnWidth}
           dataIndex={column.dataIndex || column.key}
         />
       ))}
