@@ -20,6 +20,7 @@ export { default as MetaDescriptons } from './MetaDescriptions';
 export { default as MetaForm } from './MetaForm';
 export { default as MetaList } from './MetaList';
 export { default as MetaTable } from './MetaTable';
+export { default as MetaVerticalTable } from './MetaVerticalTable';
 export { default as PageHeader } from './PageHeader';
 export { default as Panel } from './Panel';
 export { default as VerticalTable } from './VerticalTable';

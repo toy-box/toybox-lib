@@ -10,7 +10,7 @@ import { TableContext } from './context/tableContext';
 import './style.less';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 
-export interface VericalTableProps<RecordType extends DefaultRecordType> {
+export interface VerticalTableProps<RecordType extends DefaultRecordType> {
   bordered?: boolean;
   columns: ColumnType<DefaultRecordType>[];
   columnWidth?: number;
@@ -23,7 +23,7 @@ export interface VericalTableProps<RecordType extends DefaultRecordType> {
   size?: SizeType;
 }
 
-function VericalTable<RecordType = DefaultRecordType>({
+function VerticalTable<RecordType = DefaultRecordType>({
   bordered,
   columns,
   columnWidth,
@@ -33,7 +33,7 @@ function VericalTable<RecordType = DefaultRecordType>({
   headWidth,
   rowClassName,
   size,
-}: VericalTableProps<RecordType>) {
+}: VerticalTableProps<RecordType>) {
   const tableContextValue = useMemo(
     () => ({
       dataSource,
@@ -63,4 +63,4 @@ function VericalTable<RecordType = DefaultRecordType>({
   );
 }
 
-export default VericalTable;
+export default VerticalTable;
