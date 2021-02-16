@@ -33,8 +33,89 @@ const options = [
   },
 ];
 export default () => {
+  return <SelectPro options={options} style={{ width: '100px' }} />;
+};
+```
+
+### 特色搜索
+
+```tsx
+import React from 'react';
+import { SelectPro } from '@toy-box/toybox-lib';
+
+const options = [
+  {
+    label: '111',
+    value: '111',
+  },
+  {
+    label: '222',
+    value: '222',
+  },
+  {
+    label: '333',
+    value: '333',
+  },
+  {
+    label: '444',
+    value: '444',
+  },
+  {
+    label: '555',
+    value: '555',
+  },
+  {
+    label: '666',
+    value: '666',
+  },
+];
+export default () => {
   return (
-    <SelectPro mode={'multiple'} options={options} style={{ width: '100px' }} />
+    <SelectPro options={options} style={{ width: '100px' }} optionSearch />
+  );
+};
+```
+
+### 多选
+
+```tsx
+import React from 'react';
+import { SelectPro } from '@toy-box/toybox-lib';
+
+const options = [
+  {
+    label: '111',
+    value: '111',
+  },
+  {
+    label: '222',
+    value: '222',
+  },
+  {
+    label: '333',
+    value: '333',
+  },
+  {
+    label: '444',
+    value: '444',
+  },
+  {
+    label: '555',
+    value: '555',
+  },
+  {
+    label: '666',
+    value: '666',
+  },
+];
+export default () => {
+  return (
+    <SelectPro
+      mode={'multiple'}
+      options={options}
+      style={{ width: '100px' }}
+      optionSearch
+    />
   );
 };
 ```

@@ -10,13 +10,17 @@ import React, {
   ReactText,
 } from 'react';
 import { Divider, Input } from 'antd';
+import { Search2Line } from '@airclass/icons';
 import { default as Select, SelectProps } from 'antd/lib/select';
 import SizeContext from 'antd/lib/config-provider/SizeContext';
 import debounce from 'lodash.debounce';
 import intersection from 'lodash.intersection';
 import useFetchOptions from '../../hooks/useFetchOptions';
-import { OptionItem, OptionReturnType } from '../../types/interface';
-import { Search2Line } from '@airclass/icons';
+import {
+  OptionItem,
+  OptionItemsType,
+  OptionReturnType,
+} from '../../types/interface';
 
 export declare type SelectValue = React.ReactText | React.ReactText[];
 
@@ -30,7 +34,9 @@ export interface SelectProProps extends SelectProps<SelectValue> {
     params?: any,
   ) => Promise<OptionItem>;
   readMode?: boolean;
+  showSearch?: boolean;
   /**
+   * @description 是否在选线中显示搜索框
    * @default true
    */
   optionSearch?: boolean;
@@ -53,7 +59,8 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     onChange,
     remote,
     remoteByValue,
-    optionSearch = true,
+    showSearch = false,
+    optionSearch,
     ...otherProps
   },
   ref,
@@ -62,15 +69,18 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     remote || defaultRemote,
     params,
   );
-  const [initOptions, setInitOptions] = useState<OptionItem[]>([]);
+  const [initOptions, setInitOptions] = useState<OptionItemsType>([]);
   const [initialed, setInitialed] = useState(false);
+  const [localOptions, setLocalOptions] = useState<OptionItemsType>(
+    options || [],
+  );
   const inputRef = useRef<any>();
   const searchRef = useRef<any>();
   const size = useContext(SizeContext);
 
   const mergeOptions = useMemo(() => {
     if (remote == null) {
-      return options;
+      return localOptions;
     }
     if (
       intersection(
@@ -84,7 +94,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       return [...initOptions].concat(...remoteOptions);
     }
     return remoteOptions;
-  }, [initOptions, options, remoteOptions, remote]);
+  }, [initOptions, localOptions, remoteOptions, remote]);
 
   const innerValue = useMemo(() => {
     if (remote && !initialed) {
@@ -146,25 +156,46 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     [onChange],
   );
 
-  const dropdownRender = (menu: React.ReactElement) => {
+  const dropdownRender = useCallback((menu: React.ReactElement) => {
     return optionSearch ? (
       <React.Fragment>
-        <Input ref={searchRef} prefix={<Search2Line />} bordered={false} />
+        <Input
+          ref={searchRef}
+          onChange={e => handleSearch(e.target.value)}
+          prefix={<Search2Line />}
+          bordered={false}
+        />
         <Divider style={{ margin: '4px 0' }} />
         {menu}
       </React.Fragment>
     ) : (
-      { menu }
+      <React.Fragment>{menu}</React.Fragment>
     );
-  };
+  }, []);
+
+  const handleSearch = useCallback(
+    (key: string) => {
+      if (remote) {
+        fetchData(key);
+      } else {
+        const opts = (options || []).filter(
+          opt =>
+            typeof opt.label === 'string' &&
+            opt.label.toLowerCase().indexOf(key.toLowerCase()) > -1,
+        );
+        setLocalOptions(opts);
+      }
+    },
+    [remote, fetchData, options],
+  );
 
   const handleOpen = useCallback(
     (open: boolean) => {
-      if (open) {
+      if (optionSearch && open) {
         setTimeout(() => searchRef && searchRef.current.focus(), 300);
       }
     },
-    [searchRef],
+    [searchRef, optionSearch],
   );
 
   if (readMode) {
@@ -177,7 +208,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       onChange={debounce(handleChange, 500)}
       defaultValue={defaultValue}
       size={size}
-      onSearch={fetchData}
+      onSearch={handleSearch}
       loading={loading}
       placeholder={placeholder}
       ref={inputRef}
@@ -186,6 +217,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       mode={mode}
       dropdownRender={dropdownRender}
       onDropdownVisibleChange={handleOpen}
+      showSearch={showSearch}
       {...otherProps}
     />
   );
