@@ -109,7 +109,7 @@ function Cell<RecordType extends DefaultRecordType>(
     childNode = value;
     if (render) {
       const renderData =
-        value && record && index != null ? render(value, record, index) : null;
+        record && index != null ? render(value, record, index) : null;
 
       if (renderData && isRenderCell(renderData)) {
         childNode = (renderData as any).children;

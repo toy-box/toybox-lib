@@ -36,7 +36,7 @@ export interface SelectProProps extends SelectProps<SelectValue> {
   readMode?: boolean;
   showSearch?: boolean;
   /**
-   * @description 是否在选线中显示搜索框
+   * @description 是否在选线中显示搜索框,目前使用有问题
    * @default true
    */
   optionSearch?: boolean;
@@ -74,6 +74,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
   const [localOptions, setLocalOptions] = useState<OptionItemsType>(
     options || [],
   );
+  const [optionSearchKey, setOptionSearchKey] = useState<string>();
   const inputRef = useRef<any>();
   const searchRef = useRef<any>();
   const size = useContext(SizeContext);
@@ -156,46 +157,60 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     [onChange],
   );
 
-  const dropdownRender = useCallback((menu: React.ReactElement) => {
-    return optionSearch ? (
-      <React.Fragment>
-        <Input
-          ref={searchRef}
-          onChange={e => handleSearch(e.target.value)}
-          prefix={<Search2Line />}
-          bordered={false}
-        />
-        <Divider style={{ margin: '4px 0' }} />
-        {menu}
-      </React.Fragment>
-    ) : (
-      <React.Fragment>{menu}</React.Fragment>
-    );
-  }, []);
+  const dropdownRender = useCallback(
+    (menu: React.ReactElement) => {
+      return optionSearch ? (
+        <React.Fragment>
+          <Input
+            ref={searchRef}
+            onChange={e => handleSearch(e.target.value)}
+            prefix={<Search2Line />}
+            bordered={false}
+            value={optionSearchKey}
+          />
+          <Divider style={{ margin: '4px 0' }} />
+          {menu}
+        </React.Fragment>
+      ) : (
+        <React.Fragment>{menu}</React.Fragment>
+      );
+    },
+    [optionSearchKey],
+  );
 
   const handleSearch = useCallback(
     (key: string) => {
+      setOptionSearchKey(key);
       if (remote) {
         fetchData(key);
       } else {
-        const opts = (options || []).filter(
-          opt =>
-            typeof opt.label === 'string' &&
-            opt.label.toLowerCase().indexOf(key.toLowerCase()) > -1,
-        );
-        setLocalOptions(opts);
+        if (key === '' || key == null) {
+          // setLocalOptions(options || []);
+        } else {
+          // const opts = (options || []).filter(
+          //   opt =>
+          //     typeof opt.label === 'string' &&
+          //     opt.label.toLowerCase().indexOf(key.toLowerCase()) > -1,
+          // );
+          // setLocalOptions(opts);
+        }
       }
     },
-    [remote, fetchData, options],
+    [remote, fetchData, setOptionSearchKey, options],
   );
 
   const handleOpen = useCallback(
     (open: boolean) => {
-      if (optionSearch && open) {
+      if (!optionSearch) {
+        return;
+      }
+      if (open) {
         setTimeout(() => searchRef && searchRef.current.focus(), 300);
+      } else {
+        handleSearch('');
       }
     },
-    [searchRef, optionSearch],
+    [searchRef, setOptionSearchKey, optionSearch],
   );
 
   if (readMode) {

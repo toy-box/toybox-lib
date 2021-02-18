@@ -13,8 +13,7 @@ import {
 
 export interface TableContextProps<RecordType = DefaultRecordType> {
   rowClassName?: string | RowClassName<RecordType>;
-  expandedRowClassName?: RowClassName<RecordType>;
-
+  showHeader?: boolean;
   columns: ColumnsType<RecordType>;
   flattenColumns?: readonly ColumnType<RecordType>[];
   columnWidth?: number;
@@ -24,12 +23,6 @@ export interface TableContextProps<RecordType = DefaultRecordType> {
   fixColumn?: boolean;
   horizonScroll?: boolean;
   indentSize?: number;
-  expandableType?: ExpandableType;
-  expandRowByClick?: boolean;
-  expandedRowRender?: ExpandedRowRender<RecordType>;
-  expandIcon?: RenderExpandIcon<RecordType>;
-  onTriggerExpand?: TriggerEventHandler<RecordType>;
-  expandIconColumnIndex?: number;
 }
 
 export const TableContext = React.createContext<TableContextProps | undefined>(

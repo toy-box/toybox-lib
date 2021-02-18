@@ -169,4 +169,205 @@ export default () => {
 };
 ```
 
-<API></API>
+### 带边框
+
+```tsx
+import React from 'react';
+import { VerticalTable } from '@toy-box/toybox-lib';
+
+const data = [
+  {
+    id: '1234',
+    name: '销售',
+    billCycle: '2020-01-01',
+    amount: 2000,
+  },
+  {
+    id: '1235',
+    name: '销售',
+    billCycle: '2020-02-01',
+    amount: 1300,
+  },
+  {
+    id: '1236',
+    name: '实收',
+    billCycle: '2020-03-03',
+    amount: 1500,
+  },
+  {
+    id: '1236',
+    name: '实收',
+    billCycle: '2020-03-03',
+    amount: 1500,
+  },
+];
+
+const columns = [
+  {
+    title: 'ID',
+    key: 'id',
+  },
+  {
+    title: '名称',
+    key: 'name',
+  },
+  {
+    title: '金额',
+    key: 'amount',
+  },
+];
+
+export default () => {
+  return (
+    <>
+      <VerticalTable
+        columnWidth={120}
+        headWidth={100}
+        dataSource={data}
+        columns={columns}
+        bordered
+      />
+    </>
+  );
+};
+```
+
+### 不显示表头
+
+```tsx
+import React from 'react';
+import { VerticalTable } from '@toy-box/toybox-lib';
+
+const data = [
+  {
+    id: '1234',
+    name: '销售',
+    billCycle: '2020-01-01',
+    amount: 2000,
+  },
+  {
+    id: '1235',
+    name: '销售',
+    billCycle: '2020-02-01',
+    amount: 1300,
+  },
+  {
+    id: '1236',
+    name: '实收',
+    billCycle: '2020-03-03',
+    amount: 1500,
+  },
+  {
+    id: '1236',
+    name: '实收',
+    billCycle: '2020-03-03',
+    amount: 2500,
+  },
+];
+
+const columns = [
+  {
+    title: 'ID',
+    key: 'id',
+  },
+  {
+    title: '名称',
+    key: 'name',
+  },
+  {
+    title: '金额',
+    key: 'amount',
+  },
+];
+
+export default () => {
+  return (
+    <>
+      <VerticalTable
+        columnWidth={120}
+        headWidth={100}
+        dataSource={data}
+        columns={columns}
+        showHeader={false}
+      />
+    </>
+  );
+};
+```
+
+### 可选择
+
+```tsx
+import React from 'react';
+import { VerticalTable } from '@toy-box/toybox-lib';
+
+const data = [
+  {
+    id: '1234',
+    name: '销售',
+    billCycle: '2020-01-01',
+    amount: 2000,
+  },
+  {
+    id: '1235',
+    name: '销售',
+    billCycle: '2020-02-01',
+    amount: 1300,
+  },
+  {
+    id: '1236',
+    name: '实收',
+    billCycle: '2020-03-03',
+    amount: 1500,
+  },
+  {
+    id: '1237',
+    name: '实收',
+    billCycle: '2020-03-03',
+    amount: 2500,
+  },
+];
+
+const columns = [
+  {
+    title: 'ID',
+    key: 'id',
+  },
+  {
+    title: '名称',
+    key: 'name',
+  },
+  {
+    title: '金额',
+    key: 'amount',
+  },
+];
+
+export default () => {
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows,
+      );
+    },
+    getCheckboxProps: (record: DataType) => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+  return (
+    <>
+      <VerticalTable
+        columnWidth={120}
+        headWidth={100}
+        dataSource={data}
+        columns={columns}
+        rowSelection={rowSelection}
+        rowKey={'id'}
+      />
+    </>
+  );
+};
+```

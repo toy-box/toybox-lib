@@ -84,4 +84,14 @@
       pointer-events: none;
     }
   }
+  &-bordered {
+    > table {
+      border-left: @border-width-base @border-style-base @table-border-color;
+    }
+    .@{table-prefix-cls}-content {
+      &:last-child {
+        border-right: @border-width-base @border-style-base @table-border-color;
+      }
+    }
+  }
 }

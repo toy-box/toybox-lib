@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
+import { DefaultRecordType } from 'rc-table/lib/interface';
 import { ColumnType } from 'antd/lib/table/interface';
 import Cell from './Cell';
+import Header from './Header';
 import { TableContext } from '../context/tableContext';
 
 export interface ColumnRowProps<RecordType> {
@@ -9,7 +11,7 @@ export interface ColumnRowProps<RecordType> {
   records: RecordType[];
 }
 
-function ColumnRow<RecordType extends object = any>({
+function ColumnRow<RecordType extends DefaultRecordType>({
   column,
   records,
 }: ColumnRowProps<RecordType>) {
@@ -20,27 +22,17 @@ function ColumnRow<RecordType extends object = any>({
   const style = {
     ...alignStyle,
   };
-  const Header = () => {
-    return (
-      <Cell
-        className="tbox-vertical-table-thead"
-        width={tableContext?.headWidth}
-        fixLeft={1}
-        firstFixLeft
-      >
-        {column.title}
-      </Cell>
-    );
-  };
+
   return (
     <tr>
-      <Header />
+      {tableContext?.showHeader ? <Header title={column.title} /> : null}
       {records.map((record, index) => (
         <Cell
           key={index}
           record={record}
           index={index}
           ellipsis={column.ellipsis}
+          className={column.className}
           render={column.render}
           width={tableContext?.columnWidth}
           dataIndex={column.dataIndex || column.key}
