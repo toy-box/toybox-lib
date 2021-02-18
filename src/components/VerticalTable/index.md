@@ -70,7 +70,7 @@ export default () => {
   return (
     <VerticalTable
       columnWidth={120}
-      headWidth={100}
+      headerWidth={100}
       dataSource={data}
       columns={columns}
     />
@@ -150,7 +150,7 @@ export default () => {
       <h4>Middle size table</h4>
       <VerticalTable
         columnWidth={120}
-        headWidth={100}
+        headerWidth={100}
         dataSource={data}
         columns={columns}
         size={'middle'}
@@ -159,7 +159,7 @@ export default () => {
       <h4>Small size table</h4>
       <VerticalTable
         columnWidth={120}
-        headWidth={100}
+        headerWidth={100}
         dataSource={data}
         columns={columns}
         size={'small'}
@@ -222,7 +222,7 @@ export default () => {
     <>
       <VerticalTable
         columnWidth={120}
-        headWidth={100}
+        headerWidth={100}
         dataSource={data}
         columns={columns}
         bordered
@@ -285,7 +285,7 @@ export default () => {
     <>
       <VerticalTable
         columnWidth={120}
-        headWidth={100}
+        headerWidth={100}
         dataSource={data}
         columns={columns}
         showHeader={false}
@@ -361,7 +361,7 @@ export default () => {
     <>
       <VerticalTable
         columnWidth={120}
-        headWidth={100}
+        headerWidth={100}
         dataSource={data}
         columns={columns}
         rowSelection={rowSelection}

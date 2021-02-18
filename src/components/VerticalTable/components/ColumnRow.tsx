@@ -16,16 +16,12 @@ function ColumnRow<RecordType extends DefaultRecordType>({
   records,
 }: ColumnRowProps<RecordType>) {
   const tableContext = useContext(TableContext);
-  const alignStyle = {
-    textAlign: column.align || 'center',
-  };
-  const style = {
-    ...alignStyle,
-  };
 
   return (
     <tr>
-      {tableContext?.showHeader ? <Header title={column.title} /> : null}
+      {tableContext?.showHeader ? (
+        <Header title={column.title} headerWidth={tableContext.headerWidth} />
+      ) : null}
       {records.map((record, index) => (
         <Cell
           key={index}
@@ -36,6 +32,7 @@ function ColumnRow<RecordType extends DefaultRecordType>({
           render={column.render}
           width={tableContext?.columnWidth}
           dataIndex={column.dataIndex || column.key}
+          align={column.align || 'center'}
         />
       ))}
     </tr>

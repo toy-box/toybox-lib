@@ -2,16 +2,16 @@ import React, { FC, ReactNode } from 'react';
 import Cell from './Cell';
 
 export interface HeaderProps {
-  headWidth?: number;
+  headerWidth?: number;
   title?: ReactNode;
 }
 
-const Header: FC<HeaderProps> = ({ headWidth, title }) => {
+const Header: FC<HeaderProps> = ({ headerWidth, title }) => {
   return (
     <Cell
       className="tbox-vertical-table-thead"
-      width={headWidth}
-      fixLeft={1}
+      width={headerWidth}
+      fixLeft={0}
       firstFixLeft
     >
       {title}

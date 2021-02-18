@@ -93,7 +93,7 @@ export default () => {
   return (
     <MetaVerticalTable
       columnWidth={120}
-      headWidth={100}
+      headerWidth={100}
       dataSource={data}
       columnMetas={columnMetas}
     />
@@ -212,7 +212,7 @@ export default () => {
   return (
     <MetaVerticalTable
       columnWidth={120}
-      headWidth={100}
+      headerWidth={100}
       dataSource={data}
       columnMetas={columnMetas}
       columnComponents={{ name: nameComponent }}

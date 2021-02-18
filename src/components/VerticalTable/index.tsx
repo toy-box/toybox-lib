@@ -26,14 +26,14 @@ export interface VerticalTableProps<RecordType extends DefaultRecordType> {
   bordered?: boolean;
   columns: ColumnsType<DefaultRecordType>;
   columnWidth?: number;
-  headWidth?: number;
+  headerWidth?: number;
   dataSource: RecordType[];
   expandedRowClassName?: RowClassName<DefaultRecordType>;
   loading?: boolean | ReactNode;
   rowClassName?: string | RowClassName<DefaultRecordType>;
   size?: SizeType;
   showHeader?: boolean;
-  rowSelection?: TableRowSelection<RecordType>;
+  rowSelection?: Omit<TableRowSelection<RecordType>, 'fixed'>;
   rowKey?: string | RowKeyFn<RecordType>;
   getPopupContainer?: GetPopupContainer;
 }
@@ -43,7 +43,7 @@ function VerticalTable<RecordType = DefaultRecordType>({
   columns,
   columnWidth,
   dataSource,
-  headWidth,
+  headerWidth,
   rowClassName,
   size,
   showHeader = true,
@@ -65,10 +65,10 @@ function VerticalTable<RecordType = DefaultRecordType>({
       rowClassName,
       columns,
       columnWidth,
-      headWidth,
+      headerWidth,
       showHeader,
     }),
-    [rowClassName, showHeader, columns, columnWidth, headWidth],
+    [rowClassName, showHeader, columns, columnWidth, headerWidth],
   );
 
   // =========================== Classes ===========================
@@ -86,7 +86,7 @@ function VerticalTable<RecordType = DefaultRecordType>({
     return (record: RecordType) => (record as any)?.[rowKey as string];
   }, [rowKey]);
 
-  const childrenColumnName = '';
+  const childrenColumnName = 'selector';
 
   const [getRecordByKey] = useLazyKVMap(
     dataSource || [],
