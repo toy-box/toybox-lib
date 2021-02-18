@@ -17,7 +17,7 @@ const MetaVerticalTable: FC<MetaVerticalTableProps<DefaultRecordType>> = ({
   dataSource,
   columnWidth,
   columnComponents = {},
-  headWidth,
+  headerWidth,
 }) => {
   const mergeRenders = useMemo(() => {
     return Object.assign(DefaultColumnRenderMap, columnComponents);
@@ -51,7 +51,7 @@ const MetaVerticalTable: FC<MetaVerticalTableProps<DefaultRecordType>> = ({
     <VerticalTable
       columns={columns}
       columnWidth={columnWidth}
-      headWidth={headWidth}
+      headerWidth={headerWidth}
       dataSource={dataSource}
     />
   );
