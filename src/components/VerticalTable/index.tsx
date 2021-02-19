@@ -22,7 +22,7 @@ import useSelection from 'antd/lib/table/hooks/useSelection';
 import useTitleColumns from 'antd/lib/table/hooks/useTitleColumns';
 import useLazyKVMap from 'antd/lib/table/hooks/useLazyKVMap';
 import defaultLocale from 'antd/lib/locale/en_US';
-import { useLayoutState, useTimeoutLock } from 'rc-table/lib/hooks/useFrame';
+import { useTimeoutLock } from 'rc-table/lib/hooks/useFrame';
 import ColumnRow from './components/ColumnRow';
 import { TableContext } from './context/tableContext';
 
