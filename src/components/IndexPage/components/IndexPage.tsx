@@ -56,6 +56,7 @@ export interface IndexPageProps {
   title?: string;
   subTitle?: string;
   operateItems?: OperateItem[];
+  operateHeader?: ReactNode;
   visibleColumns: ColumnVisible[];
   visibleColumnSet?: boolean;
   searchOption?: {
@@ -100,6 +101,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     subTitle,
     objectMeta,
     operateItems,
+    operateHeader,
     visibleColumns,
     visibleColumnSet,
     panelItems,
@@ -382,6 +384,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
             columnMetas={columnMetas}
             rowSelection={rowSelection}
             columnComponents={components}
+            operateHeader={operateHeader}
             {...tableProps}
           />
         );
@@ -393,6 +396,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
             columnMetas={columnMetas}
             rowSelection={rowSelection}
             columnComponents={components}
+            operateHeader={operateHeader}
             {...tableProps}
           />
         );

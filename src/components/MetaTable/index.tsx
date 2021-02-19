@@ -1,7 +1,11 @@
 import React, { FC, useMemo, useCallback, ReactNode } from 'react';
 import { Table } from 'antd';
-import { TablePaginationConfig, TableProps } from 'antd/lib/table';
-import { OperateItem } from './components/OperateColumn';
+import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/lib/table';
+import {
+  operateFactory,
+  OperateDropdown,
+  OperateItem,
+} from './components/OperateColumn';
 import { ColumnFCProps } from './interface';
 import { ColumnMeta } from '../../types/interface';
 
@@ -38,6 +42,10 @@ export interface MetaTableProps
    */
   operateItems?: OperateItem[];
   /**
+   * @description 操作字段表头
+   */
+  operateHeader?: ReactNode;
+  /**
    * @description 当表格查询条件变化时
    */
   onChange: (
@@ -72,6 +80,7 @@ const MetaTable: FC<MetaTableProps> = ({
   columnComponents = {},
   pagination,
   operateItems,
+  operateHeader,
   showHeader,
   expandable,
   bordered,
@@ -87,27 +96,39 @@ const MetaTable: FC<MetaTableProps> = ({
 
   const makeColumns = useCallback(
     (columnMetas: ColumnMeta[]) => {
-      const columns = columnMetas.map(columnMeta => {
-        return {
-          key: columnMeta.key,
-          title: columnMeta.name,
-          dataIndex: columnMeta.key,
-          render: metaRender(
-            columnMeta,
-            mergeRenders,
-            DefaultColumnRenderMap['string'],
-          ),
-        };
-      });
+      const columns: ColumnsType<Record<string, any>> = columnMetas.map(
+        columnMeta => {
+          return {
+            key: columnMeta.key,
+            title: columnMeta.name,
+            dataIndex: columnMeta.key,
+            align: columnMeta.align,
+            render: metaRender(
+              columnMeta,
+              mergeRenders,
+              DefaultColumnRenderMap['string'],
+            ),
+          };
+        },
+      );
       return columns;
     },
     [mergeRenders],
   );
 
-  const columns = useMemo(() => makeColumns(columnMetas), [
-    columnMetas,
-    makeColumns,
-  ]);
+  const columns = useMemo(() => {
+    const columns = makeColumns(columnMetas);
+    if (operateItems != null && operateItems.length > 0) {
+      columns.push({
+        key: 'meta-table-operate',
+        title: operateHeader,
+        dataIndex: 'meta-table-operate',
+        align: 'right',
+        render: operateFactory(operateItems, OperateDropdown),
+      });
+    }
+    return columns;
+  }, [columnMetas, makeColumns]);
 
   return (
     <Table

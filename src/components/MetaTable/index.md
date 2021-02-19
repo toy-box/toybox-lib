@@ -330,6 +330,7 @@ export default () => {
       dataSource={data}
       columnMetas={columnMetas}
       columnComponents={{ name: nameComponent }}
+      operateHeader={'操作'}
     />
   );
 };
