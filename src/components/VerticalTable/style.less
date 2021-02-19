@@ -94,9 +94,18 @@
       }
     }
   }
-  &&-ping-left {
-    .@{table-prefix-cls}-content-fix-left-first::after {
-      box-shadow: inset 10px 0 8px -8px rgb(0 0 0 / 15%);
+  &-ping-left {
+    &:not(.@{table-prefix-cls}-has-fix-left) .@{table-prefix-cls}-container {
+      position: relative;
+
+      &::before {
+        box-shadow: inset 10px 0 8px -8px darken(@shadow-color, 5%);
+      }
+    }
+
+    .@{table-prefix-cls}-content-fix-left-first::after,
+    .@{table-prefix-cls}-content-fix-left-last::after {
+      box-shadow: inset 10px 0 8px -8px darken(@shadow-color, 5%);
     }
   }
 }
