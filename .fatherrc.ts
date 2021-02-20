@@ -14,7 +14,6 @@ export default {
     'rc-util',
     'rc-table',
   ],
-  extractCSS: true,
   extraBabelPlugins: [
     [
       'babel-plugin-import',
