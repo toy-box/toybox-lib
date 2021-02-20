@@ -30,10 +30,10 @@ import { AdvanceSearch } from './advanceSearch';
 import { RowData } from '../../../types/interface';
 import { useQuery } from '../../../hooks';
 import { SearchFindParam } from './interface';
+import SortableSelect from '../../SortableSelect';
+import { SelectItem, ValueType } from '../../SortableSelect/interface';
 
 import '../style.less';
-import SortableSelect from '@/components/SortableSelect';
-import { SelectItem, ValueType } from '@/components/SortableSelect/interface';
 
 const LIST_RENDER = 'listRender';
 
