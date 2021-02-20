@@ -12,6 +12,7 @@
     "build": "father-build",
     "deploy": "npm run docs:build && npm run docs:deploy",
     "release": "npm run build && npm publish --access public",
+    "release:next": "npm run build && npm publish --access public --tag=next",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
