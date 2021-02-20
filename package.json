@@ -18,8 +18,8 @@
     "test:coverage": "umi-test --coverage"
   },
   "main": "lib/index.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "module": "es/index.js",
+  "typings": "lib/index.d.ts",
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
