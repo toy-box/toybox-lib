@@ -1,25 +1,23 @@
-import { InputNumber } from 'antd';
-import React, { useRef, useImperativeHandle, Ref, ForwardRefRenderFunction } from 'react';
+import { InputNumber, InputNumberProps } from 'antd';
+import React, {
+  useRef,
+  useImperativeHandle,
+  Ref,
+  ForwardRefRenderFunction,
+} from 'react';
 
-import { FieldProps } from '../interface';
+import { BaseFieldProps } from '../interface';
 
-export interface FieldNumberProps extends FieldProps {
-  value?: number;
-  defaultValue?: number;
-  placeholder?: string;
-  onChange?: (value: number) => void;
-}
+export type FieldNumberProps = Omit<
+  BaseFieldProps,
+  'value' | 'onChange' | 'onClick'
+> &
+  InputNumberProps;
 
-const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = ({
-  mode,
-  value,
-  defaultValue,
-  placeholder,
-  fieldProps,
-  disabled,
-  onChange,
-  onClick
-}, ref: Ref<any>) => {
+const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = (
+  { mode, value, style, onChange, onClick, ...otherProps },
+  ref: Ref<any>,
+) => {
   const inputRef = useRef();
   useImperativeHandle(
     ref,
@@ -31,23 +29,20 @@ const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = ({
 
   if (mode === 'read') {
     const dom = value || '-';
-    return <span onClick={onClick}>{dom}</span>
+    return <span onClick={onClick}>{dom}</span>;
   }
   if (mode === 'edit' || mode === 'update') {
-    return <InputNumber
-      value={value}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      placeholder={placeholder}
-      ref={inputRef}
-      disabled={disabled}
-      style={{
-        width: '100%',
-      }}
-      {...fieldProps}
-    />
+    return (
+      <InputNumber
+        ref={inputRef}
+        value={value}
+        onChange={onChange}
+        style={Object.assign({ width: '100%' }, style)}
+        {...otherProps}
+      />
+    );
   }
   return null;
-}
+};
 
 export default React.forwardRef(FieldNumber);

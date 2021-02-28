@@ -8,9 +8,9 @@ import React, {
 } from 'react';
 import { Checkbox, Row, Col } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import { FieldProps } from '../interface';
+import { BaseFieldProps } from '../interface';
 
-export interface FieldCheckGroupProps extends FieldProps {
+export interface FieldCheckGroupProps extends BaseFieldProps {
   value: ReactText[];
   defaultValue?: ReactText[];
   onChange?: (value: CheckboxValueType[]) => void;

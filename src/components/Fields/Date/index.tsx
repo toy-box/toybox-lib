@@ -7,24 +7,25 @@ import React, {
 import dayjs, { Dayjs } from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { DatePickerProps } from 'antd/lib/date-picker';
+import { PickerBaseProps } from 'antd/lib/date-picker/generatePicker';
 import DatePicker from '../../DatePicker';
-import { FieldProps } from '../interface';
+import { BaseFieldProps } from '../interface';
 import { parseValueToMoment } from '../../../utils';
 
 dayjs.extend(LocalizedFormat);
 
-export interface FieldDateProps extends FieldProps {
-  placeholder?: string;
-  format?: string;
-  showTime?: boolean;
+export declare type FieldBasePickerProps = Omit<
+  PickerBaseProps<Dayjs>,
+  'mode' | 'value' | 'picker'
+> &
+  Omit<BaseFieldProps, 'value' | 'onChange'> & {
+    value?: string | number | Date | Dayjs;
+  };
+
+export declare type FieldDateProps = FieldBasePickerProps & {
   picker?: DatePickerProps['picker'];
-  onChange?: (date: string) => void;
-  onOpenChange?: (open: boolean) => void;
-  open?: boolean;
-  value?: Date | number | string;
-  defaultValue?: Date | number | string;
-  bordered?: boolean;
-}
+  dateMode?: PickerBaseProps<Dayjs>['mode'];
+};
 
 const defaultFormat = 'YYYY-MM-DD';
 
@@ -40,26 +41,45 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     picker,
     open,
     bordered,
-    showTime,
     onChange,
     onClick,
     onOpenChange,
+    dateMode,
   },
   ref: Ref<any>,
 ) => {
   const innerOnChange = useCallback(
     (date: Dayjs) => {
-      onChange && onChange(date.format(format));
+      onChange &&
+        onChange(
+          date,
+          typeof format === 'function'
+            ? format(date)
+            : date.format(format as string),
+        );
     },
     [format, onChange],
   );
 
-  const innerValue = useMemo(() => parseValueToMoment(value, format), [
-    format,
-    value,
-  ]);
+  const formatFn = useCallback(
+    (date: string | number | Date | dayjs.Dayjs | null | undefined) => {
+      if (typeof format === 'function') {
+        return date != null ? format(dayjs(date)) : undefined;
+      }
+      return date != null ? dayjs(date).format(format as string) : undefined;
+    },
+    [format],
+  );
 
-  const text = useMemo(() => dayjs(value).format(format), [value, format]);
+  const innerValue = useMemo(
+    () =>
+      typeof format === 'string'
+        ? parseValueToMoment(value, format)
+        : parseValueToMoment(value),
+    [format, value],
+  );
+
+  const text = useMemo(() => formatFn(value), [value, format]);
 
   if (mode === 'read') {
     return (
@@ -80,8 +100,8 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         onChange={innerOnChange}
         picker={picker}
         open={open}
+        mode={dateMode}
         onOpenChange={onOpenChange}
-        showTime={showTime}
         {...fieldProps}
       />
     );

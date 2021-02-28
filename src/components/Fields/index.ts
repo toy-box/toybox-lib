@@ -8,9 +8,10 @@ import FieldCheckGroup from './CheckGroup';
 import FieldPercent from './Percent';
 import FieldBoolean from './Boolean';
 import FieldBusinessObject from './BusinessObject';
-import type { FieldMap } from './interface';
+import FieldTreeSelect from './TreeSelect';
+import { FieldMap, FieldMode } from './interface';
 
-export type { FieldMode, FieldMap } from './interface';
+export { FieldMode, FieldMap };
 
 export const defaultFieldMap: FieldMap = {
   string: FieldString,
@@ -33,7 +34,8 @@ const Fields = {
   FieldCheckGroup,
   FieldPercent,
   FieldBoolean,
-  FieldBusinessObject
-}
+  FieldBusinessObject,
+  FieldTreeSelect,
+};
 
 export default Fields;

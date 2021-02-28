@@ -3,20 +3,21 @@ import React, {
   useRef,
   useImperativeHandle,
 } from 'react';
-import { FieldProps } from '../interface';
+import { BaseFieldProps } from '../interface';
 import SelectPro, { SelectProProps } from '../../SelectPro';
 
 export type SelectValue = React.ReactText | React.ReactText[];
 
-export interface FieldSelectProps
-  extends Omit<FieldProps, 'onChange' | 'value'>,
-    Pick<SelectProProps, 'onChange' | 'value' | 'remote' | 'remoteByValue'> {
-  multiple?: boolean;
-  value?: SelectValue;
-}
+export declare type FieldSelectProps = Omit<
+  BaseFieldProps,
+  'onChange' | 'value'
+> &
+  Omit<SelectProProps, 'mode'> & {
+    selectMode?: SelectProProps['mode'];
+  };
 
 const FieldSelect: ForwardRefRenderFunction<any, FieldSelectProps> = (
-  { mode, fieldProps, field, multiple, onClick, ...otherProps },
+  { mode, fieldProps, field, selectMode, onClick, ...otherProps },
   ref,
 ) => {
   const inputRef = useRef<any>();
@@ -28,11 +29,10 @@ const FieldSelect: ForwardRefRenderFunction<any, FieldSelectProps> = (
     <div onClick={onClick}>
       <SelectPro
         ref={inputRef}
-        mode={multiple ? 'multiple' : undefined}
+        mode={selectMode}
         options={field.options}
-        {...fieldProps}
-        {...otherProps}
         readMode={mode === 'read'}
+        {...otherProps}
       />
     </div>
   );

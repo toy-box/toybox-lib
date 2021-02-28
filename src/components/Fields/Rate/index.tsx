@@ -1,24 +1,21 @@
-import { Rate } from 'antd';
-import React, { useRef, useImperativeHandle, Ref, ForwardRefRenderFunction } from 'react';
+import { Rate, RateProps } from 'antd';
+import React, {
+  useRef,
+  useImperativeHandle,
+  Ref,
+  ForwardRefRenderFunction,
+} from 'react';
 
-import { FieldProps } from '../interface';
+import { BaseFieldProps } from '../interface';
 
-export interface FieldRateProps extends FieldProps {
-  value?: number;
-  defaultValue?: number;
-  placeholder?: string;
-  onChange?: (value: number) => void;
-}
+export interface FieldRateProps
+  extends Omit<BaseFieldProps, 'value' | 'onChange'>,
+    RateProps {}
 
-const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = ({
-  mode,
-  value,
-  defaultValue,
-  fieldProps,
-  disabled,
-  onChange,
-  onClick
-}, ref: Ref<any>) => {
+const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
+  { mode, value, defaultValue, fieldProps, disabled, style, onChange, onClick },
+  ref: Ref<any>,
+) => {
   const inputRef = useRef();
   useImperativeHandle(
     ref,
@@ -30,22 +27,22 @@ const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = ({
 
   if (mode === 'read') {
     const dom = value || '-';
-    return <span onClick={onClick}>{dom}</span>
+    return <span onClick={onClick}>{dom}</span>;
   }
   if (mode === 'edit' || mode === 'update') {
-    return <Rate
-      value={value}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      ref={inputRef}
-      disabled={disabled}
-      style={{
-        width: '100%',
-      }}
-      {...fieldProps}
-    />
+    return (
+      <Rate
+        value={value}
+        onChange={onChange}
+        defaultValue={defaultValue}
+        ref={inputRef}
+        disabled={disabled}
+        style={Object.assign({ width: '100%' }, style)}
+        {...fieldProps}
+      />
+    );
   }
   return null;
-}
+};
 
 export default React.forwardRef(FieldRate);

@@ -1,25 +1,34 @@
-import { Input } from 'antd';
-import React, { useRef, useImperativeHandle, Ref, ForwardRefRenderFunction } from 'react';
+import { Input, InputProps } from 'antd';
+import React, {
+  useRef,
+  useImperativeHandle,
+  Ref,
+  ForwardRefRenderFunction,
+  RefObject,
+} from 'react';
 
-import { FieldProps } from '../interface';
+import { BaseFieldProps } from '../interface';
 
-export interface FieldStringProps extends FieldProps {
-  value?: string;
-  placeholder?: string;
-  onChange?: (value: string) => void;
-}
+export declare type FieldStringProps = Omit<
+  BaseFieldProps,
+  'value' | 'onChange'
+> &
+  InputProps;
 
-const FieldString: ForwardRefRenderFunction<any, FieldStringProps> = ({
-  field,
-  mode,
-  value,
-  placeholder,
-  fieldProps,
-  disabled,
-  onClick,
-  onChange,
-}, ref: Ref<any>) => {
-  const inputRef = useRef();
+const FieldString: ForwardRefRenderFunction<any, FieldStringProps> = (
+  {
+    field,
+    mode,
+    value,
+    placeholder,
+    disabled,
+    onClick,
+    onChange,
+    ...otherProps
+  },
+  ref: Ref<any>,
+) => {
+  const inputRef = useRef<any>();
   useImperativeHandle(
     ref,
     () => ({
@@ -30,21 +39,23 @@ const FieldString: ForwardRefRenderFunction<any, FieldStringProps> = ({
 
   if (mode === 'read') {
     const dom = value || '-';
-    return <span onClick={onClick}>{dom}</span>
+    return <span onClick={onClick}>{dom}</span>;
   }
   if (mode === 'edit' || mode === 'update') {
     const { defaultValue } = field;
-    return <Input
-      ref={inputRef}
-      value={value}
-      onChange={onChange}
-      defaultValue={defaultValue}
-      placeholder={placeholder}
-      disabled={disabled}
-      {...fieldProps}
-    />
+    return (
+      <Input
+        ref={inputRef}
+        value={value}
+        onChange={onChange}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        disabled={disabled}
+        {...otherProps}
+      />
+    );
   }
   return null;
-}
+};
 
 export default React.forwardRef(FieldString);
