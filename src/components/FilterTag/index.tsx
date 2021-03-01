@@ -62,13 +62,7 @@ const FilterTag: FC<FilterTagProps> = ({
   );
 
   const content = useMemo(() => {
-    return ellipsis ? (
-      <Tooltip title="prompt text">
-        <span>Tooltip will show on mouse enter.</span>
-      </Tooltip>
-    ) : (
-      text
-    );
+    return ellipsis ? <Tooltip title={text}>{text}</Tooltip> : text;
   }, [ellipsis]);
 
   return (
