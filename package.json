@@ -40,6 +40,7 @@
     "dayjs": "^1.10.4",
     "immutability-helper": "^3.1.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.get": "^4.4.2",
     "lodash.intersection": "^4.4.0",
     "lodash.throttle": "^4.1.1",
     "qs": "^6.9.6",
@@ -67,6 +68,7 @@
   "devDependencies": {
     "@types/classnames": "^2.2.11",
     "@types/lodash.debounce": "^4.0.6",
+    "@types/lodash.get": "^4.4.6",
     "@types/lodash.intersection": "^4.4.6",
     "@types/react": "^16.12.0",
     "@types/react-beautiful-dnd": "^13.0.0",

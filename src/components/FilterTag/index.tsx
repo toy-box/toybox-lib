@@ -1,8 +1,9 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { Tag, TagProps, Tooltip } from 'antd';
+import get from 'lodash.get';
+import LocaleContext from 'antd/lib/locale-provider/context';
+import localeMap from './locale';
 import { CompareOP } from '../../types/compare';
-import zhCN from './locale/zh_CN';
-
 export interface LabelValue {
   value: any;
   label: string;
@@ -10,22 +11,29 @@ export interface LabelValue {
 
 export declare type LabelValueType = LabelValue | LabelValue[];
 
-export interface FilterTagProps extends TagProps {
+export interface FilterData {
   title: string;
   key: string;
   op: CompareOP;
   labelValue: LabelValueType;
+}
+export interface FilterTagProps extends TagProps {
+  filter: FilterData;
   ellipsis?: boolean;
 }
 
 const FilterTag: FC<FilterTagProps> = ({
-  title,
-  op,
-  labelValue,
+  filter,
   ellipsis,
   style,
   ...tagProps
 }) => {
+  const antLocale = useContext(LocaleContext);
+  const locale = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+    [antLocale],
+  );
+  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
   const ellipsisStyle = useMemo(
     () =>
       ellipsis
@@ -37,6 +45,7 @@ const FilterTag: FC<FilterTagProps> = ({
         : {},
     [ellipsis],
   );
+  const { title, key, op, labelValue } = filter;
 
   const styleMixs = useMemo(
     () => ({
@@ -52,16 +61,12 @@ const FilterTag: FC<FilterTagProps> = ({
       : [labelValue?.value];
   }, [labelValue]);
 
-  // const text = useMemo(
-  //   () =>
-  //     `${title} ${intl.formatMessage({
-  //       id: `operation.${op}`,
-  //     })} ${labelValues.join(',')}`,
-  //   [intl, title, op, labelValue],
-  // );
-
   const text = useMemo(
-    () => `${title} ${zhCN.lang.compareOperation[op]} ${labelValues.join(',')}`,
+    () =>
+      `${title} ${get(
+        localeData.lang,
+        `compareOperation.${op}`,
+      )} ${labelValues.join(',')}`,
     [title, op, labelValue],
   );
 
