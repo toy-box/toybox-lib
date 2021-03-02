@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import { useIntl } from 'react-intl';
 import { Tag, TagProps, Tooltip } from 'antd';
 import { CompareOP } from '../../types/compare';
+import zhCN from './locale/zh_CN';
 
 export interface LabelValue {
   value: any;
@@ -26,7 +26,6 @@ const FilterTag: FC<FilterTagProps> = ({
   style,
   ...tagProps
 }) => {
-  const intl = useIntl();
   const ellipsisStyle = useMemo(
     () =>
       ellipsis
@@ -53,18 +52,23 @@ const FilterTag: FC<FilterTagProps> = ({
       : [labelValue?.value];
   }, [labelValue]);
 
+  // const text = useMemo(
+  //   () =>
+  //     `${title} ${intl.formatMessage({
+  //       id: `operation.${op}`,
+  //     })} ${labelValues.join(',')}`,
+  //   [intl, title, op, labelValue],
+  // );
+
   const text = useMemo(
-    () =>
-      `${title} ${intl.formatMessage({
-        id: `operation.${op}`,
-      })} ${labelValues.join(',')}`,
-    [intl, title, op, labelValue],
+    () => `${title} ${zhCN.lang.compareOperation[op]} ${labelValues.join(',')}`,
+    [title, op, labelValue],
   );
 
   const content = useMemo(() => {
     return ellipsis ? (
-      <Tooltip title="prompt text">
-        <span>Tooltip will show on mouse enter.</span>
+      <Tooltip title={text} placement="topLeft">
+        {text}
       </Tooltip>
     ) : (
       text
@@ -77,3 +81,5 @@ const FilterTag: FC<FilterTagProps> = ({
     </Tag>
   );
 };
+
+export default FilterTag;

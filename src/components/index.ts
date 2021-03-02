@@ -9,6 +9,7 @@ export { default as CardList } from './CardList';
 export { default as TabContainer } from './TabContainer';
 export { default as TimePicker } from './TimePicker';
 export { default as DropdownMenu } from './DropdownMenu';
+export { default as FilterTag } from './FilterTag';
 export { default as Fields } from './Fields';
 export { default as Header } from './Header';
 export { default as ImpInput } from './ImpInput';
