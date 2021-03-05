@@ -9,6 +9,7 @@ type Loading = number | boolean;
 
 export interface IconButtonProps {
   icon: ReactNode;
+  pure?: boolean;
   type?: IconType;
   tooltip?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -23,6 +24,7 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
   {
     icon,
     type = 'default',
+    pure,
     tooltip,
     onClick,
     disabled,
@@ -69,6 +71,7 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
       [`tbox-icon-button-${sizeCls}`]: sizeCls,
       disabled,
       circle,
+      pure,
     },
   );
 
