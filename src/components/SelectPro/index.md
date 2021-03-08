@@ -119,3 +119,63 @@ export default () => {
   );
 };
 ```
+
+### 只读模式
+
+```tsx
+import React from 'react';
+import { Tag } from 'antd';
+import { SelectPro } from '@toy-box/toybox-lib';
+
+const options = [
+  {
+    label: 'ONE',
+    value: '111',
+  },
+  {
+    label: 'TWO',
+    value: '222',
+  },
+  {
+    label: 'THREE',
+    value: '333',
+  },
+  {
+    label: 'FOUR',
+    value: '444',
+  },
+  {
+    label: 'FIVE',
+    value: '555',
+  },
+  {
+    label: 'SIX',
+    value: '666',
+  },
+];
+export default () => {
+  const itemRender = (value: string, title: string) => <Tag>{title}</Tag>;
+  return (
+    <>
+      <SelectPro
+        value={['111', '222']}
+        mode={'multiple'}
+        options={options}
+        style={{ width: '100px' }}
+        optionSearch
+        readMode
+      />
+      <p />
+      <SelectPro
+        value={['111', '222']}
+        mode={'multiple'}
+        options={options}
+        style={{ width: '100px' }}
+        optionSearch
+        itemRender={itemRender}
+        readMode
+      />
+    </>
+  );
+};
+```
