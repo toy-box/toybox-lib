@@ -15,6 +15,7 @@ export { default as Header } from './Header';
 export { default as ImpInput } from './ImpInput';
 export { default as Inbox } from './Inbox';
 export { default as IndexPage } from './IndexPage';
+export { default as IndexView } from './IndexView';
 export { default as ListPage } from './ListPage';
 export { default as LoadingWrapper } from './LoadingWrapper';
 export { default as MetaDescriptons } from './MetaDescriptions';
