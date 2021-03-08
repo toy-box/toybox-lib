@@ -33,46 +33,7 @@ const options = [
   },
 ];
 export default () => {
-  return <SelectPro options={options} style={{ width: '100px' }} />;
-};
-```
-
-### 特色搜索
-
-```tsx
-import React from 'react';
-import { SelectPro } from '@toy-box/toybox-lib';
-
-const options = [
-  {
-    label: '111',
-    value: '111',
-  },
-  {
-    label: '222',
-    value: '222',
-  },
-  {
-    label: '333',
-    value: '333',
-  },
-  {
-    label: '444',
-    value: '444',
-  },
-  {
-    label: '555',
-    value: '555',
-  },
-  {
-    label: '666',
-    value: '666',
-  },
-];
-export default () => {
-  return (
-    <SelectPro options={options} style={{ width: '100px' }} optionSearch />
-  );
+  return <SelectPro options={options} style={{ width: '200px' }} />;
 };
 ```
 
@@ -84,27 +45,27 @@ import { SelectPro } from '@toy-box/toybox-lib';
 
 const options = [
   {
-    label: '111',
+    label: 'One',
     value: '111',
   },
   {
-    label: '222',
+    label: 'Tow',
     value: '222',
   },
   {
-    label: '333',
+    label: 'Three',
     value: '333',
   },
   {
-    label: '444',
+    label: 'Four',
     value: '444',
   },
   {
-    label: '555',
+    label: 'Five',
     value: '555',
   },
   {
-    label: '666',
+    label: 'Six',
     value: '666',
   },
 ];
@@ -113,8 +74,8 @@ export default () => {
     <SelectPro
       mode={'multiple'}
       options={options}
-      style={{ width: '100px' }}
-      optionSearch
+      style={{ width: '200px' }}
+      showSearch
     />
   );
 };
@@ -161,7 +122,7 @@ export default () => {
         value={['111', '222']}
         mode={'multiple'}
         options={options}
-        style={{ width: '100px' }}
+        style={{ width: '200px' }}
         optionSearch
         readMode
       />
@@ -170,12 +131,51 @@ export default () => {
         value={['111', '222']}
         mode={'multiple'}
         options={options}
-        style={{ width: '100px' }}
+        style={{ width: '200px' }}
         optionSearch
         itemRender={itemRender}
         readMode
       />
     </>
+  );
+};
+```
+
+### 特色搜索
+
+```tsx
+import React from 'react';
+import { SelectPro } from '@toy-box/toybox-lib';
+
+const options = [
+  {
+    label: '111',
+    value: '111',
+  },
+  {
+    label: '222',
+    value: '222',
+  },
+  {
+    label: '333',
+    value: '333',
+  },
+  {
+    label: '444',
+    value: '444',
+  },
+  {
+    label: '555',
+    value: '555',
+  },
+  {
+    label: '666',
+    value: '666',
+  },
+];
+export default () => {
+  return (
+    <SelectPro options={options} style={{ width: '200px' }} optionSearch />
   );
 };
 ```

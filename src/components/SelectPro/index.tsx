@@ -127,7 +127,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
 
   const values = useMemo(() => {
     if (Array.isArray(current)) {
-      return current.map(opt => opt.title || opt.label);
+      return current.map(opt => opt.title || opt.label?.toString());
     }
     return current ? current.title : null;
   }, [current]);
@@ -189,17 +189,6 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       setOptionSearchKey(key);
       if (remote) {
         fetchData(key);
-      } else {
-        if (key === '' || key == null) {
-          // setLocalOptions(options || []);
-        } else {
-          // const opts = (options || []).filter(
-          //   opt =>
-          //     typeof opt.label === 'string' &&
-          //     opt.label.toLowerCase().indexOf(key.toLowerCase()) > -1,
-          // );
-          // setLocalOptions(opts);
-        }
       }
     },
     [remote, fetchData, setOptionSearchKey, options],
@@ -218,6 +207,15 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     },
     [searchRef, setOptionSearchKey, optionSearch],
   );
+
+  const filterOption = (input: string, option?: OptionItem) => {
+    console.log('filterOption', input, option);
+    return (
+      (option?.title || option?.label?.toString() || '')
+        .toLowerCase()
+        .indexOf(input.toLowerCase()) >= 0
+    );
+  };
 
   if (readMode) {
     if (itemRender) {
@@ -245,11 +243,11 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       placeholder={placeholder}
       ref={inputRef}
       options={mergeOptions}
-      filterOption={false}
       mode={mode}
       dropdownRender={dropdownRender}
       onDropdownVisibleChange={handleOpen}
       showSearch={showSearch}
+      filterOption={filterOption}
       {...otherProps}
     />
   );

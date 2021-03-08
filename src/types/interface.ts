@@ -59,7 +59,7 @@ export interface FieldOption {
   value: string;
 }
 
-export type OptionItem = OptionData;
+export type OptionItem = OptionData | OptionGroupData;
 
 export type OptionItemsType = OptionsType;
 
