@@ -1,4 +1,4 @@
-## IndexView 索引列表页
+## IndexView 索引列表视图
 
 #### 基本用法
 
@@ -126,3 +126,5 @@ export default () => {
   );
 };
 ```
+
+<API></API>

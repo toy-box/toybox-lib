@@ -18,12 +18,15 @@ import { FieldType } from '../Fields/interface';
 import { RowData } from '../../types/interface';
 import { useQuery } from '../../hooks';
 import TablePanel from './components/TablePanel';
+import Toolbar from './components/Toolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
 
 import './style.less';
 
 const LIST_RENDER = 'listRender';
+
+export declare type IndexMode = 'table' | 'list' | 'card';
 
 export interface PageResult {
   list: Record<string, any>[];
@@ -37,12 +40,8 @@ export interface Pageable {
   current: number;
 }
 
-export type IndexMode = 'table' | 'list' | 'card';
-
 export interface IndexViewProps {
   objectMeta: BusinessObjectMeta;
-  title?: string;
-  subTitle?: string;
   operateItems?: OperateItem[];
   operateHeader?: ReactNode;
   visibleColumns: ColumnVisible[];
@@ -57,7 +56,6 @@ export interface IndexViewProps {
    * @default false
    */
   urlQuery?: boolean;
-  selectionToggle?: boolean;
   defaultSelectionType?: 'checkbox';
   loadData: (
     pageable: Pageable,
@@ -87,7 +85,6 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     className,
     style,
     columnComponents = {},
-    selectionToggle,
     defaultSelectionType,
     renderContent,
     viewLink,
@@ -285,6 +282,7 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
   return (
     <IndexViewContext.Provider value={content}>
       <div className={classNames('tbox-index-view', className)} style={style}>
+        <Toolbar />
         <TablePanel />
         <IndexContent />
       </div>
