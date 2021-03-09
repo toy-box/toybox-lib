@@ -23,13 +23,6 @@ export default () => {
     });
   }
 
-  const handleFilter = useCallback(
-    async (filterItem: Partial<ICompareOperation>[]) => {
-      console.log(filterItem, 'data');
-    },
-    [],
-  );
-
   const filter = {
     filterFieldMetas: [
       {
@@ -103,14 +96,7 @@ export default () => {
   };
   return (
     <div>
-      <FilterSearch
-        filterFieldMetas={filter.filterFieldMetas}
-        value={filter.value}
-        filterFieldServices={filter.filterFieldServices}
-        onChange={(filterItem: Partial<ICompareOperation>[]) =>
-          handleFilter(filterItem)
-        }
-      />
+      <FilterSearch {...filter} />
     </div>
   );
 };

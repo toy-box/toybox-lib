@@ -1,10 +1,10 @@
-## FilterModel
+## FilterBuilder
 
 基础用法:
 
 ```tsx
 import React, { useCallback, useState } from 'react';
-import { FilterModel } from '@toy-box/toybox-lib';
+import { FilterBuilder } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';
 
 export default () => {
@@ -22,6 +22,13 @@ export default () => {
       return res;
     });
   }
+
+  const handleFilter = useCallback(
+    async (filterItem: Partial<ICompareOperation>[]) => {
+      console.log(filterItem, 'data');
+    },
+    [],
+  );
 
   const filter = {
     filterFieldMetas: [
@@ -96,7 +103,14 @@ export default () => {
   };
   return (
     <div>
-      <FilterModel {...filter} />
+      <FilterBuilder
+        filterFieldMetas={filter.filterFieldMetas}
+        value={filter.value}
+        filterFieldServices={filter.filterFieldServices}
+        onChange={(filterItem: Partial<ICompareOperation>[]) =>
+          handleFilter(filterItem)
+        }
+      />
     </div>
   );
 };

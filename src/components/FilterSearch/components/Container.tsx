@@ -8,7 +8,7 @@ import {
   FieldService,
   LogicOP,
 } from '../../../types/compare';
-import FilterSearch from '../../FilterSearch';
+import FilterBuilder from '../../FilterBuilder';
 
 export interface IFilterContainerProps {
   filterFieldMetas: FieldMeta[];
@@ -74,7 +74,7 @@ export const Container: FC<IFilterContainerProps> = ({
         {title}
       </h3>
       <FilterSetupItemsWrapper>
-        <FilterSearch
+        <FilterBuilder
           filterFieldMetas={filterFieldMetas}
           value={compares}
           filterFieldServices={filterFieldServices}
