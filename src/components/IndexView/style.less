@@ -1,0 +1,30 @@
+.tbox-index-view {
+  &-panel {
+    display: flex;
+    font-size: 12px;
+    margin: 2px 0;
+    &.left {
+      justify-content: flex-start;
+    }
+    &.right {
+      justify-content: flex-end;
+    }
+  }
+  &-toolbar {
+    margin: 12px 0;
+    &-main {
+      display: flex;
+      justify-content: space-between;
+      .button-group {
+        .ant-btn {
+          + .ant-btn {
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+    &-footer {
+      margin-top: 12px;
+    }
+  }
+}

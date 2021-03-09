@@ -29,7 +29,13 @@ export default () => (
         tooltip="Home"
         icon={<HomeFill />}
       />
-      <Button.Icon size="small" type="primary" icon={<HomeFill />} circle />
+      <Button.Icon
+        size="small"
+        type="primary"
+        pure
+        icon={<HomeFill />}
+        circle
+      />
     </Space>
     <br />
     <Space>
@@ -57,3 +63,7 @@ export default () => (
 ```
 
 <API></API>
+
+## IconButton
+
+<API src="./components/IconButton.tsx"></API>

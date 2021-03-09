@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { Tooltip } from 'antd';
 import classNames from 'classnames';
 import '../style.less';
@@ -9,6 +9,8 @@ type Loading = number | boolean;
 
 export interface IconButtonProps {
   icon: ReactNode;
+  color?: string;
+  pure?: boolean;
   type?: IconType;
   tooltip?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -22,7 +24,9 @@ export interface IconButtonProps {
 const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
   {
     icon,
+    color,
     type = 'default',
+    pure,
     tooltip,
     onClick,
     disabled,
@@ -69,7 +73,15 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
       [`tbox-icon-button-${sizeCls}`]: sizeCls,
       disabled,
       circle,
+      pure,
     },
+  );
+
+  const style = useMemo(
+    () => ({
+      color,
+    }),
+    [],
   );
 
   return tooltip ? (
@@ -79,6 +91,7 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
         type="button"
         onClick={handleClick}
         className={classes}
+        style={style}
       >
         {icon}
       </button>
@@ -89,6 +102,7 @@ const IconButton: React.ForwardRefRenderFunction<unknown, IconButtonProps> = (
       type="button"
       onClick={handleClick}
       className={classes}
+      style={style}
     >
       {icon}
     </button>

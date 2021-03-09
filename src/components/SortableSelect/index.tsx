@@ -104,7 +104,7 @@ const SortableSelect: FC<SortableSelectProps> = ({
     <Popover
       title={getRenderPropValue(title)}
       trigger={trigger}
-      overlayClassName="popover-no-padding popover-no-arrow"
+      overlayClassName="popover-no-padding"
       content={content}
       placement="bottom"
     >

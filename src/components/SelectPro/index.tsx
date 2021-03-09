@@ -8,6 +8,7 @@ import React, {
   useEffect,
   useCallback,
   ReactText,
+  ReactNode,
 } from 'react';
 import { Divider, Input } from 'antd';
 import { Search2Line } from '@airclass/icons';
@@ -36,6 +37,10 @@ export interface SelectProProps extends SelectProps<SelectValue> {
   readMode?: boolean;
   showSearch?: boolean;
   /**
+   * @description 自定义只读模式选项渲染方法
+   */
+  itemRender?: (value: ReactText, title: ReactNode) => ReactNode;
+  /**
    * @description 是否在选线中显示搜索框,目前使用有问题
    * @default true
    */
@@ -60,6 +65,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     remote,
     remoteByValue,
     showSearch = false,
+    itemRender,
     optionSearch,
     ...otherProps
   },
@@ -121,9 +127,9 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
 
   const values = useMemo(() => {
     if (Array.isArray(current)) {
-      return current.map(opt => opt.label);
+      return current.map(opt => opt.title || opt.label?.toString());
     }
-    return current ? current.label : null;
+    return current ? current.title : null;
   }, [current]);
 
   useImperativeHandle(ref, () => ({
@@ -183,17 +189,6 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       setOptionSearchKey(key);
       if (remote) {
         fetchData(key);
-      } else {
-        if (key === '' || key == null) {
-          // setLocalOptions(options || []);
-        } else {
-          // const opts = (options || []).filter(
-          //   opt =>
-          //     typeof opt.label === 'string' &&
-          //     opt.label.toLowerCase().indexOf(key.toLowerCase()) > -1,
-          // );
-          // setLocalOptions(opts);
-        }
       }
     },
     [remote, fetchData, setOptionSearchKey, options],
@@ -213,7 +208,27 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     [searchRef, setOptionSearchKey, optionSearch],
   );
 
+  const filterOption = (input: string, option?: OptionItem) => {
+    console.log('filterOption', input, option);
+    return (
+      (option?.title || option?.label?.toString() || '')
+        .toLowerCase()
+        .indexOf(input.toLowerCase()) >= 0
+    );
+  };
+
   if (readMode) {
+    if (itemRender) {
+      if (Array.isArray(current)) {
+        return (
+          <React.Fragment>
+            {current.map(opt => {
+              return itemRender(opt.value, opt.title || opt.label);
+            })}
+          </React.Fragment>
+        );
+      }
+    }
     return <span>{Array.isArray(values) ? values.join(', ') : values}</span>;
   }
 
@@ -228,11 +243,11 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
       placeholder={placeholder}
       ref={inputRef}
       options={mergeOptions}
-      filterOption={false}
       mode={mode}
       dropdownRender={dropdownRender}
       onDropdownVisibleChange={handleOpen}
       showSearch={showSearch}
+      filterOption={filterOption}
       {...otherProps}
     />
   );
