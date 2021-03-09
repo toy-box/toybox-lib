@@ -1,11 +1,13 @@
 import React, { FC, useMemo, useCallback, ReactNode } from 'react';
 import { Table } from 'antd';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/lib/table';
+import { RenderExpandIconProps } from 'rc-table/lib/interface';
 import {
   operateFactory,
   OperateDropdown,
   OperateItem,
 } from './components/OperateColumn';
+import { ArrowRightSLine } from '@airclass/icons';
 import { ColumnFCProps } from './interface';
 import { ColumnMeta } from '../../types/interface';
 
@@ -130,6 +132,36 @@ const MetaTable: FC<MetaTableProps> = ({
     return columns;
   }, [columnMetas, makeColumns]);
 
+  const mixExpandable = useMemo(() => {
+    return expandable
+      ? {
+          expandIcon: ({
+            expanded,
+            onExpand,
+            record,
+          }: RenderExpandIconProps<RowData>) =>
+            expanded ? (
+              <ArrowRightSLine
+                style={{
+                  transform: 'rotate(90deg)',
+                  transition: 'transform .2s ease-in-out',
+                }}
+                onClick={e => onExpand(record, e)}
+              />
+            ) : (
+              <ArrowRightSLine
+                style={{
+                  transform: 'rotate(0deg)',
+                  transition: 'transform .2s ease-in-out',
+                }}
+                onClick={e => onExpand(record, e)}
+              />
+            ),
+          ...expandable,
+        }
+      : undefined;
+  }, [expandable]);
+
   return (
     <Table
       rowKey={rowKey}
@@ -142,7 +174,7 @@ const MetaTable: FC<MetaTableProps> = ({
       summary={summary}
       title={title}
       showHeader={showHeader}
-      expandable={expandable}
+      expandable={mixExpandable}
       bordered={bordered}
       rowSelection={rowSelection}
     />
