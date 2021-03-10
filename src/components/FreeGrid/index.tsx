@@ -23,18 +23,18 @@ export interface GridItem {
   key: string;
   itemProps?: Record<string, any>;
   itemRender: (props: Record<string, any>, remove: () => void) => ReactNode;
-  layout: GridLayout.Layout;
+  layout?: GridLayout.Layout;
 }
 
 export interface FreeGridProps {
   cols: number;
   width: number;
   rowHeight: number;
-  dataSource: GridItem[];
+  layout: GridLayout.Layout[];
+  items: GridItem[];
   editable?: boolean;
-  onChange?: (items: GridItem[]) => void;
+  onChange?: (layout: GridLayout.Layout[]) => void;
   removeItem?: (key: string) => void;
-  setEditable?: (editable: boolean) => void;
   gridItemClass?: string;
 }
 
@@ -42,28 +42,20 @@ const FreeGrid: FC<FreeGridProps> = ({
   cols,
   width,
   rowHeight,
-  dataSource,
+  layout,
+  items,
   onChange,
   editable,
-  setEditable,
   gridItemClass,
   removeItem,
 }) => {
-  const layout = useMemo(
-    () =>
-      dataSource.map(item =>
-        Object.assign(item.layout, { i: item.key, static: !editable }),
-      ),
-    [dataSource, editable],
-  );
-
   const { run } = useDebounceFn(
     (layout: GridLayout.Layout[]) => {
       if (typeof onChange === 'function') {
         onChange(
-          dataSource.map(item => {
-            const itemLayout = layout.find(l => l.i === item.key) as Layout;
-            return Object.assign(item, { layout: itemLayout });
+          layout.map(item => {
+            const itemLayout = layout.find(l => l.i === item.i) as Layout;
+            return itemLayout;
           }),
         );
       }
@@ -75,9 +67,7 @@ const FreeGrid: FC<FreeGridProps> = ({
 
   const onLayoutChange = useCallback(
     (layout: GridLayout.Layout[]) => {
-      if (editable && typeof onChange === 'function') {
-        run(layout);
-      }
+      run(layout);
     },
     [run],
   );
@@ -96,11 +86,11 @@ const FreeGrid: FC<FreeGridProps> = ({
         rowHeight={rowHeight}
         width={width}
       >
-        {dataSource.map(item => (
+        {items.map(item => (
           <div key={item.key}>
             <FreeGridItem
+              itemKey={item.key}
               itemRender={item.itemRender}
-              layout={item.layout}
               editable={editable}
               className={gridItemClass}
             />

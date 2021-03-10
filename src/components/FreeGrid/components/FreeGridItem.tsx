@@ -6,7 +6,7 @@ import { FreeGridContext } from '../context';
 export interface FreeGridItemProps {
   itemProps?: Record<string, any>;
   itemRender: (props: Record<string, any>, remove: () => void) => ReactNode;
-  layout: GridLayout.Layout;
+  itemKey: string;
   editable?: boolean;
   className?: string;
 }
@@ -14,15 +14,15 @@ export interface FreeGridItemProps {
 export const FreeGridItem: FC<FreeGridItemProps> = ({
   itemProps = {},
   itemRender,
-  layout,
+  itemKey,
   editable,
   className,
 }) => {
   const actions = useContext(FreeGridContext);
 
   const handleRemove = useCallback(() => {
-    typeof actions.removeItem === 'function' && actions.removeItem(layout.i);
-  }, [actions, layout.i]);
+    typeof actions.removeItem === 'function' && actions.removeItem(itemKey);
+  }, [actions, itemKey]);
 
   return (
     <div
