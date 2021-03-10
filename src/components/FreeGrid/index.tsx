@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useMemo, useCallback } from 'react';
+import React, { FC, ReactNode, useCallback } from 'react';
 import GridLayout from 'react-grid-layout';
 import { useDebounceFn } from 'ahooks';
 import { FreeGridContext } from './context';
