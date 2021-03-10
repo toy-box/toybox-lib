@@ -35,6 +35,7 @@ export interface FreeGridProps {
   onChange?: (items: GridItem[]) => void;
   removeItem?: (key: string) => void;
   setEditable?: (editable: boolean) => void;
+  gridItemClass?: string;
 }
 
 const FreeGrid: FC<FreeGridProps> = ({
@@ -45,6 +46,7 @@ const FreeGrid: FC<FreeGridProps> = ({
   onChange,
   editable,
   setEditable,
+  gridItemClass,
   removeItem,
 }) => {
   const layout = useMemo(
@@ -100,6 +102,7 @@ const FreeGrid: FC<FreeGridProps> = ({
               itemRender={item.itemRender}
               layout={item.layout}
               editable={editable}
+              className={gridItemClass}
             />
           </div>
         ))}

@@ -8,6 +8,7 @@ export interface FreeGridItemProps {
   itemRender: (props: Record<string, any>, remove: () => void) => ReactNode;
   layout: GridLayout.Layout;
   editable?: boolean;
+  className?: string;
 }
 
 export const FreeGridItem: FC<FreeGridItemProps> = ({
@@ -15,6 +16,7 @@ export const FreeGridItem: FC<FreeGridItemProps> = ({
   itemRender,
   layout,
   editable,
+  className,
 }) => {
   const actions = useContext(FreeGridContext);
 
@@ -22,17 +24,13 @@ export const FreeGridItem: FC<FreeGridItemProps> = ({
     typeof actions.removeItem === 'function' && actions.removeItem(layout.i);
   }, [actions, layout.i]);
 
-  const girdContent = useMemo(() => {
-    return (
+  return (
+    <div
+      className={classNames('free-grid-item', className, { edit: editable })}
+    >
       <div className="free-grid-item--content">
         {itemRender(itemProps, handleRemove)}
       </div>
-    );
-  }, [itemProps]);
-
-  return (
-    <div className={classNames('free-grid-item', { edit: editable })}>
-      {girdContent}
       <div className="free-grid-item--panel">
         <div className="resize-handler left top"></div>
         <div className="resize-handler left bottom"></div>
