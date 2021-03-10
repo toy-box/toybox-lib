@@ -1,5 +1,4 @@
 import React, { FC, ReactNode, useMemo, useCallback, useContext } from 'react';
-import GridLayout from 'react-grid-layout';
 import classNames from 'classnames';
 import { FreeGridContext } from '../context';
 
@@ -7,6 +6,7 @@ export interface ItemRenderProps {
   itemProps?: Record<string, any>;
   remove?: () => void;
 }
+
 export interface FreeGridItemProps {
   itemProps?: Record<string, any>;
   itemRender: (props: ItemRenderProps) => ReactNode;

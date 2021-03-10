@@ -3,7 +3,7 @@
 ### 基本用法
 
 ```tsx
-import React, { FCuseCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Switch } from 'antd';
 import { FreeGrid } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';

@@ -72,12 +72,8 @@ const FreeGrid: FC<FreeGridProps> = ({
     [run],
   );
 
-  const actions = {
-    removeItem,
-  };
-
   return (
-    <FreeGridContext.Provider value={actions}>
+    <FreeGridContext.Provider value={{ removeItem }}>
       <GridLayout
         className="free-layout"
         layout={layout}
