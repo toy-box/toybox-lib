@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useMemo, useCallback } from 'react';
-import GridLayout, { Layout } from 'react-grid-layout';
+import GridLayout from 'react-grid-layout';
 import { useDebounceFn } from 'ahooks';
 import { FreeGridContext } from './context';
 
@@ -26,11 +26,14 @@ export interface GridItem {
   layout?: GridLayout.Layout;
 }
 
+export interface LayoutType extends GridLayout.Layout {
+  item: GridItem;
+}
 export interface FreeGridProps {
   cols: number;
   width: number;
   rowHeight: number;
-  layout: GridLayout.Layout[];
+  layout: LayoutType[];
   items: GridItem[];
   editable?: boolean;
   onChange?: (layout: GridLayout.Layout[]) => void;
@@ -43,19 +46,18 @@ const FreeGrid: FC<FreeGridProps> = ({
   width,
   rowHeight,
   layout,
-  items,
   onChange,
   editable,
   gridItemClass,
   removeItem,
 }) => {
   const { run } = useDebounceFn(
-    (layout: GridLayout.Layout[]) => {
+    (newLayout: GridLayout.Layout[]) => {
       if (typeof onChange === 'function') {
         onChange(
-          layout.map(item => {
-            const itemLayout = layout.find(l => l.i === item.i) as Layout;
-            return itemLayout;
+          newLayout.map(nl => {
+            const l = layout.find(l => l.i === nl.i);
+            return { ...nl, item: l?.item };
           }),
         );
       }
@@ -82,17 +84,22 @@ const FreeGrid: FC<FreeGridProps> = ({
         rowHeight={rowHeight}
         width={width}
       >
-        {items.map(item => (
-          <div key={item.key}>
-            <FreeGridItem
-              itemProps={item.itemProps}
-              itemKey={item.key}
-              itemRender={item.itemRender}
-              editable={editable}
-              className={gridItemClass}
-            />
-          </div>
-        ))}
+        {layout.map(itemLayout => {
+          const { item } = itemLayout;
+          return item ? (
+            <div key={itemLayout.i}>
+              <FreeGridItem
+                itemProps={item.itemProps}
+                itemKey={item.key}
+                itemRender={item.itemRender}
+                editable={editable}
+                className={gridItemClass}
+              />
+            </div>
+          ) : (
+            undefined
+          );
+        })}
       </GridLayout>
     </FreeGridContext.Provider>
   );
