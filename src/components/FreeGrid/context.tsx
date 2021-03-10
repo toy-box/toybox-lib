@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 
-export interface FreeGirdContext {
+export interface FreeGridContext {
   removeItem?: (key: string) => void;
 }
 
-export const FreeGirdContext = createContext<FreeGirdContext>({
+export const FreeGridContext = createContext<FreeGridContext>({
   removeItem: (key: string) => undefined,
 });

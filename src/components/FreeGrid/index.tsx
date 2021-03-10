@@ -1,17 +1,10 @@
-import React, {
-  FC,
-  ReactNode,
-  createContext,
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { FC, ReactNode, useMemo, useCallback } from 'react';
 import GridLayout, { Layout } from 'react-grid-layout';
 import { useDebounceFn } from 'ahooks';
-import { FreeGirdContext } from './context';
+import { FreeGridContext } from './context';
 
 import './style.less';
+import { FreeGridItem } from './components/FreeGridItem';
 
 export interface SimpleLayout {
   i?: string;
@@ -26,25 +19,25 @@ export interface SimpleLayout {
   static?: boolean;
 }
 
-export interface GirdItem {
+export interface GridItem {
   key: string;
   itemProps?: Record<string, any>;
-  itemRender: (itemProps: Record<string, any>) => ReactNode;
-  layout: Omit<GridLayout.Layout, 'i'>;
+  itemRender: (props: Record<string, any>, remove: () => void) => ReactNode;
+  layout: GridLayout.Layout;
 }
 
-export interface FreeGirdProps {
+export interface FreeGridProps {
   cols: number;
   width: number;
   rowHeight: number;
-  dataSource: GirdItem[];
+  dataSource: GridItem[];
   editable?: boolean;
-  onChange?: (items: GirdItem[]) => void;
+  onChange?: (items: GridItem[]) => void;
   removeItem?: (key: string) => void;
   setEditable?: (editable: boolean) => void;
 }
 
-export const FreeGird: FC<FreeGirdProps> = ({
+const FreeGrid: FC<FreeGridProps> = ({
   cols,
   width,
   rowHeight,
@@ -55,9 +48,13 @@ export const FreeGird: FC<FreeGirdProps> = ({
   removeItem,
 }) => {
   const layout = useMemo(
-    () => dataSource.map(item => Object.assign(item.layout, { i: item.key })),
-    [dataSource],
+    () =>
+      dataSource.map(item =>
+        Object.assign(item.layout, { i: item.key, static: !editable }),
+      ),
+    [dataSource, editable],
   );
+
   const { run } = useDebounceFn(
     (layout: GridLayout.Layout[]) => {
       if (typeof onChange === 'function') {
@@ -88,7 +85,7 @@ export const FreeGird: FC<FreeGirdProps> = ({
   };
 
   return (
-    <FreeGirdContext.Provider value={actions}>
+    <FreeGridContext.Provider value={actions}>
       <GridLayout
         className="free-layout"
         layout={layout}
@@ -96,7 +93,19 @@ export const FreeGird: FC<FreeGirdProps> = ({
         cols={cols}
         rowHeight={rowHeight}
         width={width}
-      ></GridLayout>
-    </FreeGirdContext.Provider>
+      >
+        {dataSource.map(item => (
+          <div key={item.key}>
+            <FreeGridItem
+              itemRender={item.itemRender}
+              layout={item.layout}
+              editable={editable}
+            />
+          </div>
+        ))}
+      </GridLayout>
+    </FreeGridContext.Provider>
   );
 };
+
+export default FreeGrid;

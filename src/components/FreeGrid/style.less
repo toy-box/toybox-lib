@@ -2,15 +2,13 @@
 @import '~react-grid-layout/css/styles.css';
 @import '~react-resizable/css/styles.css';
 
-@handler-color: @gray-7;
+@handler-color: @gray-6;
 @handler-border: 3px solid @handler-color;
-@border: @gray-4;
 
 .free-layout {
   .react-grid-item {
-    padding: 20px;
-    padding-bottom: 0;
-    border: 1px solid @border;
+    padding: 18px;
+    border: 1px solid @border-color-base;
     background-color: #fff;
     &.react-grid-placeholder {
       background: transparent;
@@ -23,12 +21,12 @@
     }
     &:hover {
       cursor: move;
-      box-shadow: @shadow-2-down;
+      box-shadow: @shadow-2;
       .resize-handler {
         opacity: 1 !important;
       }
     }
-    .react-resizable-handle {
+    > .react-resizable-handle {
       z-index: 101;
       opacity: 0;
       width: 14px;
@@ -39,6 +37,10 @@
         height: 14px;
         border-right: @handler-border;
         border-bottom: @handler-border;
+      }
+      &::after {
+        border-right-color: @handler-color;
+        border-bottom-color: @handler-color;
       }
     }
     .free-grid-item {
@@ -74,19 +76,19 @@
           transition: opacity 0.3s ease;
           &.left {
             border-left: @handler-border;
-            left: 0;
+            left: -1px;
           }
           &.right {
             border-right: @handler-border;
-            right: 0;
+            right: -1px;
           }
           &.top {
             border-top: @handler-border;
-            top: 0;
+            top: -1px;
           }
           &.bottom {
             border-bottom: @handler-border;
-            bottom: 0;
+            bottom: -1px;
             &.right {
               cursor: se-resize;
             }
