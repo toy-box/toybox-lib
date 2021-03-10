@@ -22,7 +22,7 @@ export interface SimpleLayout {
 export interface GridItem {
   key: string;
   itemProps?: Record<string, any>;
-  itemRender: (props: Record<string, any>, remove: () => void) => ReactNode;
+  itemRender: (props: Record<string, any>) => ReactNode;
   layout?: GridLayout.Layout;
 }
 
@@ -89,6 +89,7 @@ const FreeGrid: FC<FreeGridProps> = ({
         {items.map(item => (
           <div key={item.key}>
             <FreeGridItem
+              itemProps={item.itemProps}
               itemKey={item.key}
               itemRender={item.itemRender}
               editable={editable}

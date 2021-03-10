@@ -3,19 +3,25 @@
 ### 基本用法
 
 ```tsx
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { FCuseCallback, useEffect, useState } from 'react';
 import { Switch } from 'antd';
 import { FreeGrid } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';
 
+const ItemRender: FC<{ x: string }> = props => {
+  return <h3>Item Render {props.x}</h3>;
+};
+
 const items = [
   {
     key: 'k1',
-    itemRender: () => <h3>Item Render 1</h3>,
+    itemProps: { x: 'k1' },
+    itemRender: props => <ItemRender {...props.itemProps} />,
   },
   {
     key: 'k2',
-    itemRender: () => <h3>Item Render 2</h3>,
+    itemProps: { x: 'k2' },
+    itemRender: props => <ItemRender {...props.itemProps} />,
   },
 ];
 
