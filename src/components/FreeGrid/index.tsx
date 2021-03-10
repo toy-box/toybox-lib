@@ -34,9 +34,8 @@ export interface FreeGridProps {
   width: number;
   rowHeight: number;
   layout: LayoutType[];
-  items: GridItem[];
   editable?: boolean;
-  onChange?: (layout: GridLayout.Layout[]) => void;
+  onChange?: (layout: LayoutType[]) => void;
   removeItem?: (key: string) => void;
   gridItemClass?: string;
 }
@@ -57,7 +56,7 @@ const FreeGrid: FC<FreeGridProps> = ({
         onChange(
           newLayout.map(nl => {
             const l = layout.find(l => l.i === nl.i);
-            return { ...nl, item: l?.item };
+            return { ...nl, item: l?.item } as LayoutType;
           }),
         );
       }
