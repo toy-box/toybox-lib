@@ -78,7 +78,7 @@ const FilterTag: FC<FilterTagProps> = ({
     ) : (
       text
     );
-  }, [ellipsis]);
+  }, [ellipsis, text]);
 
   return (
     <Tag style={styleMixs} {...tagProps}>

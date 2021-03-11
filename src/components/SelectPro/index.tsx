@@ -33,7 +33,7 @@ export interface SelectProProps extends SelectProps<SelectValue> {
   remoteByValue?: (
     value: ReactText | ReactText[],
     params?: any,
-  ) => Promise<OptionItem>;
+  ) => Promise<OptionItem[]>;
   readMode?: boolean;
   showSearch?: boolean;
   /**
