@@ -14,7 +14,7 @@ export default () => {
       id: 'h4xv',
       pId: '1',
       value: 'h4xv',
-      title: 'Second Node',
+      title: 'Second node',
       isLeaf: false,
     },
   ]);

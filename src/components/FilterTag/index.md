@@ -16,11 +16,28 @@ export default () => {
       { value: '123', label: '记录数肯德基弗兰克斯的解放路德基弗兰克斯的' },
     ],
   };
+
+  const remoteFilter = {
+    title: '用户',
+    key: 'user',
+    op: '$eq',
+    value: ['123'],
+  };
+
+  const remote = (value: (string | number)[]) => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(value.map(v => `Lable:${v}`));
+      }, 300);
+    });
+  };
+
   return (
     <div>
       <FilterTag key="1" style={{ width: '100px' }} filter={filter} ellipsis />
       <FilterTag key="2" style={{ width: '140px' }} filter={filter} ellipsis />
       <FilterTag key="3" filter={filter} ellipsis />
+      <FilterTag key="4" filter={remoteFilter} remote={remote} />
     </div>
   );
 };
