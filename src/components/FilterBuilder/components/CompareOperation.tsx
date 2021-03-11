@@ -73,10 +73,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
     [filterFieldMetas, filterKey],
   );
 
-  const disabledFieldOption = useMemo(() => {
-    return true;
-  }, []);
-
   const filterOperations = useMemo(() => {
     switch (filterFieldMeta?.type) {
       case BusinessFieldType.NUMBER:
@@ -146,10 +142,11 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   const onValueChange = useCallback(
     (value: any) => {
       if (value === filterValue) return;
+      console.log(value, filterValue);
       setFilterValue(value);
       onChange(update(compare, { target: { $set: value } }));
     },
-    [compare, filterFieldMeta, filterKey, filterOperation, onChange],
+    [compare, onChange],
   );
 
   const FilterValue = useMemo(() => {
@@ -167,14 +164,11 @@ export const CompareOperation: FC<CompareOperationProps> = ({
     );
   }, [filterValue, filterFieldMeta, multiple, onValueChange]);
 
-  // useEffect(() => {
-  //   console.log(compare, 'compare.target');
-  //   if (compare.source === filterKey && compare.source === filterOperation
-  //       && compare.source === filterValue) return;
-  //   setFilterKey(compare.source);
-  //   setFilterOperation(compare.op);
-  //   setFilterValue(compare.target);
-  // }, [compare]);
+  useEffect(() => {
+    setFilterKey(compare.source);
+    setFilterOperation(compare.op);
+    setFilterValue(compare.target);
+  }, [compare]);
 
   return (
     <CompareOperationWrapper>
