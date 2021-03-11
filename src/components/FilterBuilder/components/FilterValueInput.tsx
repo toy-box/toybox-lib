@@ -39,6 +39,7 @@ export interface FilterValueInputProps {
   multiple?: boolean;
   onChange: (value: any) => void;
   style?: any;
+  mode?: 'read' | 'edit' | 'update';
   filterFieldService?: FieldService;
 }
 
@@ -48,6 +49,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   onChange,
   multiple,
   style,
+  mode = 'edit',
   filterFieldService,
 }) => {
   const [initial, setInitial] = useState(false);
@@ -120,12 +122,14 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       if (multiple) {
         if (value != null && !Array.isArray(value)) {
           onChange([value]);
+        } else if (value == null) {
+          onChange(undefined);
         }
         // if (innerValues != null && !Array.isArray(innerValues)) {
         //   setInnerValues([innerValues]);
         // }
       } else {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && value.length > 0) {
           // setInnerValue(innerValue[0]);
           onChange(value[0]);
         }
@@ -212,6 +216,16 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     [filterField.key, filterFieldService],
   );
 
+  const filterValue = useMemo(() => {
+    if (multiple) {
+      if (Array.isArray(value)) return value;
+      if (!Array.isArray(value) && value != null) return [value];
+    } else {
+      if (Array.isArray(value) && value.length > 0) return value[0];
+      return value;
+    }
+  }, [value, multiple]);
+
   const field = {
     key: 'tree',
     name: 'Tree',
@@ -261,14 +275,15 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         );
       case BusinessFieldType.SINGLE_OPTION:
         return (
-          <AntSelect
+          <SelectPro
             disabled={filterField == null}
             placeholder={`请选择${filterField.name}`}
             mode={multiple ? 'multiple' : undefined}
             allowClear
             style={style}
+            showSearch
             options={filterField.options}
-            value={value}
+            value={filterValue}
             onChange={(value, options) =>
               handleSelectOptions(value, options as OptionItem)
             }
@@ -280,7 +295,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             <Fields.FieldTreeSelect
               field={field}
               style={style}
-              mode="edit"
+              mode={mode}
               placeholder="请选择维度值"
               multiple={multiple}
               value={value}
@@ -297,7 +312,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             style={style}
             options={filterField.options}
             mode={multiple ? 'multiple' : undefined}
-            value={value}
+            value={filterValue}
             params={filterField}
             showSearch
             remote={searchOptions}

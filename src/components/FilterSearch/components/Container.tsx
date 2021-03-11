@@ -56,12 +56,15 @@ export const Container: FC<IFilterContainerProps> = ({
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
     value || [],
   );
+  const [initCompares, setInitCompares] = useState<
+    Partial<ICompareOperation>[]
+  >(value || []);
 
   const handleFilter = useCallback(
     async (filterItem: Partial<ICompareOperation>[]) => {
-      setCompares(filterItem);
+      setInitCompares(filterItem);
     },
-    [],
+    [initCompares],
   );
 
   const contentValue = useMemo(() => {
@@ -96,7 +99,11 @@ export const Container: FC<IFilterContainerProps> = ({
         {/* </BuilderContext.Provider> */}
       </FilterSetupItemsWrapper>
       <ButtonPanelWrapper>
-        <Button size="small" type="primary" onClick={() => onChange(compares)}>
+        <Button
+          size="small"
+          type="primary"
+          onClick={() => onChange(initCompares)}
+        >
           保存
         </Button>
         <Button size="small" onClick={onCancel}>
