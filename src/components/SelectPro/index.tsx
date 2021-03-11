@@ -209,7 +209,6 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
   );
 
   const filterOption = (input: string, option?: OptionItem) => {
-    console.log('filterOption', input, option);
     return (
       (option?.title || option?.label?.toString() || '')
         .toLowerCase()

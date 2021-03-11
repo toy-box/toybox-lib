@@ -48,8 +48,8 @@ export interface FieldTreeSelectProps<ValueType = DefaultValueType>
   loadData: (id?: RawValueType) => Promise<SimpleNode[]>;
   loadByValue: (ids: RawValueType[]) => Promise<LabeledValue[]>;
   onChange: (value?: ValueType) => void;
-  onSelect: (value: LabeledValueType, node: any) => void;
-  onDeselect: (value: LabeledValueType, node: any) => void;
+  onSelect?: (value: LabeledValueType, node: any) => void;
+  onDeselect?: (value: LabeledValueType, node: any) => void;
   treeData?: SimpleNode[];
 }
 
@@ -133,7 +133,12 @@ const FieldTreeSelect: ForwardRefRenderFunction<any, FieldTreeSelectProps> = (
   const onLoadData = useCallback(
     async (node: LegacyDataNode) => {
       const nodes = await loadData(node.id);
-      setRealTreeData((realTreeData || []).concat(...nodes));
+      const newNodes = nodes.filter(
+        d => !(realTreeData || []).some(rd => rd.id === d.id),
+      );
+      if (newNodes.length > 0) {
+        setRealTreeData((realTreeData || []).concat(...newNodes));
+      }
     },
     [loadData, realTreeData],
   );

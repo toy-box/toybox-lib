@@ -9,12 +9,12 @@ import { Fields } from '@toy-box/toybox-lib';
 export default () => {
   const [value, setValue] = useState();
   const [treeData, setTreeData] = useState([
-    { id: '1', pId: 0, value: '1', title: 'Expand to load' },
+    { id: '1', pId: 0, value: '1', title: 'Root' },
     {
       id: 'h4xv',
       pId: '1',
       value: 'h4xv',
-      title: 'Expand to load',
+      title: 'Second Node',
       isLeaf: false,
     },
   ]);
@@ -34,13 +34,14 @@ export default () => {
 
   const onLoadData = useCallback(
     id => {
-      console.log('treeNode', id);
       return new Promise(resolve => {
         if (id == null) {
           return;
         }
         setTimeout(() => {
-          resolve([genTreeNode(id, false), genTreeNode(id, true)]);
+          const data = [genTreeNode(id, false), genTreeNode(id, true)];
+          console.log('onLoadData', data);
+          resolve(data);
         }, 300);
       });
     },

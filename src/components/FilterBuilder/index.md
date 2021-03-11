@@ -75,10 +75,10 @@ export default () => {
       // }];
       console.log(parentId, 'parentId');
       if (parentId === '2')
-        return [{ id: '3', pId: '2', value: '1', title: 'Expand to load3' }];
+        return [{ id: '3', pId: '2', value: '3', title: 'Expand to load3' }];
       if (parentId)
-        return [{ id: '2', pId: '1', value: '3', title: 'Expand to load2' }];
-      return [{ id: '1', pId: 0, value: '2', title: 'Expand to load' }];
+        return [{ id: '2', pId: '1', value: '2', title: 'Expand to load2' }];
+      return [{ id: '1', pId: 0, value: '1', title: 'Expand to load' }];
     });
   }
 

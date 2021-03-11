@@ -67,7 +67,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   );
 
   const handleValue = useCallback(
-    (value?: SelectValue) => {
+    (value?: any) => {
       onChange(value === undefined ? null : value);
     },
     [onChange],
