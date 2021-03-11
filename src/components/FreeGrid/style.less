@@ -1,0 +1,100 @@
+@import '../../styles/theme.less';
+@import '~react-grid-layout/css/styles.css';
+@import '~react-resizable/css/styles.css';
+
+@handler-color: @gray-6;
+@handler-border: 3px solid @handler-color;
+
+.free-layout {
+  .react-grid-item {
+    padding: 16px;
+    border: 1px solid @gray-5;
+    background-color: #fff;
+    &.react-grid-placeholder {
+      background: transparent;
+      border: 1px solid transparent;
+    }
+    &.static {
+      &:hover {
+        cursor: default;
+      }
+    }
+    &:hover {
+      cursor: move;
+      box-shadow: @shadow-2;
+      .resize-handler {
+        opacity: 1 !important;
+      }
+    }
+    > .react-resizable-handle {
+      z-index: 101;
+      opacity: 0;
+      width: 14px;
+      height: 14px;
+      &:hover {
+        opacity: 1;
+        width: 14px;
+        height: 14px;
+        border-right: @handler-border;
+        border-bottom: @handler-border;
+      }
+      &::after {
+        border-right-color: @handler-color;
+        border-bottom-color: @handler-color;
+      }
+    }
+    .free-grid-item {
+      width: 100%;
+      height: 100%;
+      &.edit {
+        .free-grid-item--panel {
+          display: block;
+        }
+        &:hover {
+          cursor: pointer;
+          .resize-handler {
+            opacity: 0 !important;
+          }
+        }
+      }
+      .free-grid-item--content {
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 0px);
+      }
+      .free-grid-item--panel {
+        display: none;
+        .resize-handler {
+          position: absolute;
+          right: -5px;
+          bottom: 0;
+          z-index: 100;
+          width: 14px;
+          height: 14px;
+          // cursor: move;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          &.left {
+            border-left: @handler-border;
+            left: -1px;
+          }
+          &.right {
+            border-right: @handler-border;
+            right: -1px;
+          }
+          &.top {
+            border-top: @handler-border;
+            top: -1px;
+          }
+          &.bottom {
+            border-bottom: @handler-border;
+            bottom: -1px;
+            &.right {
+              cursor: se-resize;
+            }
+          }
+        }
+      }
+    }
+  }
+}

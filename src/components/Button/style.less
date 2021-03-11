@@ -47,9 +47,11 @@
   }
   &:focus {
     outline: none;
+    background: @btn-text-hover-bg;
   }
   &.tbox-icon-button-primary {
-    &:hover {
+    &:hover,
+    &:focus {
       color: @primary-color;
       background-color: @primary-alpha;
     }

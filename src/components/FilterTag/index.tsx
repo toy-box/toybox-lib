@@ -45,7 +45,7 @@ const FilterTag: FC<FilterTagProps> = ({
         : {},
     [ellipsis],
   );
-  const { title, key, op, labelValue } = filter;
+  const { title, op, labelValue } = filter;
 
   const styleMixs = useMemo(
     () => ({

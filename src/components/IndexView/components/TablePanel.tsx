@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import styled from 'styled-components';
 import Button from '../../Button';
 import SortableSelect from '../../SortableSelect';
-import { SelectItem, ValueType } from '@/components/SortableSelect/interface';
+import { SelectItem, ValueType } from '../../SortableSelect/interface';
 import { IndexMode } from '..';
 import IndexViewContext from '../context';
 
@@ -44,7 +44,7 @@ const TablePanel: FC<TablePanelProps> = ({
           }
           multiple
         >
-          <Button.Icon icon={<LayoutColumnLine />} type="primary" pure />
+          <Button.Icon icon={<LayoutColumnLine />} />
         </SortableSelect>
       );
     }
