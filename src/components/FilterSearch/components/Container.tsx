@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, useEffect } from 'react';
+import React, { FC, useCallback, useState, useEffect, useMemo } from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 import update from 'immutability-helper';
@@ -14,7 +14,8 @@ export interface IFilterContainerProps {
   filterFieldMetas: FieldMeta[];
   value?: Partial<ICompareOperation>[];
   title: string;
-  filterFieldServices?: FieldService[];
+  isBaseBuilder?: boolean;
+  filterFieldService?: FieldService;
   onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
   onCancel?: () => void;
 }
@@ -49,7 +50,8 @@ export const Container: FC<IFilterContainerProps> = ({
   onChange,
   onCancel,
   title,
-  filterFieldServices,
+  filterFieldService,
+  isBaseBuilder,
 }) => {
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
     value || [],
@@ -61,6 +63,13 @@ export const Container: FC<IFilterContainerProps> = ({
     },
     [],
   );
+
+  const contentValue = useMemo(() => {
+    return {
+      isBaseBuilder,
+      title,
+    };
+  }, [isBaseBuilder]);
 
   useEffect(() => {
     if (compares !== value) setCompares(value || []);
@@ -74,14 +83,17 @@ export const Container: FC<IFilterContainerProps> = ({
         {title}
       </h3>
       <FilterSetupItemsWrapper>
+        {/* <BuilderContext.Provider value={contentValue}> */}
         <FilterBuilder
           filterFieldMetas={filterFieldMetas}
           value={compares}
-          filterFieldServices={filterFieldServices}
+          isBaseBuilder={isBaseBuilder}
+          filterFieldService={filterFieldService}
           onChange={(filterItem: Partial<ICompareOperation>[]) =>
             handleFilter(filterItem)
           }
         />
+        {/* </BuilderContext.Provider> */}
       </FilterSetupItemsWrapper>
       <ButtonPanelWrapper>
         <Button size="small" type="primary" onClick={() => onChange(compares)}>

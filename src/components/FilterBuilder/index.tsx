@@ -1,29 +1,26 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import { Button } from 'antd';
-import styled from 'styled-components';
 import update from 'immutability-helper';
 import {
   FieldMeta,
   ICompareOperation,
-  ILogicFilter,
   LogicOP,
   FieldService,
 } from '../../types/compare';
 import { CompareOperation } from './components/CompareOperation';
-
 export interface IFilterBuilderProps {
   filterFieldMetas: FieldMeta[];
   value?: Partial<ICompareOperation>[];
-  filterFieldServices?: FieldService[];
+  filterFieldService?: FieldService;
+  isBaseBuilder?: boolean;
   onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
 }
-
-const defaultValue = { logic: LogicOP.AND, compares: [{}] };
 
 export const FilterBuilder: FC<IFilterBuilderProps> = ({
   value,
   filterFieldMetas,
-  filterFieldServices,
+  filterFieldService,
+  isBaseBuilder,
   onChange,
 }) => {
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
@@ -49,13 +46,13 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
     [compares],
   );
 
-  const filterFieldService = useCallback(filterItem => {
-    const obj =
-      filterFieldServices &&
-      filterFieldServices.find(field => field.key === filterItem.source);
-    // console.log(obj);
-    return obj;
-  }, []);
+  // const filterFieldService = useCallback(filterItem => {
+  //   const obj =
+  //     filterFieldServices &&
+  //     filterFieldServices.find(field => field.key === filterItem.source);
+  //   // console.log(obj);
+  //   return obj;
+  // }, []);
 
   useEffect(() => {
     onChange(compares);
@@ -72,7 +69,9 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
           key={idx}
           filterFieldMetas={filterFieldMetas}
           compare={filterItem}
-          filterFieldService={filterFieldService(filterItem)}
+          compares={compares}
+          isBaseBuilder={isBaseBuilder}
+          filterFieldService={filterFieldService}
           remove={() => handleRemove(idx)}
           onChange={(filterItem: Partial<ICompareOperation>) =>
             handleFilterItem(filterItem, idx)

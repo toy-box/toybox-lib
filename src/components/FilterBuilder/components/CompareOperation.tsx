@@ -1,8 +1,16 @@
-import React, { FC, useCallback, useMemo, useState, useEffect } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
 import styled from 'styled-components';
 import update from 'immutability-helper';
 import { Button, Form, Select, Input } from 'antd';
 import { FilterValueInput } from './FilterValueInput';
+import { CloseLine } from '@airclass/icons';
 import {
   ICompareOperation,
   CompareOP,
@@ -22,7 +30,9 @@ const inputStyle = { width: '198px' };
 export interface CompareOperationProps {
   filterFieldMetas: FieldMeta[];
   compare: Partial<ICompareOperation>;
+  compares: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
+  isBaseBuilder?: boolean;
   onChange: (compare: Partial<ICompareOperation>) => void;
   remove: () => void;
 }
@@ -30,7 +40,9 @@ export interface CompareOperationProps {
 export const CompareOperation: FC<CompareOperationProps> = ({
   filterFieldMetas,
   compare,
+  compares,
   onChange,
+  isBaseBuilder,
   remove,
   filterFieldService,
 }) => {
@@ -39,16 +51,31 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   const [filterValue, setFilterValue] = useState(compare.target);
   // const [filterValues, setFilterValues] = useState<(string | number)[]>([]);
 
-  const fieldOptions = useMemo(
-    () =>
-      filterFieldMetas.map(field => ({ label: field.name, value: field.key })),
-    [filterFieldMetas],
-  );
+  const fieldOptions = useMemo(() => {
+    if (!isBaseBuilder)
+      return filterFieldMetas.map(field => ({
+        label: field.name,
+        value: field.key,
+      }));
+    const newFieldMetas: FieldMeta[] = [];
+    filterFieldMetas.forEach(field => {
+      const p = compares && compares.find(com => com.source === field.key);
+      if (!p || compare.source === field.key) newFieldMetas.push(field);
+    });
+    return newFieldMetas.map(field => ({
+      label: field.name,
+      value: field.key,
+    }));
+  }, [filterFieldMetas]);
 
   const filterFieldMeta = useMemo(
     () => filterFieldMetas.find(f => f.key === filterKey),
     [filterFieldMetas, filterKey],
   );
+
+  const disabledFieldOption = useMemo(() => {
+    return true;
+  }, []);
 
   const filterOperations = useMemo(() => {
     switch (filterFieldMeta?.type) {
@@ -118,6 +145,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
 
   const onValueChange = useCallback(
     (value: any) => {
+      if (value === filterValue) return;
       setFilterValue(value);
       onChange(update(compare, { target: { $set: value } }));
     },
@@ -139,12 +167,14 @@ export const CompareOperation: FC<CompareOperationProps> = ({
     );
   }, [filterValue, filterFieldMeta, multiple, onValueChange]);
 
-  useEffect(() => {
-    console.log(compare, 'compare.target');
-    setFilterKey(compare.source);
-    setFilterOperation(compare.op);
-    setFilterValue(compare.target);
-  }, [compare]);
+  // useEffect(() => {
+  //   console.log(compare, 'compare.target');
+  //   if (compare.source === filterKey && compare.source === filterOperation
+  //       && compare.source === filterValue) return;
+  //   setFilterKey(compare.source);
+  //   setFilterOperation(compare.op);
+  //   setFilterValue(compare.target);
+  // }, [compare]);
 
   return (
     <CompareOperationWrapper>
@@ -169,13 +199,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         </Form.Item>
         <Form.Item>{FilterValue}</Form.Item>
         <Form.Item style={{ marginRight: 0 }}>
-          <Button
-            type="text"
-            onClick={remove}
-            icon={<i className="ri-close-line" />}
-          >
-            x
-          </Button>
+          <Button type="text" onClick={remove} icon={<CloseLine />}></Button>
         </Form.Item>
       </Form>
     </CompareOperationWrapper>

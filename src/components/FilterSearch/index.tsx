@@ -12,6 +12,7 @@ import FilterTag from '../FilterTag/index';
 import update from 'immutability-helper';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
 import Container from './components/Container';
+import { Filter3Line } from '@airclass/icons';
 
 export interface LabelValue {
   value: any;
@@ -31,8 +32,9 @@ export interface FilterLabel {
 export interface IFilterSearchProps {
   filterFieldMetas: FieldMeta[];
   value?: Partial<ICompareOperation>[];
-  filterFieldServices?: FieldService[];
+  filterFieldService?: FieldService;
   title: string;
+  isBaseBuilder?: boolean;
   // filterLables?: FilterLabel[];
   onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
   onCancel?: () => void;
@@ -40,11 +42,12 @@ export interface IFilterSearchProps {
 
 const FilterSearch: FC<IFilterSearchProps> = ({
   filterFieldMetas,
-  filterFieldServices,
+  filterFieldService,
   value,
   title,
   onChange,
   onCancel,
+  isBaseBuilder,
 }) => {
   const [tagValue, setTagValue] = useState(value);
   const [filterEditVisible, setFilterEditVisible] = useState(false);
@@ -80,10 +83,29 @@ const FilterSearch: FC<IFilterSearchProps> = ({
 
   const save = useCallback(async (filterItem: Partial<ICompareOperation>[]) => {
     console.log('new compare12121212', filterItem);
-    setTagValue(filterItem);
     setFilterEditVisible(false);
+    const p = filterItem.filter(item => item.op && item.target != null);
+    setTagValue(p);
     // onChange(filterItem);
   }, []);
+
+  const filterValue = useCallback(
+    filed => {
+      const meta = tagValue?.find(val => val.source === filed.key);
+      const metaArr = tagValue?.filter(val => val.source === filed.key);
+      if (metaArr && metaArr.length > 1) return;
+      const isShowMeta =
+        meta && (meta.op === CompareOP.IN || meta.op === CompareOP.EQ);
+      if (
+        meta &&
+        isShowMeta &&
+        (!Array.isArray(meta.target) || meta.target.length === 1)
+      )
+        return meta.target;
+      return;
+    },
+    [tagValue],
+  );
 
   const onValueChange = useCallback(
     (val: any, filterField: FieldMeta) => {
@@ -140,15 +162,18 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       <Container
         filterFieldMetas={filterFieldMetas}
         value={tagValue}
+        isBaseBuilder={isBaseBuilder || true}
         title={title || '条件过滤(AND)'}
-        filterFieldServices={filterFieldServices}
+        filterFieldService={filterFieldService}
         onChange={(filterItem: Partial<ICompareOperation>[]) =>
           save(filterItem)
         }
         onCancel={cencel}
       />
     );
-  }, [filterFieldMetas, tagValue, filterFieldServices]);
+  }, [filterFieldMetas, tagValue, filterFieldService]);
+
+  const inputStyle = { width: '198px' };
 
   return (
     <div className="filter-model">
@@ -158,11 +183,13 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             filterFieldMeta.unBasic && (
               <Form.Item>
                 <FilterValueInput
-                  // value={filterValue}
+                  key={idx}
+                  value={filterValue(filterFieldMeta)}
+                  filterFieldService={filterFieldService}
                   multiple={false}
                   filterField={filterFieldMeta}
                   onChange={value => onValueChange(value, filterFieldMeta)}
-                  // style={inputStyle}
+                  style={inputStyle}
                 />
               </Form.Item>
             ),
@@ -178,7 +205,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             destroyTooltipOnHide={true}
           >
             <Tooltip placement="top" title={zhCN.lang.filter['tip']}>
-              <Button icon={<i className="ri-filter-3-line"></i>} />
+              <Button icon={<Filter3Line />} />
             </Tooltip>
           </Popover>
         </Form.Item>
@@ -188,7 +215,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
           <FilterTag
             key={idx}
             style={{ width: '100px' }}
-            {...tag}
+            filter={tag}
             ellipsis={ellipsis(tag)}
           />
         ))}

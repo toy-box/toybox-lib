@@ -72,5 +72,14 @@ export enum LogicOP {
 }
 
 export interface FieldService extends FieldMeta {
-  customCallback: (field: FieldMeta) => Promise<void> | void;
+  findOptions: (key: BusinessFieldType, name: string) => Promise<void> | void;
+  findOfValues: (
+    key: BusinessFieldType,
+    value: (string | number)[],
+  ) => Promise<void> | void;
+  findDataTrees: (
+    key: BusinessFieldType,
+    parentId: string | number,
+  ) => Promise<void> | void;
+  findOtherData: (field: FieldMeta) => Promise<void> | void;
 }

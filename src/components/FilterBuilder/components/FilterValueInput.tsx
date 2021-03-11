@@ -10,7 +10,10 @@ import React, {
 import { DatePicker, Input, InputNumber, Select as AntSelect } from 'antd';
 // import { useSelector } from 'react-redux';
 import { SelectValue, LabeledValue } from 'antd/lib/select';
+import { RawValueType } from 'rc-tree-select/lib/interface';
 import moment from 'moment';
+import Fields from '../../Fields';
+import SelectPro from '../../SelectPro';
 // import Fields from '../../Fields';
 // import { Select } from '../../fields/Select';
 import {
@@ -18,12 +21,13 @@ import {
   BusinessFieldType,
   FieldService,
 } from '../../../types/compare';
+import { OptionItem } from '../../../types/interface';
 // import { filterSearch, filterFindByIds, filterSearchTree } from '../../services/scene.service';
 
-export interface OptionItem {
-  label: React.ReactNode;
-  value: React.ReactText;
-}
+// export interface OptionItem {
+//   label: React.ReactNode;
+//   value: React.ReactText;
+// }
 
 function isReactText(value: ReactNode): boolean {
   return typeof value === 'string' || typeof value === 'number';
@@ -47,6 +51,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   filterFieldService,
 }) => {
   const [initial, setInitial] = useState(false);
+  const [treeData, setTreeData] = useState([]);
   // const [innerValues, setInnerValues] = useState<(number | string)[]>([]);
 
   // const sceneSetupState = useSelector(state => state.sceneSetup);
@@ -78,12 +83,13 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   );
 
   const handleTreeSelect = useCallback(
-    (labelValue: LabeledValue | LabeledValue[]) => {
-      if (Array.isArray(labelValue)) {
-        handleValue(labelValue.map(l => l.value));
-      } else {
-        handleValue(labelValue.value);
-      }
+    (labelValue: RawValueType | RawValueType[]) => {
+      // if (Array.isArray(labelValue)) {
+      //   handleValue(labelValue.map(l => l));
+      // } else {
+      //   handleValue(labelValue);
+      // }
+      handleValue(labelValue as RawValueType | RawValueType[]);
     },
     [handleValue],
   );
@@ -170,12 +176,50 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   //   });
   //   return data;
   // }, [filterField.key, sceneSetupState.id]);
-  const loadByValue = useCallback(async () => {
-    // console.log(await filterFieldService?.customCallback(filterField), 12313213);
-  }, [filterField.key, filterFieldService]);
-  useEffect(() => {
-    loadByValue();
-  }, [filterField.key, filterFieldService]);
+  const searchOptions = useCallback(
+    async (value: any) => {
+      // console.log(value, filterField, 11123232);
+      const ops = await filterFieldService?.findOptions(
+        filterField.key as BusinessFieldType,
+        value,
+      );
+      return ops || ([] as OptionItem[]);
+    },
+    [filterField.key, filterFieldService],
+  );
+
+  const searchByValue = useCallback(async () => {
+    const ids = Array.isArray(value) ? value : [value];
+    const ops = await filterFieldService?.findOfValues(
+      filterField.key as BusinessFieldType,
+      ids,
+    );
+    console.log(value, ops, 11123232);
+    return ops || [];
+  }, [filterField.key, filterFieldService, value]);
+
+  const findDataTrees = useCallback(
+    async parentId => {
+      console.log(value, filterField, 11123232);
+      const ops = await filterFieldService?.findDataTrees(
+        filterField.key as BusinessFieldType,
+        parentId,
+      );
+      // setTreeData([{ id: '1', pId: 0, value: '1', title: 'Expand to load' }]);
+      // return [];
+      return ops || [];
+    },
+    [filterField.key, filterFieldService],
+  );
+
+  const field = {
+    key: 'tree',
+    name: 'Tree',
+    type: 'treeSelect',
+  };
+  // useEffect(() => {
+  //   // loadByValue();
+  // }, [filterField.key, filterFieldService]);
 
   const input = useMemo(() => {
     switch (filterField?.type) {
@@ -231,16 +275,38 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           />
         );
       case BusinessFieldType.OBJECT_ID:
-      // return <TreeSelect
-      //   filterField={filterField}
-      //   style={style}
-      //   placeholder="请选择维度值"
-      //   multiple={multiple}
-      //   value={innerValue}
-      //   onChange={handleTreeSelect}
-      //   loadData={loadData}
-      //   loadByValue={loadByValue}
-      // />
+        if (filterField.parentKey != null && filterField.parentKey !== '') {
+          return (
+            <Fields.FieldTreeSelect
+              field={field}
+              style={style}
+              mode="edit"
+              placeholder="请选择维度值"
+              multiple={multiple}
+              value={value}
+              onChange={handleValue}
+              treeData={treeData}
+              loadData={findDataTrees}
+              loadByValue={searchByValue}
+            />
+          );
+        }
+        return (
+          <SelectPro
+            placeholder="请选择维度值"
+            style={style}
+            options={filterField.options}
+            mode={multiple ? 'multiple' : undefined}
+            value={value}
+            params={filterField}
+            showSearch
+            remote={searchOptions}
+            remoteByValue={searchByValue}
+            onChange={(value, options) =>
+              handleSelectOptions(value, options as OptionItem)
+            }
+          />
+        );
       default:
         return (
           <Input

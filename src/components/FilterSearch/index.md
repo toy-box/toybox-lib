@@ -8,18 +8,75 @@ import { FilterSearch } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';
 
 export default () => {
-  const serviceTest = async function(resolve, fieldMeta) {
+  const serviceTest = async function(resolve, key) {
     setTimeout(() => {
-      resolve(fieldMeta);
-    }, 1000);
+      resolve(key);
+    }, 100);
   };
 
-  function test(fieldMeta) {
+  function findOptions(key, name) {
     return new Promise(resolve => {
-      serviceTest(resolve, fieldMeta);
+      serviceTest(resolve, key);
+    }).then(res => {
+      console.log(res, 'findOptions');
+      return [
+        {
+          label: 'SIX',
+          value: '123',
+        },
+        {
+          label: 'named',
+          value: '456',
+        },
+      ];
+    });
+  }
+
+  function findOfValues(key, value) {
+    return new Promise(resolve => {
+      serviceTest(resolve, key);
     }).then(res => {
       // console.log(res, 1223333);
-      return res;
+      if (key === 'deptId')
+        return [{ id: '2', pId: '1', value: '1', title: 'Expand to load2' }];
+      return [
+        {
+          label: 'SIX',
+          value: '123',
+        },
+        {
+          label: 'named',
+          value: '456',
+        },
+      ];
+    });
+  }
+
+  const genTreeNode = useCallback((parentId, isLeaf = false) => {
+    const random = Math.random()
+      .toString(36)
+      .substring(2, 6);
+    return {
+      id: random,
+      pId: parentId,
+      value: random,
+      title: isLeaf ? 'Tree Node' : 'Expand to load',
+      isLeaf,
+    };
+  }, []);
+
+  function findDataTrees(key, parentId) {
+    return new Promise(resolve => {
+      serviceTest(resolve, key);
+    }).then(res => {
+      // console.log(res, 1223333);
+      // if (parentId != 0) return [{
+      //   id: '2', pId: 1, value: '2', title: 'Expand to load'
+      // }];
+      console.log(parentId, 'parentId');
+      if (parentId === '2') return [];
+      if (parentId) return [];
+      return [{ id: '1', pId: 0, value: '1', title: 'Expand to load' }];
     });
   }
 
@@ -84,15 +141,14 @@ export default () => {
       {
         source: 'deptId',
         op: '$in',
-        target: '123',
+        target: '1',
       },
     ],
-    filterFieldServices: [
-      {
-        key: 'deptId',
-        customCallback: fieldMeta => test(fieldMeta),
-      },
-    ],
+    filterFieldService: {
+      findOptions: (key, name) => findOptions(key, name),
+      findOfValues: (key, value) => findOfValues(key, value),
+      findDataTrees: (key, parentId) => findDataTrees(key, parentId),
+    },
   };
   return (
     <div>
