@@ -18,7 +18,7 @@ export { default as ImpInput } from './ImpInput';
 export { default as Inbox } from './Inbox';
 export { default as IndexPage } from './IndexPage';
 export { default as IndexView } from './IndexView';
-export { default as ListPage } from './ListPage';
+export { ItemStore, SimpleLayout } from './LayoutEdit';
 export { default as FreeGrid, LayoutType } from './FreeGrid';
 export { default as LoadingWrapper } from './LoadingWrapper';
 export { default as MetaDescriptons } from './MetaDescriptions';

@@ -1,0 +1,20 @@
+@import '../../../styles/theme.less';
+
+.tobx-layout-edit {
+  &__item-store-group {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &__item-wrapper {
+    &:hover {
+      background: @gray-4;
+      cursor: pointer;
+    }
+    .in-layout {
+      display: none;
+    }
+    .in-store {
+      display: block;
+    }
+  }
+}
