@@ -79,7 +79,6 @@ export const SimpleLayout: FC<SimpleLayoutProps> = ({
 
   const activeItem = useCallback(
     (key: string) => {
-      console.log('activeItem', key);
       context.change('active', key);
     },
     [context.change],
