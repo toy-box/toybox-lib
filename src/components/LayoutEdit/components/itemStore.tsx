@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { Collapse } from 'antd';
 import { StoreGroup } from './itemGroup';
-import { GroupType, ItemType } from '../interface';
+import { GroupType, ItemType, NumPerRowType } from '../interface';
 
 import '../styles/item.less';
 
 interface StoreBaseProps {
   width: number;
-  itemWidth: number;
+  numPreRow: NumPerRowType;
 }
 
 interface ItemStoreProps extends StoreBaseProps {
@@ -24,7 +24,7 @@ export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
   dataSource,
   group,
   width,
-  itemWidth,
+  numPreRow,
 }) => {
   const prefixCls = 'tbox-layout-edit__item-store';
   if (group) {
@@ -46,7 +46,7 @@ export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
     <StoreGroup
       items={dataSource as ItemType[]}
       width={width}
-      itemWidth={itemWidth}
+      numPreRow={numPreRow}
     />
   );
 };

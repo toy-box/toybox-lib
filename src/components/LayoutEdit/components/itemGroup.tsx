@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import classNames from 'classnames';
-import { ItemType } from '../interface';
+import { ItemType, NumPerRowType } from '../interface';
 
 export interface StoreGroupProps {
   items: ItemType[];
   width: number;
-  numPreRow: number;
+  numPreRow: NumPerRowType;
   itemClass?: string;
   className?: string;
 }
@@ -29,12 +29,16 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   return (
     <ReactSortable
       tag="div"
-      className={classNames(`tobx-layout-edit__item-store-group`, className)}
+      className={classNames(
+        `tobx-layout-edit__item-store-group`,
+        `num-per-row-${numPreRow}`,
+        className,
+      )}
       style={style}
       list={list}
-      group={{ name: 'storeItem', pull: 'clone' }}
+      group={{ name: 'storeItem', pull: 'clone', put: false }}
       sort={false}
-      setList={console.log}
+      setList={() => undefined}
     >
       {items.map(item => (
         <div

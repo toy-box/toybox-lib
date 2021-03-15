@@ -8,6 +8,7 @@ export interface ItemTypeBase {
   type: string;
 }
 
+export type NumPerRowType = 1 | 2 | 3 | 4 | 5;
 export interface ItemType extends ItemTypeBase {
   defaultProps: any;
   content: ContentRender | ReactNode;

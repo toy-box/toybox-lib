@@ -1,6 +1,6 @@
 ## LayoutEdit 布局编辑器
 
-### ItemStore:
+### ItemStore
 
 ```tsx
 import React, { useState, useCallback } from 'react';
@@ -49,6 +49,7 @@ export default () => {
 import React, { useState, useCallback } from 'react';
 import { Button } from 'antd';
 import { ItemStore, SimpleLayout } from '@toy-box/toybox-lib';
+import LayoutEditContext from './context';
 import 'antd/dist/antd.css';
 
 const layoutItems = [
@@ -56,21 +57,6 @@ const layoutItems = [
     key: 'a',
     type: 'base',
     index: 0,
-  },
-  {
-    key: 'b',
-    type: 'base',
-    index: 1,
-  },
-  {
-    key: 'c',
-    type: 'base',
-    index: 2,
-  },
-  {
-    key: 'd',
-    type: 'base',
-    index: 3,
   },
 ];
 
@@ -85,10 +71,11 @@ const itemRender = props => {
 
 export default () => {
   const [layout, setLayout] = useState(layoutItems);
-  const postMessage = useCallback(
-    (type: string, state: any) => {
-      const { item, newIndex } = state;
-      if (type === 'add') {
+  const [active, setActive] = useState();
+  const change = useCallback(
+    (action: string, state: any) => {
+      if (action === 'add') {
+        const { item, newIndex } = state;
         setLayout([
           ...layout.map(l => ({
             ...l,
@@ -97,40 +84,43 @@ export default () => {
           { index: newIndex, ...item },
         ]);
       }
+      if (action === 'setAll') {
+        setLayout(state);
+      }
+      if (action === 'active') {
+        setActive(state);
+      }
     },
     [layout, setLayout],
   );
+
   const items = [
     {
       key: 'a',
       type: 'base',
-      title: 'A',
+      title: 'BASE',
       content: itemRender,
     },
     {
       key: 'b',
-      type: 'base',
-      title: 'B',
-      content: itemRender,
-    },
-    {
-      key: 'c',
-      type: 'base',
-      title: 'C',
-      content: itemRender,
-    },
-    {
-      key: 'd',
-      type: 'base',
-      title: 'D',
+      type: 'redbox',
+      title: 'RED BOX',
       content: itemRender,
     },
   ];
 
   return (
-    <div>
-      <ItemStore dataSource={items} width={120} numPerRow={2} />
-      <SimpleLayout dataSource={layout} postMessage={postMessage} />
+    <div style={{ display: 'flex' }}>
+      <LayoutEditContext.Provider
+        value={{
+          layout,
+          change,
+          active,
+        }}
+      >
+        <ItemStore dataSource={items} width={200} numPreRow={2} />
+        <SimpleLayout />
+      </LayoutEditContext.Provider>
     </div>
   );
 };
