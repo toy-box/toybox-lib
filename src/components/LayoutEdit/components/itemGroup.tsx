@@ -20,6 +20,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
 }) => {
   const style = {
     width,
+    userSelect: 'none' as 'none',
   };
 
   const list = useMemo(() => items.map(item => ({ id: item.key, ...item })), [
@@ -38,6 +39,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       list={list}
       group={{ name: 'storeItem', pull: 'clone', put: false }}
       sort={false}
+      forceFallback
       setList={() => undefined}
     >
       {items.map(item => (

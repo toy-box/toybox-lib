@@ -25,7 +25,7 @@ export interface SimpleLayoutProps {
 const style = {
   border: '1px solid lightgray',
   width: '368px',
-  'min-height': '600px',
+  minHeight: '300px',
 };
 
 const defaultItemMap = {
