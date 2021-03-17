@@ -177,7 +177,7 @@ export default () => {
 
   const src = 'http://localhost:8080';
   return (
-    <div style={{ display: 'flex', position: 'relative' }}>
+    <div style={{ display: 'flex', position: 'relative', height: '720px' }}>
       <LayoutEditContext.Provider
         value={{
           layout,
@@ -188,8 +188,24 @@ export default () => {
           setDraging,
         }}
       >
-        <ItemStore dataSource={items} width={200} numPreRow={2} />
-        <LayoutFrame src={src} style={{ width: '440px' }} ref={ref} />
+        <ItemStore
+          dataSource={items}
+          width={200}
+          numPreRow={2}
+          style={{ position: 'absolute' }}
+        />
+        <LayoutFrame
+          src={src}
+          ref={ref}
+          width={800}
+          style={{
+            position: 'absolute',
+            left: '180px',
+            top: 0,
+            bottom: 0,
+            right: 0,
+          }}
+        />
       </LayoutEditContext.Provider>
     </div>
   );

@@ -11,19 +11,22 @@ import classNames from 'classnames';
 import LayoutEditContext from '../context';
 import { LayoutItem } from './simpleLayout';
 
-import '../styles/layoutFrame.less';
+import '../styles/layoutPreview.less';
 
 export interface LayoutFrameProps {
   src: string;
-  style?: any;
   className?: string;
+  frameWidth?: number;
+  style?: any;
 }
 
 const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
-  { src, className, style },
+  { src, className, frameWidth, style },
   ref,
 ) => {
   const innerRef = useRef<any>();
+  const prefixCls = 'tbox-layout-edit-preview';
+
   useImperativeHandle(
     ref,
     () => ({
@@ -34,6 +37,10 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
   const context = useContext(LayoutEditContext);
   const [ready, setReady] = useState(false);
   const draging = useMemo(() => context.draging, [context.draging]);
+  const [pos, setPos] = useState({
+    clientX: 0,
+    clientY: 0,
+  });
 
   useEffect(() => {
     if (context.messager) {
@@ -60,27 +67,41 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
     }
   }, [context.layout, context.messager, ready]);
 
+  const frameStyle = useMemo(
+    () => ({
+      width: frameWidth,
+    }),
+    [frameWidth],
+  );
+
   return (
-    <React.Fragment>
-      <iframe
-        className={classNames('preview-iframe-wrap', className)}
-        style={style}
-        src={src}
-        frameBorder="0"
-        allowFullScreen={false}
-        width="100%"
-        height={601}
-        ref={innerRef}
-      />
-      {draging && (
+    <div className={classNames(`${prefixCls}-wrap`, className)} style={style}>
+      <div className={classNames(prefixCls, className)} style={frameStyle}>
+        <iframe
+          className={`${prefixCls}-iframe-wrap`}
+          src={src}
+          frameBorder="0"
+          allowFullScreen={false}
+          ref={innerRef}
+          width="100%"
+          height="1164"
+        />
+        <div style={{ position: 'absolute', bottom: '120px' }}>
+          {JSON.stringify(pos)}
+        </div>
+      </div>
+      {true && (
         <div
-          className="preview-drag-mask"
+          className={`${prefixCls}-drag-mask`}
           onDragOver={e =>
-            console.log('mask over', e.screenX, e.screenY, e.pageX, e.pageY)
+            setPos({
+              clientX: e.clientX,
+              clientY: e.clientY,
+            })
           }
         />
       )}
-    </React.Fragment>
+    </div>
   );
 };
 
