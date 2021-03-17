@@ -45,7 +45,6 @@ export default class Messager {
   };
 
   destroy() {
-    console.log('messager destroy');
     window.removeEventListener('message', this.handleMessageListener);
   }
 }

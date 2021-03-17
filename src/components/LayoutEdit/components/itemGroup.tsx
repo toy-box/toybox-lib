@@ -1,7 +1,9 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import classNames from 'classnames';
+import { StoreItem } from './storeItem';
 import { ItemType, NumPerRowType } from '../interface';
+import LayoutEditContext from '../context';
 
 export interface StoreGroupProps {
   items: ItemType[];
@@ -18,6 +20,8 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   className,
   itemClass,
 }) => {
+  const context = useContext(LayoutEditContext);
+
   const style = {
     width,
     userSelect: 'none' as 'none',
@@ -39,18 +43,12 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       list={list}
       group={{ name: 'storeItem', pull: 'clone', put: false }}
       sort={false}
-      forceFallback
       setList={() => undefined}
+      onStart={() => context.setDraging && context.setDraging(true)}
+      onEnd={() => context.setDraging && context.setDraging(false)}
     >
       {items.map(item => (
-        <div
-          key={item.key}
-          className={classNames(`tobx-layout-edit__item-wrapper`, itemClass)}
-        >
-          {typeof item.content === 'function'
-            ? item.content(item)
-            : item.content}
-        </div>
+        <StoreItem key={item.key} item={item} className={itemClass} />
       ))}
     </ReactSortable>
   );

@@ -1,14 +1,17 @@
 import React, {
-  FC,
-  useCallback,
+  ForwardRefRenderFunction,
   useContext,
   useEffect,
+  useMemo,
+  useImperativeHandle,
   useRef,
   useState,
 } from 'react';
+import classNames from 'classnames';
 import LayoutEditContext from '../context';
-import Messager from './Message';
 import { LayoutItem } from './simpleLayout';
+
+import '../styles/layoutFrame.less';
 
 export interface LayoutFrameProps {
   src: string;
@@ -16,84 +19,69 @@ export interface LayoutFrameProps {
   className?: string;
 }
 
-export const LayoutFrame: FC<LayoutFrameProps> = ({
-  src,
-  className,
-  style,
-}) => {
-  const ref = useRef<any>();
+const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
+  { src, className, style },
+  ref,
+) => {
+  const innerRef = useRef<any>();
+  useImperativeHandle(
+    ref,
+    () => ({
+      contentWindow: innerRef.current.contentWindow,
+    }),
+    [],
+  );
   const context = useContext(LayoutEditContext);
   const [ready, setReady] = useState(false);
-
-  const [messager, setMessager] = useState<Messager>();
-
-  useEffect(() => {
-    console.log('set messager', ref.current.contentWindow);
-    setMessager(
-      new Messager(ref.current.contentWindow, 'http://localhost:8080'),
-    );
-  }, [setMessager, ref]);
+  const draging = useMemo(() => context.draging, [context.draging]);
 
   useEffect(() => {
-    if (messager) {
-      messager.on('ready', () => {
+    if (context.messager) {
+      context.messager.on('ready', () => {
         setReady(true);
       });
-      messager.on('setAll', (layout: LayoutItem[]) =>
+      context.messager.on('setAll', (layout: LayoutItem[]) =>
         context.change('setAll', layout),
       );
-      // messager.on('mousemove', handleMouseMove);
-      // messager.on('mouseup', handleMouseUp);
-      return () => messager && messager.destroy();
     }
-  }, [messager]);
+  }, [context.messager]);
 
   useEffect(() => {
-    ref.current.onload = () => {
-      setReady(true);
-    };
-  }, [ref, setReady]);
+    if (innerRef.current) {
+      innerRef.current.onload = () => {
+        setReady(true);
+      };
+    }
+  }, [innerRef.current, setReady]);
 
   useEffect(() => {
-    if (ready && messager) {
-      messager.broadcast('publish', context.layout);
+    if (ready && context.messager) {
+      context.messager.broadcast('publish', context.layout);
     }
-  }, [context.layout, messager, ready]);
-
-  const handleMouseMove = useCallback(
-    (data: any) => {
-      const rect = ref.current.getBoundingClientRect();
-      const pos = {
-        clientX: data.clientX + rect.left,
-        clientY: data.clientY + rect.top,
-      };
-      document.dispatchEvent(new MouseEvent('mousemove', pos));
-    },
-    [ref.current],
-  );
-
-  const handleMouseUp = useCallback(
-    (data: any) => {
-      const rect = ref.current.getBoundingClientRect();
-      const pos = {
-        clientX: data.clientX + rect.left,
-        clientY: data.clientY + rect.top,
-      };
-      document.dispatchEvent(new MouseEvent('mouseup', pos));
-    },
-    [ref.current],
-  );
+  }, [context.layout, context.messager, ready]);
 
   return (
-    <div className={className} style={style}>
+    <React.Fragment>
       <iframe
+        className={classNames('preview-iframe-wrap', className)}
+        style={style}
         src={src}
         frameBorder="0"
         allowFullScreen={false}
         width="100%"
         height={601}
-        ref={ref}
+        ref={innerRef}
       />
-    </div>
+      {draging && (
+        <div
+          className="preview-drag-mask"
+          onDragOver={e =>
+            console.log('mask over', e.screenX, e.screenY, e.pageX, e.pageY)
+          }
+        />
+      )}
+    </React.Fragment>
   );
 };
+
+export default React.forwardRef(LayoutFrame);

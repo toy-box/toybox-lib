@@ -1,48 +1,5 @@
 ## LayoutEdit 布局编辑器
 
-### ItemStore
-
-```tsx
-import React, { useState, useCallback } from 'react';
-import { Button } from 'antd';
-import { ItemStore } from '@toy-box/toybox-lib';
-import 'antd/dist/antd.css';
-
-export default () => {
-  const items = [
-    {
-      key: 'a',
-      type: 'base',
-      title: 'A',
-      content: props => <div>{props.title}</div>,
-    },
-    {
-      key: 'b',
-      type: 'base',
-      title: 'B',
-      content: props => <div>{props.title}</div>,
-    },
-    {
-      key: 'c',
-      type: 'base',
-      title: 'C',
-      content: props => <div>{props.title}</div>,
-    },
-    {
-      key: 'd',
-      type: 'base',
-      title: 'D',
-      content: props => <div>{props.title}</div>,
-    },
-  ];
-  return (
-    <div>
-      <ItemStore dataSource={items} width={120} itemWidth={40} />
-    </div>
-  );
-};
-```
-
 ### SimpleLayout:
 
 ```tsx
@@ -130,7 +87,7 @@ export default () => {
 
 ```tsx
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { ItemStore, LayoutFrame } from '@toy-box/toybox-lib';
+import { ItemStore, LayoutFrame, Messager } from '@toy-box/toybox-lib';
 import LayoutEditContext from './context';
 import 'antd/dist/antd.css';
 
@@ -160,7 +117,7 @@ const items = [
 
 const layoutItems = [
   {
-    key: 'card',
+    key: 'card1',
     type: 'card',
     index: 0,
     props: {
@@ -171,9 +128,9 @@ const layoutItems = [
     },
   },
   {
-    key: 'card',
+    key: 'card2',
     type: 'card',
-    index: 0,
+    index: 1,
     props: {
       title: 'This is iPad Pro',
       desc: '描述信息',
@@ -186,7 +143,15 @@ const layoutItems = [
 export default () => {
   const [layout, setLayout] = useState(layoutItems);
   const [active, setActive] = useState();
+  const [messager, setMessager] = useState();
+  const [draging, setDraging] = useState(false);
   const ref = useRef();
+
+  useEffect(() => {
+    setMessager(
+      new Messager(ref.current.contentWindow, 'http://localhost:8080'),
+    );
+  }, [setMessager, ref.current]);
 
   const change = useCallback(
     (action: string, state: any) => {
@@ -210,28 +175,21 @@ export default () => {
     [layout, setLayout],
   );
 
-  // const handleMouseMove = useCallback((e :any) => {
-  //   console.log(e.type, e);
-  // }, [])
-
-  // useEffect(() => {
-  //   ref.current.addEventListener("mousemove", handleMouseMove);
-  //   return () => document.removeEventListener("mousemove", handleMouseMove);
-  // }, [ref.current, handleMouseMove]);
-
-  // const src = 'file:///Users/huhui/Code/sortablejs-cross-iframe/frame.html';
   const src = 'http://localhost:8080';
   return (
-    <div ref={ref} style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', position: 'relative' }}>
       <LayoutEditContext.Provider
         value={{
           layout,
           change,
           active,
+          messager,
+          draging,
+          setDraging,
         }}
       >
         <ItemStore dataSource={items} width={200} numPreRow={2} />
-        <LayoutFrame src={src} style={{ width: '440px' }} />
+        <LayoutFrame src={src} style={{ width: '440px' }} ref={ref} />
       </LayoutEditContext.Provider>
     </div>
   );
