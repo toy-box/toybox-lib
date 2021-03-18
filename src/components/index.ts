@@ -12,6 +12,7 @@ export { default as DropdownMenu } from './DropdownMenu';
 export { default as FilterTag } from './FilterTag';
 export { default as FilterSearch } from './FilterSearch';
 export { default as FilterBuilder } from './FilterBuilder';
+export { default as FilterTags } from './FilterTags';
 export { default as Fields } from './Fields';
 export { default as Header } from './Header';
 export { default as ImpInput } from './ImpInput';

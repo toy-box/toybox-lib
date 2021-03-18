@@ -6,12 +6,16 @@ import React, {
   useState,
   ReactNode,
   ReactText,
+  useContext,
 } from 'react';
 import { DatePicker, Input, InputNumber, Select as AntSelect } from 'antd';
 // import { useSelector } from 'react-redux';
 import { SelectValue, LabeledValue } from 'antd/lib/select';
 import { RawValueType } from 'rc-tree-select/lib/interface';
 import moment from 'moment';
+import get from 'lodash.get';
+import localeMap from '../locale';
+import LocaleContext from 'antd/lib/locale-provider/context';
 import Fields from '../../Fields';
 import SelectPro from '../../SelectPro';
 // import Fields from '../../Fields';
@@ -54,6 +58,13 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
 }) => {
   const [initial, setInitial] = useState(false);
   const [treeData, setTreeData] = useState([]);
+
+  const antLocale = useContext(LocaleContext);
+  const locale = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+    [antLocale],
+  );
+  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
   // const [innerValues, setInnerValues] = useState<(number | string)[]>([]);
 
   // const sceneSetupState = useSelector(state => state.sceneSetup);
@@ -241,7 +252,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         return (
           <Input
             disabled={filterField == null}
-            placeholder="请收入维度值"
+            placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
             value={value}
             onChange={e => handleValue(e.target.value)}
@@ -251,7 +262,9 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         return (
           <InputNumber
             disabled={filterField == null}
-            placeholder={`请输入${filterField.name}`}
+            placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
+              filterField.name
+            }`}
             style={style}
             value={value}
             onChange={value => handleValue(value)}
@@ -277,7 +290,9 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         return (
           <SelectPro
             disabled={filterField == null}
-            placeholder={`请选择${filterField.name}`}
+            placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
+              filterField.name
+            }`}
             mode={multiple ? 'multiple' : undefined}
             allowClear
             style={style}
@@ -290,13 +305,17 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           />
         );
       case BusinessFieldType.OBJECT_ID:
-        if (filterField.parentKey != null && filterField.parentKey !== '') {
+        if (
+          filterField.parentKey != null &&
+          filterField.parentKey !== '' &&
+          multiple
+        ) {
           return (
             <Fields.FieldTreeSelect
               field={field}
               style={style}
               mode={mode}
-              placeholder="请选择维度值"
+              placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
               multiple={multiple}
               value={value}
               onChange={handleValue}
@@ -308,7 +327,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         }
         return (
           <SelectPro
-            placeholder="请选择维度值"
+            placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
             options={filterField.options}
             mode={multiple ? 'multiple' : undefined}
@@ -326,7 +345,9 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         return (
           <Input
             disabled={filterField == null}
-            placeholder={`请输入${filterField.name}`}
+            placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
+              filterField.name
+            }`}
             style={style}
             value={value}
             onChange={e => handleValue(e.target.value)}

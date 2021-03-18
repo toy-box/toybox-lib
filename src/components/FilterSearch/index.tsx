@@ -1,16 +1,23 @@
-import React, { FC, useState, useMemo, useCallback, useEffect } from 'react';
+import React, {
+  FC,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
 import { Form, Tooltip, Popover, Button } from 'antd';
 import { CompareOP } from '../../types/compare';
-import zhCN from './locale/zh_CN';
+import localeMap from './locale';
 import {
   FieldMeta,
   ICompareOperation,
   BusinessFieldType,
   FieldService,
 } from '../../types/compare';
-import FilterTag from '../FilterTag/index';
 import update from 'immutability-helper';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
+import LocaleContext from 'antd/lib/locale-provider/context';
 import Container from './components/Container';
 import { Filter3Line } from '@airclass/icons';
 
@@ -51,42 +58,19 @@ const FilterSearch: FC<IFilterSearchProps> = ({
 }) => {
   const [tagValue, setTagValue] = useState(value);
   const [filterEditVisible, setFilterEditVisible] = useState(false);
-
-  const filterTags = useMemo(() => {
-    let tags: any[] = [];
-    filterFieldMetas.forEach(filed => {
-      const meta = tagValue?.filter(val => val.source === filed.key);
-      console.log(meta, 'meta');
-      if (meta) {
-        meta.forEach(met => {
-          tags.push({
-            title: filed.name,
-            key: met.source,
-            op: met.op,
-            labelValue: [
-              {
-                label: met.target,
-                value: met.target,
-              },
-            ],
-          });
-        });
-      }
-    });
-    console.log('tagValue', tagValue, tags);
-    return tags;
-  }, [filterFieldMetas, tagValue]);
-
-  const ellipsis = useCallback(tag => {
-    return true;
-  }, []);
+  const antLocale = useContext(LocaleContext);
+  const locale = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+    [antLocale],
+  );
+  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
   const save = useCallback(async (filterItem: Partial<ICompareOperation>[]) => {
     console.log('new compare12121212', filterItem);
     setFilterEditVisible(false);
     const p = filterItem.filter(item => item.op && item.target != null);
     setTagValue(p);
-    // onChange(filterItem);
+    onChange(filterItem);
   }, []);
 
   const filterValue = useCallback(
@@ -114,6 +98,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
         const idx =
           tagValue &&
           tagValue.findIndex(field => field.source === filterField.key);
+        let tagValues = tagValue;
         switch (filterField.type) {
           case BusinessFieldType.STRING:
           case BusinessFieldType.SINGLE_OPTION:
@@ -124,13 +109,16 @@ const FilterSearch: FC<IFilterSearchProps> = ({
               target: val,
             };
             if ((idx || idx === 0) && idx > -1) {
-              if (val)
-                return setTagValue(
-                  update(tagValue, { [idx]: { $set: filterItem } }),
-                );
-              return setTagValue(update(tagValue, { $splice: [[idx, 1]] }));
+              if (val) {
+                tagValues = update(tagValue, { [idx]: { $set: filterItem } });
+                setTagValue(tagValues);
+              } else {
+                tagValues = update(tagValue, { $splice: [[idx, 1]] });
+                setTagValue(tagValues);
+              }
             } else {
-              setTagValue(update(tagValue, { $push: [filterItem] }));
+              tagValues = update(tagValue, { $push: [filterItem] });
+              setTagValue(tagValues);
             }
             console.log(tagValue, idx);
             break;
@@ -141,12 +129,15 @@ const FilterSearch: FC<IFilterSearchProps> = ({
               target: val,
             };
             if ((idx || idx === 0) && idx > -1) {
-              setTagValue(update(tagValue, { [idx]: { $set: fieldItem } }));
+              tagValues = update(tagValue, { [idx]: { $set: fieldItem } });
+              setTagValue(tagValues);
             } else {
-              setTagValue(update(tagValue, { $push: [fieldItem] }));
+              tagValues = update(tagValue, { $push: [fieldItem] });
+              setTagValue(tagValues);
             }
             break;
         }
+        onChange(tagValues as Partial<ICompareOperation>[]);
       }
     },
     [tagValue],
@@ -163,7 +154,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
         filterFieldMetas={filterFieldMetas}
         value={tagValue}
         isBaseBuilder={isBaseBuilder || true}
-        title={title || '条件过滤(AND)'}
+        title={title || localeData.lang.filter['defaultTitle']}
         filterFieldService={filterFieldService}
         onChange={(filterItem: Partial<ICompareOperation>[]) =>
           save(filterItem)
@@ -204,22 +195,12 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             onVisibleChange={setFilterEditVisible}
             destroyTooltipOnHide={true}
           >
-            <Tooltip placement="top" title={zhCN.lang.filter['tip']}>
+            <Tooltip placement="top" title={localeData.lang.filter['tip']}>
               <Button icon={<Filter3Line />} />
             </Tooltip>
           </Popover>
         </Form.Item>
       </Form>
-      <div className="filter-mode-tag" style={{ marginTop: '10px' }}>
-        {filterTags.map((tag, idx) => (
-          <FilterTag
-            key={idx}
-            style={{ width: '100px' }}
-            filter={tag}
-            ellipsis={ellipsis(tag)}
-          />
-        ))}
-      </div>
     </div>
   );
 };

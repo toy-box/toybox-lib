@@ -3,8 +3,8 @@
 基础用法:
 
 ```tsx
-import React, { useCallback, useState } from 'react';
-import { FilterSearch } from '@toy-box/toybox-lib';
+import React, { useCallback, useState, useMemo } from 'react';
+import { FilterSearch, FilterTags } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';
 
 export default () => {
@@ -37,8 +37,7 @@ export default () => {
       serviceTest(resolve, key);
     }).then(res => {
       // console.log(res, 1223333);
-      if (key === 'deptId')
-        return [{ id: '2', pId: '1', value: '1', title: 'Expand to load2' }];
+      if (key === 'deptId') return [{ value: '1', label: 'Expand to load' }];
       return [
         {
           label: 'SIX',
@@ -75,10 +74,23 @@ export default () => {
       // }];
       console.log(parentId, 'parentId');
       if (parentId === '2') return [];
-      if (parentId) return [];
+      if (parentId)
+        return [
+          {
+            id: '2',
+            pId: '1',
+            value: '2',
+            title: 'Expand to load11111',
+          },
+        ];
       return [{ id: '1', pId: 0, value: '1', title: 'Expand to load' }];
     });
   }
+
+  const onChange = useCallback((compares, key) => {
+    console.log(compares, 'compares');
+    setTagValue(compares);
+  }, []);
 
   const filter = {
     filterFieldMetas: [
@@ -150,9 +162,88 @@ export default () => {
       findDataTrees: (key, parentId) => findDataTrees(key, parentId),
     },
   };
+  const filterFieldTags = [
+    {
+      description: null,
+      exclusiveMaximum: null,
+      exclusiveMinimum: null,
+      format: null,
+      key: 'deptId',
+      maxLength: null,
+      maximum: null,
+      minLength: null,
+      minimum: null,
+      name: '部门',
+      options: null,
+      parentKey: 'parent_id',
+      pattern: null,
+      primary: null,
+      properties: null,
+      refObjectId: '5f9630d977b9ec42e4d0dca5',
+      required: null,
+      titleKey: 'name',
+      type: 'objectId',
+      unique: null,
+      unBasic: true,
+      remote: remoteOfTags.bind(this),
+    },
+    {
+      description: null,
+      exclusiveMaximum: null,
+      exclusiveMinimum: null,
+      format: null,
+      key: 'copId',
+      maxLength: null,
+      maximum: null,
+      minLength: null,
+      minimum: null,
+      name: '公司',
+      options: [
+        {
+          label: '12323232',
+          value: '1',
+        },
+        {
+          label: 'bbbbbbb',
+          value: '2',
+        },
+      ],
+      pattern: null,
+      primary: null,
+      properties: null,
+      refObjectId: '5f9630d977b9ec42e4d0dca5',
+      required: null,
+      titleKey: 'name',
+      type: 'singleOption',
+      unique: null,
+      unBasic: true,
+      remote: remoteOfTags.bind(this),
+    },
+  ];
+  const [tagValue, setTagValue] = useState(filter.value);
+  function remoteOfTags(value, key) {
+    console.log(value, key);
+    return new Promise(resolve => {
+      serviceTest(resolve);
+    }).then(res => {
+      const meta = filter.filterFieldMetas.find(filed => filed.key === key);
+      if (meta && meta.options) {
+        const list = meta.options.map(op => {
+          const p = value.find(val => val === op.value);
+          if (p) return op.label;
+        });
+        return list.filter(item => item);
+      } else if (key === 'deptId') {
+        return ['Expand to load'];
+      }
+    });
+  }
   return (
     <div>
-      <FilterSearch {...filter} />
+      <FilterSearch {...filter} onChange={compares => onChange(compares)} />
+      <div style={{ marginTop: '10px' }}>
+        <FilterTags filterFieldTags={filterFieldTags} value={tagValue} />
+      </div>
     </div>
   );
 };

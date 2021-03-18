@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useState, useEffect } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+} from 'react';
 import { Button } from 'antd';
 import update from 'immutability-helper';
 import {
@@ -7,6 +14,8 @@ import {
   LogicOP,
   FieldService,
 } from '../../types/compare';
+import localeMap from './locale';
+import LocaleContext from 'antd/lib/locale-provider/context';
 import { CompareOperation } from './components/CompareOperation';
 export interface IFilterBuilderProps {
   filterFieldMetas: FieldMeta[];
@@ -26,6 +35,13 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
     value || [],
   );
+
+  const antLocale = useContext(LocaleContext);
+  const locale = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+    [antLocale],
+  );
+  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
   const handleFilterItem = useCallback(
     (filterItem: Partial<ICompareOperation>, index: number) => {
@@ -71,6 +87,7 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
           compare={filterItem}
           compares={compares}
           isBaseBuilder={isBaseBuilder}
+          localeData={localeData}
           filterFieldService={filterFieldService}
           remove={() => handleRemove(idx)}
           onChange={(filterItem: Partial<ICompareOperation>) =>
@@ -80,7 +97,7 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
       ))}
       <Button type="dashed" style={{ width: '200px' }} onClick={addFilter}>
         <i className="ri-add-circle-line" />
-        添加
+        {localeData.lang.operate['add']}
       </Button>
     </div>
   );

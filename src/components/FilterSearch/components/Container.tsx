@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useState, useEffect, useMemo } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+} from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 import update from 'immutability-helper';
@@ -8,6 +15,8 @@ import {
   FieldService,
   LogicOP,
 } from '../../../types/compare';
+import localeMap from '../locale';
+import LocaleContext from 'antd/lib/locale-provider/context';
 import FilterBuilder from '../../FilterBuilder';
 
 export interface IFilterContainerProps {
@@ -60,6 +69,13 @@ export const Container: FC<IFilterContainerProps> = ({
     Partial<ICompareOperation>[]
   >(value || []);
 
+  const antLocale = useContext(LocaleContext);
+  const locale = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+    [antLocale],
+  );
+  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
+
   const handleFilter = useCallback(
     async (filterItem: Partial<ICompareOperation>[]) => {
       setInitCompares(filterItem);
@@ -104,10 +120,10 @@ export const Container: FC<IFilterContainerProps> = ({
           type="primary"
           onClick={() => onChange(initCompares)}
         >
-          保存
+          {localeData.lang.filter['savebtn']}
         </Button>
         <Button size="small" onClick={onCancel}>
-          取消
+          {localeData.lang.filter['cancelBtn']}
         </Button>
       </ButtonPanelWrapper>
     </FilterSetupWrapper>

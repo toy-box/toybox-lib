@@ -11,6 +11,7 @@ import update from 'immutability-helper';
 import { Button, Form, Select, Input } from 'antd';
 import { FilterValueInput } from './FilterValueInput';
 import { CloseLine } from '@airclass/icons';
+import get from 'lodash.get';
 import {
   ICompareOperation,
   CompareOP,
@@ -33,6 +34,7 @@ export interface CompareOperationProps {
   compares: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
   isBaseBuilder?: boolean;
+  localeData: any;
   onChange: (compare: Partial<ICompareOperation>) => void;
   remove: () => void;
 }
@@ -44,6 +46,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   onChange,
   isBaseBuilder,
   remove,
+  localeData,
   filterFieldService,
 }) => {
   const [filterKey, setFilterKey] = useState(compare.source);
@@ -78,36 +81,40 @@ export const CompareOperation: FC<CompareOperationProps> = ({
       case BusinessFieldType.NUMBER:
       case BusinessFieldType.DATE:
       case BusinessFieldType.DATETIME:
-        return [
-          { label: '等于', value: '$eq' },
-          { label: '不等于', value: '$ne' },
-          { label: '大于', value: '$gt' },
-          { label: '小于', value: '$lt' },
-          { label: '大于等于', value: '$gte' },
-          { label: '小于等于', value: '$lte' },
-        ];
+        const compareOperation = ['$eq', '$ne', '$gt', '$lt', '$gte', '$lte'];
+        return compareOperation.map(op => {
+          return {
+            label: get(localeData.lang, `compareOperation.${op}`),
+            value: op,
+          };
+        });
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
         if (filterFieldMeta.parentKey != null) {
-          return [
-            { label: '包括', value: '$in' },
-            { label: '不包括', value: '$nin' },
-          ];
+          const compareOperation = ['$in', '$nin'];
+          return compareOperation.map(op => {
+            return {
+              label: get(localeData.lang, `compareOperation.${op}`),
+              value: op,
+            };
+          });
         }
-        return [
-          { label: '等于', value: '$eq' },
-          { label: '不等于', value: '$ne' },
-          { label: '包括', value: '$in' },
-          { label: '不包括', value: '$nin' },
-        ];
+        const operations = ['$eq', '$ne', '$in', '$nin'];
+        return operations.map(op => {
+          return {
+            label: get(localeData.lang, `compareOperation.${op}`),
+            value: op,
+          };
+        });
       default:
-        return [
-          { label: '等于', value: '$eq' },
-          { label: '不等于', value: '$ne' },
-          { label: '包括', value: '$in' },
-          { label: '不包括', value: '$nin' },
-        ];
+        const defultOperation = ['$eq', '$ne', '$in', '$nin'];
+        return defultOperation.map(op => {
+          return {
+            label: get(localeData.lang, `compareOperation.${op}`),
+            value: op,
+          };
+        });
     }
   }, [filterFieldMeta]);
 
@@ -160,7 +167,11 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         style={inputStyle}
       />
     ) : (
-      <Input disabled placeholder="请选择维度值" style={inputStyle} />
+      <Input
+        disabled
+        placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
+        style={inputStyle}
+      />
     );
   }, [filterValue, filterFieldMeta, multiple, onValueChange]);
 
@@ -178,7 +189,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
             style={{ width: '154px' }}
             value={filterKey}
             options={fieldOptions}
-            placeholder="请选择维度"
+            placeholder={get(localeData.lang, 'filed.placeholderOp.select')}
             onChange={onKeyChange}
           />
         </Form.Item>
