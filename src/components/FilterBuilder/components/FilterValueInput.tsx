@@ -242,9 +242,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     name: 'Tree',
     type: 'treeSelect',
   };
-  // useEffect(() => {
-  //   // loadByValue();
-  // }, [filterField.key, filterFieldService]);
 
   const input = useMemo(() => {
     switch (filterField?.type) {
