@@ -6,13 +6,20 @@ import React, {
   useImperativeHandle,
   useRef,
   useState,
+  useCallback,
 } from 'react';
 import classNames from 'classnames';
+import { useScroll, useSize } from 'ahooks';
 import LayoutEditContext from '../context';
 import { LayoutItem } from './simpleLayout';
+import { ItemSize } from '../interface';
 
 import '../styles/layoutPreview.less';
 
+interface Pos {
+  x?: number;
+  y?: number;
+}
 export interface LayoutFrameProps {
   src: string;
   className?: string;
@@ -20,39 +27,79 @@ export interface LayoutFrameProps {
   style?: any;
 }
 
+const fixWidth = 318 + 24 + 200 - 15;
+
 const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
   { src, className, frameWidth, style },
   ref,
 ) => {
-  const innerRef = useRef<any>();
   const prefixCls = 'tbox-layout-edit-preview';
-
+  const previewWrapRef = useRef<any>();
+  const innerRef = useRef<any>();
   useImperativeHandle(
     ref,
     () => ({
       contentWindow: innerRef.current.contentWindow,
     }),
-    [],
+    [innerRef.current],
   );
   const context = useContext(LayoutEditContext);
   const [ready, setReady] = useState(false);
-  const draging = useMemo(() => context.draging, [context.draging]);
-  const [pos, setPos] = useState({
-    clientX: 0,
-    clientY: 0,
-  });
+  const scroll = useScroll(previewWrapRef);
+  const size = useSize(previewWrapRef);
+  // const [layoutCache, setLayoutCache] = useState<LayoutItem[]>([]);
+  // const [iframePosX, setIframePosX] = useState<number | undefined>();
+  // const [iframePosY, setIframePosY] = useState<number | undefined>();
 
+  // message handle
   useEffect(() => {
     if (context.messager) {
       context.messager.on('ready', () => {
         setReady(true);
       });
       context.messager.on('setAll', (layout: LayoutItem[]) =>
-        context.change('setAll', layout),
+        context.change(layout),
       );
+      context.messager.on('itemSize', (itemSize: ItemSize) => console.log);
     }
   }, [context.messager]);
 
+  const addPalaceholder = useCallback(() => {
+    console.log('addPalaceholder ...');
+    context.messager &&
+      context.messager.broadcast('palaceholder', { type: 'card', index: 2 });
+  }, [context.draging, context.change, context.messager]);
+
+  const cancelPalaceholder = useCallback(() => {
+    console.log('leave drag');
+    context.messager && context.messager.broadcast('removePalaceholder', null);
+  }, [context.change, context.messager]);
+
+  const palaceholderEnd = useCallback(() => {
+    console.log('palaceholder end');
+    context.messager && context.messager.broadcast('palaceholderEnd', null);
+  }, [context.messager]);
+
+  const handleDargOverMask = useCallback(
+    (event: React.MouseEvent) => {
+      const x =
+        (event.clientX || 0) +
+        scroll.left -
+        ((size.width || 0) - 375) / 2 -
+        fixWidth;
+      const y = (event.clientY || 0) + scroll.top;
+      console.log('over mask', x, y);
+
+      if (x > 0 && y > 0) {
+        addPalaceholder();
+      }
+      // setIframePosX((event.clientX || 0) + scroll.left - ((size.width || 0) - 375) / 2 - fixWidth);
+      // setIframePosY((event.clientY || 0) + scroll.top);
+    },
+    [scroll],
+  );
+
+  // iframe onload
   useEffect(() => {
     if (innerRef.current) {
       innerRef.current.onload = () => {
@@ -74,8 +121,22 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
     [frameWidth],
   );
 
+  const mask = useMemo(() => {
+    return context.draging ? (
+      <div
+        className={`${prefixCls}-drag-mask`}
+        onMouseMove={handleDargOverMask}
+        onMouseLeave={cancelPalaceholder}
+      />
+    ) : null;
+  }, [context.draging]);
+
   return (
-    <div className={classNames(`${prefixCls}-wrap`, className)} style={style}>
+    <div
+      className={classNames(`${prefixCls}-wrap`, className)}
+      style={style}
+      ref={previewWrapRef}
+    >
       <div className={classNames(prefixCls, className)} style={frameStyle}>
         <iframe
           className={`${prefixCls}-iframe-wrap`}
@@ -86,21 +147,8 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
           width="100%"
           height="1164"
         />
-        <div style={{ position: 'absolute', bottom: '120px' }}>
-          {JSON.stringify(pos)}
-        </div>
       </div>
-      {true && (
-        <div
-          className={`${prefixCls}-drag-mask`}
-          onDragOver={e =>
-            setPos({
-              clientX: e.clientX,
-              clientY: e.clientY,
-            })
-          }
-        />
-      )}
+      {mask}
     </div>
   );
 };

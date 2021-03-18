@@ -14,7 +14,7 @@ export default class Messager {
 
   handleMessageListener = (event: any) => {
     if (event.origin !== this.targetOrigin) {
-      console.warn(`layoutframe ${event.origin}不对应源${this.targetOrigin}`);
+      // console.warn(`layoutframe ${event.origin}不对应源${this.targetOrigin}`);
       return;
     }
     if (!event.data || !event.data.action) {

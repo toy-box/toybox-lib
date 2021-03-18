@@ -10,11 +10,23 @@ export interface ItemTypeBase {
 
 export type NumPerRowType = 1 | 2 | 3 | 4 | 5;
 export interface ItemType extends ItemTypeBase {
-  defaultProps: any;
-  content: ContentRender | ReactNode;
+  props?: Record<string, unknown>;
+  content?: ContentRender | ReactNode;
 }
 
 export interface GroupType {
   title: string;
   items: ItemType[];
+}
+
+export declare interface Size {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
+export declare interface ItemSize {
+  key: string;
+  size: Size;
 }

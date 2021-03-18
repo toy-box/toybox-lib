@@ -13,8 +13,11 @@ declare type LayoutItemRender = (
   props?: any,
 ) => ReactNode;
 
-export interface LayoutItem extends ItemType {
+export interface LayoutItem {
+  key: string;
   index: number;
+  type: string;
+  props: Record<string, unknown>;
 }
 
 export interface SimpleLayoutProps {

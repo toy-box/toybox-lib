@@ -1,88 +1,5 @@
 ## LayoutEdit 布局编辑器
 
-### SimpleLayout:
-
-```tsx
-import React, { useState, useEffect, useCallback } from 'react';
-import { Button } from 'antd';
-import { ItemStore, SimpleLayout } from '@toy-box/toybox-lib';
-import LayoutEditContext from './context';
-import 'antd/dist/antd.css';
-
-const layoutItems = [
-  {
-    key: 'a',
-    type: 'base',
-    index: 0,
-  },
-];
-
-const itemRender = props => {
-  return (
-    <React.Fragment>
-      <div className="in-store">{props.title}</div>
-      <div className="in-layout">===={props.title}=====</div>
-    </React.Fragment>
-  );
-};
-
-export default () => {
-  const [layout, setLayout] = useState(layoutItems);
-  const [active, setActive] = useState();
-  const change = useCallback(
-    (action: string, state: any) => {
-      if (action === 'add') {
-        const { item, newIndex } = state;
-        setLayout([
-          ...layout.map(l => ({
-            ...l,
-            index: l.index >= newIndex ? l.index + 1 : l.index,
-          })),
-          { index: newIndex, ...item },
-        ]);
-      }
-      if (action === 'setAll') {
-        setLayout(state);
-      }
-      if (action === 'active') {
-        setActive(state);
-      }
-    },
-    [layout, setLayout],
-  );
-
-  const items = [
-    {
-      key: 'a',
-      type: 'base',
-      title: 'BASE',
-      content: itemRender,
-    },
-    {
-      key: 'b',
-      type: 'redbox',
-      title: 'RED BOX',
-      content: itemRender,
-    },
-  ];
-
-  return (
-    <div style={{ display: 'flex' }}>
-      <LayoutEditContext.Provider
-        value={{
-          layout,
-          change,
-          active,
-        }}
-      >
-        <ItemStore dataSource={items} width={200} numPreRow={2} />
-        <SimpleLayout />
-      </LayoutEditContext.Provider>
-    </div>
-  );
-};
-```
-
 ### LayoutFrame:
 
 ```tsx
@@ -103,13 +20,13 @@ const itemRender = props => {
 const items = [
   {
     key: 'a',
-    type: 'base',
+    type: 'card1',
     title: 'BASE',
     content: itemRender,
   },
   {
     key: 'b',
-    type: 'redbox',
+    type: 'card2',
     title: 'RED BOX',
     content: itemRender,
   },
@@ -154,28 +71,14 @@ export default () => {
   }, [setMessager, ref.current]);
 
   const change = useCallback(
-    (action: string, state: any) => {
-      if (action === 'add') {
-        const { item, newIndex } = state;
-        setLayout([
-          ...layout.map(l => ({
-            ...l,
-            index: l.index >= newIndex ? l.index + 1 : l.index,
-          })),
-          { index: newIndex, ...item },
-        ]);
-      }
-      if (action === 'setAll') {
-        setLayout(state);
-      }
-      if (action === 'active') {
-        setActive(state);
-      }
+    (state: any) => {
+      setLayout(state);
     },
-    [layout, setLayout],
+    [setLayout],
   );
 
   const src = 'http://localhost:8080';
+
   return (
     <div style={{ display: 'flex', position: 'relative', height: '720px' }}>
       <LayoutEditContext.Provider
@@ -210,4 +113,72 @@ export default () => {
     </div>
   );
 };
+```
+
+### SimpleLayout:
+
+```
+// import React, { useState, useEffect, useCallback } from 'react';
+// import { Button } from 'antd';
+// import { ItemStore, SimpleLayout } from '@toy-box/toybox-lib';
+// import LayoutEditContext from './context';
+// import 'antd/dist/antd.css';
+
+// const layoutItems = [
+//   {
+//     key: 'a',
+//     type: 'base',
+//     index: 0,
+//   },
+// ];
+
+// const itemRender = props => {
+//   return (
+//     <React.Fragment>
+//       <div className="in-store">{props.title}</div>
+//       <div className="in-layout">===={props.title}=====</div>
+//     </React.Fragment>
+//   );
+// };
+
+// export default () => {
+//   const [layout, setLayout] = useState(layoutItems);
+//   const [active, setActive] = useState();
+//   const change = useCallback(
+//     (state: any) => {
+//       setLayout(state);
+//     },
+//     [layout, setLayout],
+//   );
+
+//   const items = [
+//     {
+//       key: 'a',
+//       type: 'base',
+//       title: 'BASE',
+//       content: itemRender,
+//     },
+//     {
+//       key: 'b',
+//       type: 'redbox',
+//       title: 'RED BOX',
+//       content: itemRender,
+//     },
+//   ];
+
+//   return (
+//     <div style={{ display: 'flex' }}>
+//       <LayoutEditContext.Provider
+//         value={{
+//           layout,
+//           change,
+//           active,
+//         }}
+//       >
+//         <ItemStore dataSource={items} width={200} numPreRow={2} />
+//         <SimpleLayout />
+//       </LayoutEditContext.Provider>
+//     </div>
+//   );
+// };
 ```

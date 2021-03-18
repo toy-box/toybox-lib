@@ -31,6 +31,17 @@ export const StoreGroup: FC<StoreGroupProps> = ({
     items,
   ]);
 
+  const handleDragStart = () => {
+    console.log('start drag');
+    context.setDraging && context.setDraging(true);
+  };
+
+  const handleDragEnd = () => {
+    console.log('end drag');
+    context.setDraging && context.setDraging(false);
+    context.messager && context.messager.broadcast('palaceholderEnd', null);
+  };
+
   return (
     <ReactSortable
       tag="div"
@@ -44,8 +55,9 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       group={{ name: 'storeItem', pull: 'clone', put: false }}
       sort={false}
       setList={() => undefined}
-      onStart={() => context.setDraging && context.setDraging(true)}
-      onEnd={() => context.setDraging && context.setDraging(false)}
+      onStart={handleDragStart}
+      onEnd={handleDragEnd}
+      forceFallback
     >
       {items.map(item => (
         <StoreItem key={item.key} item={item} className={itemClass} />

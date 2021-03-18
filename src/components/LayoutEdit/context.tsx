@@ -1,18 +1,24 @@
 import React from 'react';
 import Messager from './components/Messager';
+import { LayoutItem } from './components/simpleLayout';
 
 export interface LayoutEditContext<LayoutType> {
   layout: LayoutType;
-  change: (action: string, state: any) => void;
+  change: (layout: unknown) => void;
   active?: string;
-  messager?: Messager;
+  setActive: (key: string) => void;
+  palaceholder: (type: string, index: number) => void;
   draging?: boolean;
   setDraging?: (draging: boolean) => void;
+  messager?: Messager;
 }
 
-const LayoutEditContext = React.createContext<LayoutEditContext<any>>({
+const LayoutEditContext = React.createContext<LayoutEditContext<LayoutItem[]>>({
   layout: [],
-  change: () => undefined,
+  change: (layout: unknown) => console.log(layout),
+  setActive: (key: string) => console.log(key),
+  palaceholder: (type: string, index: number) =>
+    console.log('placeholder', type, index),
 });
 
 export default LayoutEditContext;
