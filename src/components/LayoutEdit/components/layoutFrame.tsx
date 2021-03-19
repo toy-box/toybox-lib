@@ -64,19 +64,19 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
     }
   }, [context.messager]);
 
-  const addPalaceholder = useCallback(() => {
-    console.log('addPalaceholder ...');
-    context.messager &&
-      context.messager.broadcast('palaceholder', { type: 'card', index: 2 });
-  }, [context.draging, context.change, context.messager]);
+  const addPalaceholder = useCallback(
+    (type: string, pos: { x: number; y: number }) => {
+      context.messager &&
+        context.messager.broadcast('palaceholder', { type, pos });
+    },
+    [context.draging, context.change, context.messager],
+  );
 
   const cancelPalaceholder = useCallback(() => {
-    console.log('leave drag');
     context.messager && context.messager.broadcast('removePalaceholder', null);
   }, [context.change, context.messager]);
 
   const palaceholderEnd = useCallback(() => {
-    console.log('palaceholder end');
     context.messager && context.messager.broadcast('palaceholderEnd', null);
   }, [context.messager]);
 
@@ -88,13 +88,10 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
         ((size.width || 0) - 375) / 2 -
         fixWidth;
       const y = (event.clientY || 0) + scroll.top;
-      console.log('over mask', x, y);
-
+      console.log('move mask', x, y);
       if (x > 0 && y > 0) {
-        addPalaceholder();
+        addPalaceholder('card', { x, y });
       }
-      // setIframePosX((event.clientX || 0) + scroll.left - ((size.width || 0) - 375) / 2 - fixWidth);
-      // setIframePosY((event.clientY || 0) + scroll.top);
     },
     [scroll],
   );
