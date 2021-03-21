@@ -7,7 +7,7 @@ export interface LayoutEditContext<LayoutType> {
   change: (layout: unknown) => void;
   active?: string;
   setActive: (key: string) => void;
-  palaceholder: (type: string, index: number) => void;
+  palaceholder?: (type: string, index: number) => void;
   draging?: boolean;
   setDraging?: (draging: boolean) => void;
   messager?: Messager;

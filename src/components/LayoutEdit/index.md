@@ -86,6 +86,7 @@ export default () => {
           layout,
           change,
           active,
+          setActive,
           messager,
           draging,
           setDraging,
@@ -117,68 +118,69 @@ export default () => {
 
 ### SimpleLayout:
 
-```
-// import React, { useState, useEffect, useCallback } from 'react';
-// import { Button } from 'antd';
-// import { ItemStore, SimpleLayout } from '@toy-box/toybox-lib';
-// import LayoutEditContext from './context';
-// import 'antd/dist/antd.css';
+```tsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { Button } from 'antd';
+import { ItemStore, SimpleLayout } from '@toy-box/toybox-lib';
+import LayoutEditContext from './context';
+import 'antd/dist/antd.css';
 
-// const layoutItems = [
-//   {
-//     key: 'a',
-//     type: 'base',
-//     index: 0,
-//   },
-// ];
+const layoutItems = [
+  {
+    key: 'a',
+    type: 'base',
+    index: 0,
+  },
+];
 
-// const itemRender = props => {
-//   return (
-//     <React.Fragment>
-//       <div className="in-store">{props.title}</div>
-//       <div className="in-layout">===={props.title}=====</div>
-//     </React.Fragment>
-//   );
-// };
+const itemRender = props => {
+  return (
+    <React.Fragment>
+      <div className="in-store">{props.title}</div>
+      <div className="in-layout">===={props.title}=====</div>
+    </React.Fragment>
+  );
+};
 
-// export default () => {
-//   const [layout, setLayout] = useState(layoutItems);
-//   const [active, setActive] = useState();
-//   const change = useCallback(
-//     (state: any) => {
-//       setLayout(state);
-//     },
-//     [layout, setLayout],
-//   );
+export default () => {
+  const [layout, setLayout] = useState(layoutItems);
+  const [active, setActive] = useState();
+  const change = useCallback(
+    (state: any) => {
+      setLayout(state);
+    },
+    [layout, setLayout],
+  );
 
-//   const items = [
-//     {
-//       key: 'a',
-//       type: 'base',
-//       title: 'BASE',
-//       content: itemRender,
-//     },
-//     {
-//       key: 'b',
-//       type: 'redbox',
-//       title: 'RED BOX',
-//       content: itemRender,
-//     },
-//   ];
+  const items = [
+    {
+      key: 'a',
+      type: 'base',
+      title: 'BASE',
+      content: itemRender,
+    },
+    {
+      key: 'b',
+      type: 'redbox',
+      title: 'RED BOX',
+      content: itemRender,
+    },
+  ];
 
-//   return (
-//     <div style={{ display: 'flex' }}>
-//       <LayoutEditContext.Provider
-//         value={{
-//           layout,
-//           change,
-//           active,
-//         }}
-//       >
-//         <ItemStore dataSource={items} width={200} numPreRow={2} />
-//         <SimpleLayout />
-//       </LayoutEditContext.Provider>
-//     </div>
-//   );
-// };
+  return (
+    <div style={{ display: 'flex' }}>
+      <LayoutEditContext.Provider
+        value={{
+          layout,
+          change,
+          active,
+          setActive,
+        }}
+      >
+        <ItemStore dataSource={items} width={200} numPreRow={2} />
+        <SimpleLayout />
+      </LayoutEditContext.Provider>
+    </div>
+  );
+};
 ```

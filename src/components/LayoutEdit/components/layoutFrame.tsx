@@ -47,9 +47,6 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
   const [ready, setReady] = useState(false);
   const scroll = useScroll(previewWrapRef);
   const size = useSize(previewWrapRef);
-  // const [layoutCache, setLayoutCache] = useState<LayoutItem[]>([]);
-  // const [iframePosX, setIframePosX] = useState<number | undefined>();
-  // const [iframePosY, setIframePosY] = useState<number | undefined>();
 
   // message handle
   useEffect(() => {

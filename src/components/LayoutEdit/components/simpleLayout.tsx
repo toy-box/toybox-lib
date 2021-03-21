@@ -1,8 +1,8 @@
 import React, { FC, ReactNode, useCallback, useContext, useMemo } from 'react';
 import classNames from 'classnames';
+import { nanoid } from 'nanoid';
 import { ReactSortable } from 'react-sortablejs';
 import sortBy from 'lodash.sortby';
-import { ItemType } from '../interface';
 import LayoutEditContext from '../context';
 
 import '../styles/simpleLayout.less';
@@ -64,25 +64,40 @@ export const SimpleLayout: FC<SimpleLayoutProps> = ({
 
   const addItem = useCallback(
     (item: any, evt: any) => {
-      context.change('add', { item, index: evt.newIndex });
-      return { ...item, index: evt.newIndex };
+      console.log('add', item);
+      const reIndex = context.layout.map(i => {
+        if (i.index >= evt.newIndex) {
+          return {
+            ...i,
+            index: i.index + 1,
+          };
+        }
+        return i;
+      });
+      const newId = nanoid();
+      const newItem = {
+        id: newId,
+        key: newId,
+        type: item.type,
+        props: item.props,
+        index: evt.newIndex,
+      };
+      context.change([...reIndex, newItem]);
+      return newItem;
     },
     [context.change],
   );
 
   const setList = useCallback(
     (newState: any[], sortable: any, store: any) => {
-      context.change(
-        'setAll',
-        newState.map((item, index) => ({ ...item, index })),
-      );
+      context.change(newState.map((item, index) => ({ ...item, index })));
     },
     [context.change],
   );
 
   const activeItem = useCallback(
     (key: string) => {
-      context.change('active', key);
+      context.setActive(key);
     },
     [context.change],
   );
@@ -107,11 +122,7 @@ export const SimpleLayout: FC<SimpleLayoutProps> = ({
             isActive={context.active === item.key}
           >
             {typeof render === 'function'
-              ? render(
-                  item.type,
-                  context.active === item.key,
-                  item.defaultProps,
-                )
+              ? render(item.type, context.active === item.key, item.props)
               : render}
           </LayoutItemWrapper>
         );

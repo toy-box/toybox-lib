@@ -45,6 +45,7 @@
     "lodash.intersection": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "lodash.throttle": "^4.1.1",
+    "nanoid": "^3.1.22",
     "numbro": "^2.3.2",
     "qs": "^6.9.6",
     "react": "^16.12.0",
