@@ -1,9 +1,17 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from 'react';
 import { Tag, TagProps, Tooltip } from 'antd';
 import get from 'lodash.get';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import localeMap from './locale';
 import { CompareOP } from '../../types/compare';
+import './style.less';
 export interface LabelValue {
   value: any;
   label: string;
@@ -26,6 +34,7 @@ export interface FilterTagProps extends TagProps {
   filter: FilterData;
   ellipsis?: boolean;
   remote?: (value: BasicValueType[]) => Promise<(string | number)[]>;
+  remove?: () => void;
 }
 
 const FilterTag: FC<FilterTagProps> = ({
@@ -33,6 +42,7 @@ const FilterTag: FC<FilterTagProps> = ({
   ellipsis,
   style,
   remote,
+  remove,
   ...tagProps
 }) => {
   const { title, op } = filter;
@@ -101,7 +111,13 @@ const FilterTag: FC<FilterTagProps> = ({
   }, [ellipsis, text]);
 
   return (
-    <Tag style={styleMixs} {...tagProps}>
+    <Tag
+      className="filter-tag"
+      style={styleMixs}
+      closable={remove != null}
+      onClose={() => remove && remove()}
+      {...tagProps}
+    >
       {content}
     </Tag>
   );

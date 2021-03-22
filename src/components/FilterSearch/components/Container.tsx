@@ -23,7 +23,6 @@ export interface IFilterContainerProps {
   filterFieldMetas: FieldMeta[];
   value?: Partial<ICompareOperation>[];
   title: string;
-  isBaseBuilder?: boolean;
   filterFieldService?: FieldService;
   onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
   onCancel?: () => void;
@@ -60,7 +59,6 @@ export const Container: FC<IFilterContainerProps> = ({
   onCancel,
   title,
   filterFieldService,
-  isBaseBuilder,
 }) => {
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
     value || [],
@@ -83,13 +81,6 @@ export const Container: FC<IFilterContainerProps> = ({
     [initCompares],
   );
 
-  const contentValue = useMemo(() => {
-    return {
-      isBaseBuilder,
-      title,
-    };
-  }, [isBaseBuilder]);
-
   useEffect(() => {
     if (compares !== value) setCompares(value || []);
   }, [value]);
@@ -106,7 +97,6 @@ export const Container: FC<IFilterContainerProps> = ({
         <FilterBuilder
           filterFieldMetas={filterFieldMetas}
           value={compares}
-          isBaseBuilder={isBaseBuilder}
           filterFieldService={filterFieldService}
           onChange={(filterItem: Partial<ICompareOperation>[]) =>
             handleFilter(filterItem)

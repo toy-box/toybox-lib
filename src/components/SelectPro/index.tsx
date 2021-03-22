@@ -139,6 +139,10 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
   }));
 
   useEffect(() => {
+    setLocalOptions(options || []);
+  }, [options]);
+
+  useEffect(() => {
     const init = async () => {
       if (value != null && current == null && !initialed && remoteByValue) {
         const options = await remoteByValue(value, params);

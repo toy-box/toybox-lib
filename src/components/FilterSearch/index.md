@@ -5,6 +5,7 @@
 ```tsx
 import React, { useCallback, useState, useMemo } from 'react';
 import { FilterSearch, FilterTags } from '@toy-box/toybox-lib';
+import update from 'immutability-helper';
 import 'antd/dist/antd.css';
 
 export default () => {
@@ -149,13 +150,6 @@ export default () => {
         unBasic: true,
       },
     ],
-    value: [
-      {
-        source: 'deptId',
-        op: '$in',
-        target: '1',
-      },
-    ],
     filterFieldService: {
       findOptions: (key, name) => findOptions(key, name),
       findOfValues: (key, value) => findOfValues(key, value),
@@ -220,9 +214,15 @@ export default () => {
       remote: remoteOfTags.bind(this),
     },
   ];
-  const [tagValue, setTagValue] = useState(filter.value);
+  const value = [
+    {
+      source: 'deptId',
+      op: '$in',
+      target: '1',
+    },
+  ];
+  const [tagValue, setTagValue] = useState(value);
   function remoteOfTags(value, key) {
-    console.log(value, key);
     return new Promise(resolve => {
       serviceTest(resolve);
     }).then(res => {
@@ -238,11 +238,26 @@ export default () => {
       }
     });
   }
+
+  const removeTag = useCallback(
+    index => {
+      setTagValue(update(tagValue, { $splice: [[index, 1]] }));
+    },
+    [tagValue],
+  );
   return (
     <div>
-      <FilterSearch {...filter} onChange={compares => onChange(compares)} />
+      <FilterSearch
+        {...filter}
+        value={tagValue}
+        onChange={compares => onChange(compares)}
+      />
       <div style={{ marginTop: '10px' }}>
-        <FilterTags filterFieldTags={filterFieldTags} value={tagValue} />
+        <FilterTags
+          filterFieldTags={filterFieldTags}
+          value={tagValue}
+          remove={idx => removeTag(idx)}
+        />
       </div>
     </div>
   );

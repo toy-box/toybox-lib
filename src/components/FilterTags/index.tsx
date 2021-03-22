@@ -14,12 +14,14 @@ export interface FilterMetaTag extends FieldMeta {
 export interface FilterTagsProps {
   filterFieldTags: FilterMetaTag[];
   value?: Partial<ICompareOperation>[];
+  remove?: (index: number) => void;
   // remote?: (value: BasicValueType[], key: string) => Promise<(string | number)[]>;
 }
 
 const FilterTags: FC<FilterTagsProps> = ({
   filterFieldTags,
   value,
+  remove,
   // remote,
 }) => {
   const ellipsis = useCallback(
@@ -86,6 +88,7 @@ const FilterTags: FC<FilterTagsProps> = ({
           style={{ width: width(tag) }}
           remote={remote(tag) ? value => remoteMethod(value, tag) : undefined}
           filter={tag}
+          remove={remove ? () => remove(idx) : undefined}
           ellipsis={ellipsis(tag)}
         />
       ))}
