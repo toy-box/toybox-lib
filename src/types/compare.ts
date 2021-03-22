@@ -1,3 +1,5 @@
+import { FieldMeta } from './interface';
+
 export enum CompareOP {
   EQ = '$eq',
   GT = '$gt',
@@ -30,29 +32,6 @@ export enum BusinessFieldType {
   PERCENT = 'percent',
 }
 
-export interface FieldMeta {
-  key: string;
-  name: string;
-  type: BusinessFieldType;
-  description?: string;
-  options?: FieldOption[];
-  refObjectId?: string;
-  unique?: boolean;
-  required?: boolean;
-  maximum?: number;
-  minimum?: number;
-  exclusiveMaximum?: boolean;
-  exclusiveMinimum?: boolean;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: string;
-  format?: string;
-  properties?: { [key: string]: FieldMeta };
-  titleKey?: string;
-  parentKey?: string;
-  unBasic?: boolean;
-}
-
 export interface ILogicFilter {
   logic: LogicOP;
   compares: Partial<ICompareOperation>[];
@@ -72,13 +51,13 @@ export enum LogicOP {
 }
 
 export interface FieldService extends FieldMeta {
-  findOptions: (key: BusinessFieldType, name: string) => Promise<void> | void;
+  findOptions: (key: string, name: string) => Promise<void> | void;
   findOfValues: (
-    key: BusinessFieldType,
+    key: string,
     value: (string | number)[],
   ) => Promise<void> | void;
   findDataTrees: (
-    key: BusinessFieldType,
+    key: string,
     parentId: string | number,
   ) => Promise<void> | void;
   findOtherData: (field: FieldMeta) => Promise<void> | void;

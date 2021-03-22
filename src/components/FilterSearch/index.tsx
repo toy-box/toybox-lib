@@ -10,7 +10,6 @@ import { Form, Tooltip, Popover, Button } from 'antd';
 import { CompareOP } from '../../types/compare';
 import localeMap from './locale';
 import {
-  FieldMeta,
   ICompareOperation,
   BusinessFieldType,
   FieldService,
@@ -19,7 +18,8 @@ import update from 'immutability-helper';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import Container from './components/Container';
-import { Filter3Line, ContactsBookLine } from '@airclass/icons';
+import { Filter3Line } from '@airclass/icons';
+import { FieldMeta } from '@/types/interface';
 
 export interface LabelValue {
   value: any;
@@ -38,16 +38,17 @@ export interface FilterLabel {
 
 export interface IFilterSearchProps {
   filterFieldMetas: FieldMeta[];
+  simpleFilterKeys?: string[];
   value?: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
-  title: string;
-  // filterLables?: FilterLabel[];
-  onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
+  title?: string;
+  onChange?: (compares: Partial<ICompareOperation>[]) => void;
   onCancel?: () => void;
 }
 
 const FilterSearch: FC<IFilterSearchProps> = ({
   filterFieldMetas,
+  simpleFilterKeys = [],
   filterFieldService,
   value,
   title,
@@ -63,12 +64,11 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const save = useCallback(async (filterItem: Partial<ICompareOperation>[]) => {
-    console.log('new compare12121212', filterItem);
+  const save = useCallback((filterItem: Partial<ICompareOperation>[]) => {
     setFilterEditVisible(false);
     const p = filterItem.filter(item => item.op && item.target != null);
     setTagValue(p);
-    onChange(filterItem);
+    onChange && onChange(filterItem);
   }, []);
 
   const filterValue = useCallback(
@@ -91,7 +91,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
 
   const onValueChange = useCallback(
     (val: any, filterField: FieldMeta) => {
-      console.log(val, filterField, 'filterField');
       if (val !== undefined) {
         const idx =
           tagValue &&
@@ -141,7 +140,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             }
             break;
         }
-        onChange(tagValues as Partial<ICompareOperation>[]);
+        onChange && onChange(tagValues as Partial<ICompareOperation>[]);
       }
     },
     [tagValue],
@@ -176,26 +175,28 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   return (
     <div className="filter-model">
       <Form layout="inline">
-        {filterFieldMetas.map(
-          (filterFieldMeta, idx) =>
-            filterFieldMeta.unBasic && (
-              <Form.Item>
-                <FilterValueInput
-                  key={idx}
-                  value={filterValue(filterFieldMeta)}
-                  filterFieldService={filterFieldService}
-                  multiple={false}
-                  filterField={filterFieldMeta}
-                  onChange={value => onValueChange(value, filterFieldMeta)}
-                  style={inputStyle}
-                />
-              </Form.Item>
-            ),
-        )}
+        {simpleFilterKeys.map((key, idx) => {
+          const fieldMeta = filterFieldMetas.find(field => field.key === key);
+          return fieldMeta ? (
+            <Form.Item>
+              <FilterValueInput
+                key={idx}
+                value={filterValue(fieldMeta)}
+                filterFieldService={filterFieldService}
+                multiple={false}
+                filterField={fieldMeta}
+                onChange={value => onValueChange(value, fieldMeta)}
+                style={inputStyle}
+              />
+            </Form.Item>
+          ) : (
+            undefined
+          );
+        })}
         <Form.Item>
           <Popover
             overlayClassName="no-padding"
-            placement="right"
+            placement="bottom"
             content={filterContainer}
             trigger="click"
             visible={filterEditVisible}

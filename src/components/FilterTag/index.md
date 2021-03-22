@@ -34,9 +34,21 @@ export default () => {
 
   return (
     <div>
-      <FilterTag key="1" style={{ width: '100px' }} filter={filter} ellipsis />
-      <FilterTag key="2" style={{ width: '140px' }} filter={filter} ellipsis />
-      <FilterTag key="3" filter={filter} ellipsis />
+      <FilterTag
+        key="1"
+        style={{ width: '100px' }}
+        filter={filter}
+        ellipsis
+        remove={console.log}
+      />
+      <FilterTag
+        key="2"
+        style={{ width: '140px' }}
+        filter={filter}
+        ellipsis
+        remove={console.log}
+      />
+      <FilterTag key="3" filter={filter} remove={console.log} />
       <FilterTag key="4" filter={remoteFilter} remote={remote} />
     </div>
   );

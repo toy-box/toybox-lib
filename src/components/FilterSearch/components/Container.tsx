@@ -24,7 +24,7 @@ export interface IFilterContainerProps {
   value?: Partial<ICompareOperation>[];
   title: string;
   filterFieldService?: FieldService;
-  onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
+  onChange: (compares: Partial<ICompareOperation>[]) => void;
   onCancel?: () => void;
 }
 

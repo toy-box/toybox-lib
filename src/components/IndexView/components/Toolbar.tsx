@@ -1,24 +1,49 @@
-import React, { useState } from 'react';
-import { Select, Form } from 'antd';
-import Search from '../../Search';
-import { Button, FilterTag } from '../../';
-import { FilterData } from '../../FilterTag';
+import React, { FC, useCallback, useState } from 'react';
+import update from 'immutability-helper';
+import { Button } from '../../';
+import {
+  default as FilterSearch,
+  IFilterSearchProps,
+} from '../../FilterSearch';
+import { default as FilterTags } from '../../FilterTags';
+import { ICompareOperation } from '../../../types/compare';
 
-const Toolbar = () => {
-  const [filters, setFilters] = useState<FilterData[]>([]);
+export declare interface ToolbarProps {
+  filterSearch?: Omit<IFilterSearchProps, 'value'>;
+  filterValue?: Partial<ICompareOperation>[];
+  onFilterChange?: (value: Partial<ICompareOperation>[]) => void;
+}
+
+const Toolbar: FC<ToolbarProps> = ({
+  filterSearch,
+  filterValue = [],
+  onFilterChange,
+}) => {
+  const removeTag = useCallback(
+    index =>
+      onFilterChange &&
+      onFilterChange(update(filterValue, { $splice: [[index, 1]] })),
+    [filterValue, onFilterChange],
+  );
+
+  const handleChange = useCallback(
+    (value: Partial<ICompareOperation>[]) => {
+      onFilterChange && onFilterChange(value);
+    },
+    [filterSearch],
+  );
 
   return (
     <div className="tbox-index-view-toolbar">
       <div className="tbox-index-view-toolbar-main">
         <div className="tbox-index-view-toolbar-main-left">
-          <Form layout="inline">
-            <Form.Item>
-              <Select placeholder="please select" />
-            </Form.Item>
-            <Form.Item>
-              <Search.IconSearch />
-            </Form.Item>
-          </Form>
+          {filterSearch && (
+            <FilterSearch
+              {...filterSearch}
+              value={filterValue}
+              onChange={handleChange}
+            />
+          )}
         </div>
         <div className="tbox-index-view-toolbar-main-right button-group">
           <Button type="primary">新建</Button>
@@ -26,9 +51,13 @@ const Toolbar = () => {
         </div>
       </div>
       <div className="tbox-index-view-toolbar-footer">
-        {filters.map(filter => (
-          <FilterTag filter={filter} />
-        ))}
+        {filterSearch && (
+          <FilterTags
+            filterFieldTags={filterSearch.filterFieldMetas}
+            value={filterValue}
+            remove={idx => removeTag(idx)}
+          />
+        )}
       </div>
     </div>
   );

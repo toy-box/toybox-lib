@@ -1,17 +1,10 @@
-import React, {
-  FC,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Tag, TagProps, Tooltip } from 'antd';
 import get from 'lodash.get';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import localeMap from './locale';
 import { CompareOP } from '../../types/compare';
-import './style.less';
+
 export interface LabelValue {
   value: any;
   label: string;
@@ -41,6 +34,7 @@ const FilterTag: FC<FilterTagProps> = ({
   filter,
   ellipsis,
   style,
+  className,
   remote,
   remove,
   ...tagProps
@@ -79,10 +73,13 @@ const FilterTag: FC<FilterTagProps> = ({
             whiteSpaces: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            display: 'inline-block',
+            verticalAlign: 'bottom',
           }
         : {},
     [ellipsis],
   );
+
   const styleMixs = useMemo(
     () => ({
       ...style,
@@ -102,18 +99,26 @@ const FilterTag: FC<FilterTagProps> = ({
 
   const content = useMemo(() => {
     return ellipsis ? (
-      <Tooltip title={text} placement="topLeft">
-        {text}
-      </Tooltip>
+      <span style={styleMixs}>{text}</span>
     ) : (
-      text
+      <span style={styleMixs}>text</span>
     );
   }, [ellipsis, text]);
 
-  return (
+  return ellipsis ? (
+    <Tooltip title={text} placement="topLeft">
+      <Tag
+        className={className}
+        closable={remove != null}
+        onClose={() => remove && remove()}
+        {...tagProps}
+      >
+        {content}
+      </Tag>
+    </Tooltip>
+  ) : (
     <Tag
-      className="filter-tag"
-      style={styleMixs}
+      className={className}
       closable={remove != null}
       onClose={() => remove && remove()}
       {...tagProps}
