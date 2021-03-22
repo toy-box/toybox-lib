@@ -68,7 +68,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     setFilterEditVisible(false);
     const p = filterItem.filter(item => item.op && item.target != null);
     setTagValue(p);
-    onChange(filterItem);
+    onChange(p);
   }, []);
 
   const filterValue = useCallback(
@@ -171,12 +171,22 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     );
   }, [filterFieldMetas, tagValue, filterFieldService]);
 
+  const filterLeftFieldMetas = useMemo(() => {
+    return filterFieldMetas.filter(
+      fieldMeta => !fieldMeta.layout || fieldMeta.layout === 'left',
+    );
+  }, [filterFieldMetas]);
+
+  const filterRightFieldMetas = useMemo(() => {
+    return filterFieldMetas.filter(fieldMeta => fieldMeta.layout === 'right');
+  }, [filterFieldMetas]);
+
   const inputStyle = { width: '198px' };
 
   return (
     <div className="filter-model">
       <Form layout="inline">
-        {filterFieldMetas.map(
+        {filterLeftFieldMetas.map(
           (filterFieldMeta, idx) =>
             filterFieldMeta.unBasic && (
               <Form.Item>
@@ -185,6 +195,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
                   value={filterValue(filterFieldMeta)}
                   filterFieldService={filterFieldService}
                   multiple={false}
+                  singleMode
                   filterField={filterFieldMeta}
                   onChange={value => onValueChange(value, filterFieldMeta)}
                   style={inputStyle}
@@ -207,6 +218,23 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             </Tooltip>
           </Popover>
         </Form.Item>
+        {filterRightFieldMetas.map(
+          (filterFieldMeta, idx) =>
+            filterFieldMeta.unBasic && (
+              <Form.Item>
+                <FilterValueInput
+                  key={idx}
+                  value={filterValue(filterFieldMeta)}
+                  filterFieldService={filterFieldService}
+                  multiple={false}
+                  singleMode
+                  filterField={filterFieldMeta}
+                  onChange={value => onValueChange(value, filterFieldMeta)}
+                  style={inputStyle}
+                />
+              </Form.Item>
+            ),
+        )}
       </Form>
     </div>
   );

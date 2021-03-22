@@ -28,6 +28,7 @@ export enum BusinessFieldType {
   SINGLE_OPTION = 'singleOption',
   DOCUMENT = 'document',
   PERCENT = 'percent',
+  SEARCH_ICON = 'searchIcon',
 }
 
 export interface FieldMeta {
@@ -51,6 +52,10 @@ export interface FieldMeta {
   titleKey?: string;
   parentKey?: string;
   unBasic?: boolean;
+  layout: 'left' | 'right';
+  frozen?: boolean;
+  IconSearch?: boolean;
+  optionSearch?: boolean;
 }
 
 export interface ILogicFilter {

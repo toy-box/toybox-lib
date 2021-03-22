@@ -94,6 +94,14 @@ export const CompareOperation: FC<CompareOperationProps> = ({
             value: op,
           };
         });
+      case BusinessFieldType.SEARCH_ICON:
+        const likes = ['$eq'];
+        return likes.map(op => {
+          return {
+            label: get(localeData.lang, `compareOperation.${op}`),
+            value: op,
+          };
+        });
       default:
         const defultOperation = ['$eq', '$ne', '$in', '$nin'];
         return defultOperation.map(op => {

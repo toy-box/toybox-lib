@@ -18,6 +18,8 @@ import localeMap from '../locale';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import Fields from '../../Fields';
 import SelectPro from '../../SelectPro';
+import Search from '../../Search';
+import { SearchLine } from '@airclass/icons';
 // import Fields from '../../Fields';
 // import { Select } from '../../fields/Select';
 import {
@@ -45,6 +47,7 @@ export interface FilterValueInputProps {
   style?: any;
   mode?: 'read' | 'edit' | 'update';
   filterFieldService?: FieldService;
+  singleMode?: boolean;
 }
 
 export const FilterValueInput: FC<FilterValueInputProps> = ({
@@ -54,6 +57,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   multiple,
   style,
   mode = 'edit',
+  singleMode,
   filterFieldService,
 }) => {
   const [initial, setInitial] = useState(false);
@@ -247,13 +251,48 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     switch (filterField?.type) {
       case BusinessFieldType.STRING:
         return (
-          <Input
+          <Fields.FieldString
             disabled={filterField == null}
-            placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
+            field={field}
+            mode={mode}
             style={style}
+            placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
+              filterField.name
+            }`}
             value={value}
             onChange={e => handleValue(e.target.value)}
           />
+        );
+      case BusinessFieldType.SEARCH_ICON:
+        if (singleMode) {
+          return (
+            <div style={style}>
+              <Search.IconSearch
+                disabled={filterField == null}
+                placeholder={`${get(
+                  localeData.lang,
+                  'filed.placeholderOp.param',
+                )}${filterField.name}`}
+                value={value}
+                onChange={value => handleValue(value)}
+              >
+                <SearchLine />
+              </Search.IconSearch>
+            </div>
+          );
+        }
+        return (
+          <div style={style}>
+            <Search
+              disabled={filterField == null}
+              placeholder={`${get(
+                localeData.lang,
+                'filed.placeholderOp.param',
+              )}${filterField.name}`}
+              value={value}
+              onChange={value => handleValue(value)}
+            />
+          </div>
         );
       case BusinessFieldType.NUMBER:
         return (
@@ -269,19 +308,39 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         );
       case BusinessFieldType.DATE:
         return (
-          <DatePicker
-            value={value != null ? moment(value) : null}
-            onChange={value => handleValue(value?.format('YYYY/MM/DD'))}
-          />
+          // <DatePicker
+          //   value={value != null ? moment(value) : null}
+          //   onChange={value => handleValue(value?.format('YYYY/MM/DD'))}
+          // />
+          <div style={style}>
+            <Fields.FieldDate
+              value={value}
+              mode={mode}
+              field={field}
+              format={filterField.format || 'YYYY/MM/DD'}
+              onChange={value =>
+                handleValue(value?.format(filterField.format || 'YYYY/MM/DD'))
+              }
+            />
+          </div>
         );
       case BusinessFieldType.DATETIME:
         return (
-          <DatePicker
-            value={value != null ? moment(value) : null}
-            onChange={value =>
-              handleValue(value?.format('YYYY/MM/DD HH:mm:ss'))
-            }
-          />
+          <div style={style}>
+            <Fields.FieldDate
+              value={value}
+              mode={mode}
+              field={field}
+              showTime
+              style={style}
+              format={filterField.format || 'YYYY/MM/DD HH:mm:ss'}
+              onChange={value =>
+                handleValue(
+                  value?.format(filterField.format || 'YYYY/MM/DD HH:mm:ss'),
+                )
+              }
+            />
+          </div>
         );
       case BusinessFieldType.SINGLE_OPTION:
         return (
@@ -340,15 +399,26 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         );
       default:
         return (
-          <Input
+          <Fields.FieldString
             disabled={filterField == null}
+            field={field}
+            mode={mode}
+            style={style}
             placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
               filterField.name
             }`}
-            style={style}
             value={value}
             onChange={e => handleValue(e.target.value)}
           />
+          // <Input
+          //   disabled={filterField == null}
+          //   placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
+          //     filterField.name
+          //   }`}
+          //   style={style}
+          //   value={value}
+          //   onChange={e => handleValue(e.target.value)}
+          // />
         );
     }
   }, [

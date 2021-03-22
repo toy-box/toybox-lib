@@ -96,7 +96,7 @@ const FilterTag: FC<FilterTagProps> = ({
       `${title} ${get(
         localeData.lang,
         `compareOperation.${op}`,
-      )} ${labelValues.join(',')}`,
+      )} ${labelValues && labelValues.join(',')}`,
     [title, op, labelValues],
   );
 

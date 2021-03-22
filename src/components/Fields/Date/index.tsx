@@ -25,6 +25,7 @@ export declare type FieldBasePickerProps = Omit<
 export declare type FieldDateProps = FieldBasePickerProps & {
   picker?: DatePickerProps['picker'];
   dateMode?: PickerBaseProps<Dayjs>['mode'];
+  showTime?: boolean;
 };
 
 const defaultFormat = 'YYYY-MM-DD';
@@ -43,6 +44,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     bordered,
     onChange,
     onClick,
+    showTime,
     onOpenChange,
     dateMode,
   },
@@ -101,6 +103,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         picker={picker}
         open={open}
         mode={dateMode}
+        showTime
         onOpenChange={onOpenChange}
         {...fieldProps}
       />
