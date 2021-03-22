@@ -21,7 +21,6 @@ export interface IFilterBuilderProps {
   filterFieldMetas: FieldMeta[];
   value?: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
-  isBaseBuilder?: boolean;
   onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
 }
 
@@ -29,7 +28,6 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
   value,
   filterFieldMetas,
   filterFieldService,
-  isBaseBuilder,
   onChange,
 }) => {
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
@@ -85,8 +83,6 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
           key={idx}
           filterFieldMetas={filterFieldMetas}
           compare={filterItem}
-          compares={compares}
-          isBaseBuilder={isBaseBuilder}
           localeData={localeData}
           filterFieldService={filterFieldService}
           remove={() => handleRemove(idx)}

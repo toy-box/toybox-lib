@@ -31,9 +31,8 @@ const inputStyle = { width: '198px' };
 export interface CompareOperationProps {
   filterFieldMetas: FieldMeta[];
   compare: Partial<ICompareOperation>;
-  compares: Partial<ICompareOperation>[];
+  // compares: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
-  isBaseBuilder?: boolean;
   localeData: any;
   onChange: (compare: Partial<ICompareOperation>) => void;
   remove: () => void;
@@ -42,9 +41,7 @@ export interface CompareOperationProps {
 export const CompareOperation: FC<CompareOperationProps> = ({
   filterFieldMetas,
   compare,
-  compares,
   onChange,
-  isBaseBuilder,
   remove,
   localeData,
   filterFieldService,
@@ -55,17 +52,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   // const [filterValues, setFilterValues] = useState<(string | number)[]>([]);
 
   const fieldOptions = useMemo(() => {
-    if (!isBaseBuilder)
-      return filterFieldMetas.map(field => ({
-        label: field.name,
-        value: field.key,
-      }));
-    const newFieldMetas: FieldMeta[] = [];
-    filterFieldMetas.forEach(field => {
-      const p = compares && compares.find(com => com.source === field.key);
-      if (!p || compare.source === field.key) newFieldMetas.push(field);
-    });
-    return newFieldMetas.map(field => ({
+    return filterFieldMetas.map(field => ({
       label: field.name,
       value: field.key,
     }));

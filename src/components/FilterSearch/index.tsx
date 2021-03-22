@@ -19,7 +19,7 @@ import update from 'immutability-helper';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import Container from './components/Container';
-import { Filter3Line } from '@airclass/icons';
+import { Filter3Line, ContactsBookLine } from '@airclass/icons';
 
 export interface LabelValue {
   value: any;
@@ -41,7 +41,6 @@ export interface IFilterSearchProps {
   value?: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
   title: string;
-  isBaseBuilder?: boolean;
   // filterLables?: FilterLabel[];
   onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
   onCancel?: () => void;
@@ -54,7 +53,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   title,
   onChange,
   onCancel,
-  isBaseBuilder,
 }) => {
   const [tagValue, setTagValue] = useState(value);
   const [filterEditVisible, setFilterEditVisible] = useState(false);
@@ -75,8 +73,8 @@ const FilterSearch: FC<IFilterSearchProps> = ({
 
   const filterValue = useCallback(
     filed => {
-      const meta = tagValue?.find(val => val.source === filed.key);
-      const metaArr = tagValue?.filter(val => val.source === filed.key);
+      const meta = value?.find(val => val.source === filed.key);
+      const metaArr = value?.filter(val => val.source === filed.key);
       if (metaArr && metaArr.length > 1) return;
       const isShowMeta =
         meta && (meta.op === CompareOP.IN || meta.op === CompareOP.EQ);
@@ -88,16 +86,19 @@ const FilterSearch: FC<IFilterSearchProps> = ({
         return meta.target;
       return;
     },
-    [tagValue],
+    [value],
   );
 
   const onValueChange = useCallback(
     (val: any, filterField: FieldMeta) => {
-      console.log(val);
+      console.log(val, filterField, 'filterField');
       if (val !== undefined) {
         const idx =
           tagValue &&
           tagValue.findIndex(field => field.source === filterField.key);
+        const unSelectValues =
+          tagValue &&
+          tagValue.filter(field => field.source !== filterField.key);
         let tagValues = tagValue;
         switch (filterField.type) {
           case BusinessFieldType.STRING:
@@ -110,17 +111,18 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             };
             if ((idx || idx === 0) && idx > -1) {
               if (val) {
-                tagValues = update(tagValue, { [idx]: { $set: filterItem } });
+                tagValues = update(unSelectValues, {
+                  [idx]: { $set: filterItem },
+                });
                 setTagValue(tagValues);
               } else {
-                tagValues = update(tagValue, { $splice: [[idx, 1]] });
+                tagValues = update(unSelectValues, { $splice: [[idx, 1]] });
                 setTagValue(tagValues);
               }
             } else {
-              tagValues = update(tagValue, { $push: [filterItem] });
+              tagValues = update(unSelectValues, { $push: [filterItem] });
               setTagValue(tagValues);
             }
-            console.log(tagValue, idx);
             break;
           default:
             const fieldItem: Partial<ICompareOperation> = {
@@ -129,10 +131,12 @@ const FilterSearch: FC<IFilterSearchProps> = ({
               target: val,
             };
             if ((idx || idx === 0) && idx > -1) {
-              tagValues = update(tagValue, { [idx]: { $set: fieldItem } });
+              tagValues = update(unSelectValues, {
+                [idx]: { $set: fieldItem },
+              });
               setTagValue(tagValues);
             } else {
-              tagValues = update(tagValue, { $push: [fieldItem] });
+              tagValues = update(unSelectValues, { $push: [fieldItem] });
               setTagValue(tagValues);
             }
             break;
@@ -147,13 +151,16 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     setFilterEditVisible(false);
   }, []);
 
+  useEffect(() => {
+    setTagValue(value);
+  }, [value]);
+
   // 子组件
   const filterContainer = useMemo(() => {
     return (
       <Container
         filterFieldMetas={filterFieldMetas}
         value={tagValue}
-        isBaseBuilder={isBaseBuilder || true}
         title={title || localeData.lang.filter['defaultTitle']}
         filterFieldService={filterFieldService}
         onChange={(filterItem: Partial<ICompareOperation>[]) =>
