@@ -1,5 +1,8 @@
 import React, { FC, useState, useMemo, useCallback, useContext } from 'react';
 import { Form, Tooltip, Popover, Button } from 'antd';
+import LocaleContext from 'antd/lib/locale-provider/context';
+import { Filter3Line } from '@airclass/icons';
+import update from 'immutability-helper';
 import { CompareOP } from '../../types/compare';
 import localeMap from './locale';
 import {
@@ -7,12 +10,9 @@ import {
   BusinessFieldType,
   FieldService,
 } from '../../types/compare';
-import update from 'immutability-helper';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
-import LocaleContext from 'antd/lib/locale-provider/context';
 import Container from './components/Container';
-import { Filter3Line } from '@airclass/icons';
-import { FieldMeta } from '@/types/interface';
+import { FieldMeta } from '../../types/interface';
 
 export interface LabelValue {
   value: any;
