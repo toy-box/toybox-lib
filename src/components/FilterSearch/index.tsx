@@ -28,6 +28,8 @@ export interface LabelValue {
 
 export declare type LabelValueType = LabelValue | LabelValue[];
 
+export declare type FilterType = ICompareOperation[];
+
 export interface FilterLabel {
   title: string;
   key: string;
@@ -39,10 +41,10 @@ export interface FilterLabel {
 export interface IFilterSearchProps {
   filterFieldMetas: FieldMeta[];
   simpleFilterKeys?: string[];
-  value?: Partial<ICompareOperation>[];
+  value?: FilterType;
   filterFieldService?: FieldService;
   title?: string;
-  onChange?: (compares: Partial<ICompareOperation>[]) => void;
+  onChange?: (filter?: FilterType) => void;
   onCancel?: () => void;
 }
 
@@ -64,11 +66,11 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const save = useCallback((filterItem: Partial<ICompareOperation>[]) => {
+  const save = useCallback((filter: FilterType) => {
     setFilterEditVisible(false);
-    const p = filterItem.filter(item => item.op && item.target != null);
+    const p = filter.filter(item => item.op && item.target != null);
     setTagValue(p);
-    onChange && onChange(filterItem);
+    onChange && onChange(filter);
   }, []);
 
   const filterValue = useCallback(
@@ -103,7 +105,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
           case BusinessFieldType.STRING:
           case BusinessFieldType.SINGLE_OPTION:
           case BusinessFieldType.OBJECT_ID:
-            const filterItem: Partial<ICompareOperation> = {
+            const filterItem: ICompareOperation = {
               source: filterField.key,
               op: '$in' as CompareOP,
               target: val,
@@ -124,7 +126,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             }
             break;
           default:
-            const fieldItem: Partial<ICompareOperation> = {
+            const fieldItem: ICompareOperation = {
               source: filterField.key,
               op: '$eq' as CompareOP,
               target: val,
@@ -140,7 +142,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             }
             break;
         }
-        onChange && onChange(tagValues as Partial<ICompareOperation>[]);
+        onChange && onChange(tagValues);
       }
     },
     [tagValue],
@@ -162,9 +164,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
         value={tagValue}
         title={title || localeData.lang.filter['defaultTitle']}
         filterFieldService={filterFieldService}
-        onChange={(filterItem: Partial<ICompareOperation>[]) =>
-          save(filterItem)
-        }
+        onChange={(filter: FilterType) => save(filter)}
         onCancel={cencel}
       />
     );

@@ -4,14 +4,14 @@ import { Button } from '../../';
 import {
   default as FilterSearch,
   IFilterSearchProps,
+  FilterType,
 } from '../../FilterSearch';
 import { default as FilterTags } from '../../FilterTags';
-import { ICompareOperation } from '../../../types/compare';
 
 export declare interface ToolbarProps {
   filterSearch?: Omit<IFilterSearchProps, 'value'>;
-  filterValue?: Partial<ICompareOperation>[];
-  onFilterChange?: (value: Partial<ICompareOperation>[]) => void;
+  filterValue?: FilterType;
+  onFilterChange?: (value: FilterType) => void;
 }
 
 const Toolbar: FC<ToolbarProps> = ({
@@ -27,7 +27,7 @@ const Toolbar: FC<ToolbarProps> = ({
   );
 
   const handleChange = useCallback(
-    (value: Partial<ICompareOperation>[]) => {
+    (value: FilterType) => {
       onFilterChange && onFilterChange(value);
     },
     [filterSearch],

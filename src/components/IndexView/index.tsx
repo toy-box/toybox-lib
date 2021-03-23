@@ -2,8 +2,9 @@ import React, {
   useMemo,
   useImperativeHandle,
   Ref,
-  useState,
   useCallback,
+  useEffect,
+  useState,
   ReactNode,
   ForwardRefRenderFunction,
 } from 'react';
@@ -16,12 +17,13 @@ import { BusinessObjectMeta } from '../../types/interface';
 import { OperateItem } from '../MetaTable/components/OperateColumn';
 import { FieldType } from '../Fields/interface';
 import { RowData } from '../../types/interface';
-import { useQuery } from '../../hooks';
+import { useQueryFilter } from '../../hooks';
 import TablePanel from './components/TablePanel';
 import Toolbar from './components/Toolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
-import { FieldService, ICompareOperation } from '../../types/compare';
+import { FieldService } from '../../types/compare';
+import { FilterType } from '../FilterSearch';
 
 import './style.less';
 
@@ -71,6 +73,7 @@ export interface IndexViewProps {
   renderContent?: (...args: any) => ReactNode;
   viewLink?: (...arg: any) => string;
   filterSearch?: FilterSearch;
+  filterKey?: string;
 }
 
 export interface ColumnVisible {
@@ -99,11 +102,19 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     loadData,
     urlQuery,
     filterSearch,
+    filterKey = 'filter',
   },
   ref: Ref<any>,
 ) => {
-  const [query, setQuery] = useQuery();
-  const [filter, setFilter] = useState<Partial<ICompareOperation>[]>();
+  const [queryFilter, setQueryFilter] = useQueryFilter();
+  const [simpleFilter, setSimpleFilter] = useState<FilterType>();
+
+  useEffect(() => {
+    if (queryFilter.filter != null && queryFilter.filter.compares != null) {
+      setSimpleFilter(queryFilter.filter.compares);
+    }
+  }, [queryFilter, setSimpleFilter]);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
     [],
   );
@@ -139,11 +150,11 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     {
       defaultPageSize: 20,
       defaultParams: [
-        { pageSize: query.pageSize || 20, current: query.current },
-        query,
+        { pageSize: queryFilter.pageSize, current: queryFilter.current },
+        queryFilter.filter,
       ] as any,
     },
-    urlQuery ? setQuery : undefined,
+    urlQuery ? setQueryFilter : undefined,
   );
 
   const rowSelection = useMemo(
@@ -307,8 +318,8 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
       <div className={classNames('tbox-index-view', className)} style={style}>
         <Toolbar
           filterSearch={filterSearchProps}
-          onFilterChange={setFilter}
-          filterValue={filter}
+          onFilterChange={setSimpleFilter}
+          filterValue={simpleFilter}
         />
         <TablePanel />
         <IndexContent />

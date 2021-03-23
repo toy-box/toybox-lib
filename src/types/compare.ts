@@ -34,7 +34,7 @@ export enum BusinessFieldType {
 
 export interface ILogicFilter {
   logic: LogicOP;
-  compares: Partial<ICompareOperation>[];
+  compares: ICompareOperation[];
 }
 
 export interface ICompareOperation {

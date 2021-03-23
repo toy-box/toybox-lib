@@ -7,24 +7,20 @@ import React, {
   useContext,
 } from 'react';
 import { Button } from 'antd';
-import styled from 'styled-components';
-import update from 'immutability-helper';
-import {
-  FieldMeta,
-  ICompareOperation,
-  FieldService,
-  LogicOP,
-} from '../../../types/compare';
-import localeMap from '../locale';
 import LocaleContext from 'antd/lib/locale-provider/context';
+import styled from 'styled-components';
+import { ICompareOperation, FieldService } from '../../../types/compare';
+import localeMap from '../locale';
 import FilterBuilder from '../../FilterBuilder';
+import { FieldMeta } from '../../../types/interface';
+import { FilterType } from '..';
 
 export interface IFilterContainerProps {
   filterFieldMetas: FieldMeta[];
-  value?: Partial<ICompareOperation>[];
+  value?: FilterType;
   title: string;
   filterFieldService?: FieldService;
-  onChange: (compares: Partial<ICompareOperation>[]) => void;
+  onChange: (compares: FilterType) => void;
   onCancel?: () => void;
 }
 
@@ -81,6 +77,17 @@ export const Container: FC<IFilterContainerProps> = ({
     [initCompares],
   );
 
+  const handleSave = useCallback(
+    () =>
+      onChange &&
+      onChange(
+        initCompares.filter(
+          item => item.source != null && item.op != null,
+        ) as FilterType,
+      ),
+    [initCompares, onChange],
+  );
+
   useEffect(() => {
     if (compares !== value) setCompares(value || []);
   }, [value]);
@@ -105,11 +112,7 @@ export const Container: FC<IFilterContainerProps> = ({
         {/* </BuilderContext.Provider> */}
       </FilterSetupItemsWrapper>
       <ButtonPanelWrapper>
-        <Button
-          size="small"
-          type="primary"
-          onClick={() => onChange(initCompares)}
-        >
+        <Button size="small" type="primary" onClick={handleSave}>
           {localeData.lang.filter['savebtn']}
         </Button>
         <Button size="small" onClick={onCancel}>
