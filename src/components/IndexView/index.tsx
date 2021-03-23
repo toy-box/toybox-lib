@@ -3,12 +3,12 @@ import React, {
   useImperativeHandle,
   Ref,
   useCallback,
-  useEffect,
   useState,
   ReactNode,
   ForwardRefRenderFunction,
 } from 'react';
 import { Button, Dropdown, Menu } from 'antd';
+import update from 'immutability-helper';
 import classNames from 'classnames';
 import { ListUnordered, TableLine, ArrowDownSLine } from '@airclass/icons';
 import useAntdTable from './hooks/useTable';
@@ -56,7 +56,13 @@ export interface IndexViewProps {
   visibleColumns: ColumnVisible[];
   visibleColumnSet?: boolean;
   style?: any;
+  /**
+   * @description 采用视图模式
+   */
   mode?: IndexMode;
+  /**
+   * @description 可支持的视图模式
+   */
   viewModes?: IndexMode[];
   className?: string;
   columnComponents?: Record<string, (...args: any) => ReactNode>;
@@ -72,8 +78,10 @@ export interface IndexViewProps {
   ) => Promise<PageResult>;
   renderContent?: (...args: any) => ReactNode;
   viewLink?: (...arg: any) => string;
+  /**
+   * @description 条件筛选配置
+   */
   filterSearch?: FilterSearch;
-  filterKey?: string;
 }
 
 export interface ColumnVisible {
@@ -102,14 +110,25 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     loadData,
     urlQuery,
     filterSearch,
-    filterKey = 'filter',
   },
   ref: Ref<any>,
 ) => {
   const [queryFilter, setQueryFilter] = useQueryFilter();
-  const [simpleFilter, setSimpleFilter] = useState<FilterType>();
 
-  const filterUtil = useMemo(
+  const simpleFilter = useMemo(() => queryFilter.filter?.compares, [
+    queryFilter.filter,
+  ]);
+
+  const setSimpleFilter = useCallback(
+    (compares?: FilterType) => {
+      setQueryFilter(
+        update(queryFilter, { filter: { compares: { $set: compares || [] } } }),
+      );
+    },
+    [queryFilter, setQueryFilter],
+  );
+
+  const filterForm = useMemo(
     () => ({
       setFilter: setQueryFilter,
       getFilter: () => queryFilter,
@@ -117,14 +136,6 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     }),
     [queryFilter, setQueryFilter],
   );
-
-  useEffect(() => {
-    if (queryFilter.filter != null && queryFilter.filter.compares != null) {
-      setSimpleFilter(queryFilter.filter.compares);
-    }
-  }, [queryFilter, setSimpleFilter]);
-
-  useEffect;
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
     [],

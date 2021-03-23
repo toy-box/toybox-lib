@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import useRequest from '@ahooksjs/use-request';
 import { useUpdateEffect, usePersistFn } from 'ahooks';
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   CombineService,
   PaginatedParams,
@@ -12,6 +12,7 @@ import {
   PaginatedFormatReturn,
   PaginatedResult,
 } from '@ahooksjs/use-request/lib/types';
+import { ILogicFilter, LogicOP } from '@/types/compare';
 
 export {
   CombineService,
@@ -26,24 +27,20 @@ export interface Store {
   [name: string]: any;
 }
 
-type Antd3ValidateFields = (
-  fieldNames: string[],
-  callback: (errors: any, values: any) => void,
-) => void;
 type Antd4ValidateFields = (fieldNames?: string[]) => Promise<any>;
 
 export interface UseAntdTableFormUtils {
   getFieldInstance?: (name: string) => {}; // antd 3
-  setFieldsValue: (value: Store) => void;
-  getFieldsValue: (...args: any) => Store;
+  setFieldsValue: (value: ILogicFilter) => void;
+  getFieldsValue: (...args: any) => ILogicFilter;
   resetFields: (...args: any) => void;
-  validateFields: Antd3ValidateFields | Antd4ValidateFields;
+  validateFields: Antd4ValidateFields;
   [key: string]: any;
 }
 
 export interface FilterUtil {
-  setFilter: (value: Store) => void;
-  getFilter: (...args: any) => Store;
+  setFilter: (value: ILogicFilter) => void;
+  getFilter: (...args: any) => ILogicFilter;
   resetFilter: (...args: any) => void;
 }
 
@@ -58,14 +55,12 @@ export interface Result<Item> extends PaginatedResult<Item> {
 
 export interface BaseOptions<U>
   extends Omit<BasePaginatedOptions<U>, 'paginated'> {
-  filter?: FilterUtil;
-  defaultType?: 'simple' | 'advance';
+  filterUtil?: FilterUtil;
 }
 
 export interface OptionsWithFormat<R, Item, U>
   extends Omit<PaginatedOptionsWithFormat<R, Item, U>, 'paginated'> {
-  filter?: FilterUtil;
-  defaultType?: 'simple' | 'advance';
+  filterUtil?: FilterUtil;
 }
 
 function useAntdTable<R = any, Item = any, U extends Item = any>(
@@ -84,10 +79,9 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
   setQuery?: (data: any) => void,
 ): any {
   const {
-    filter,
+    filterUtil,
     refreshDeps = [],
     manual,
-    defaultType = 'simple',
     defaultParams,
     ...restOptions
   } = options;
@@ -102,27 +96,28 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
   const cacheFormTableData = params[2] || ({} as any);
 
   // 优先从缓存中读
-  const [type, setType] = useState(cacheFormTableData.type || defaultType);
+  const [type, setType] = useState(cacheFormTableData.type);
 
   // 全量 form 数据，包括 simple 和 advance
-  const [allFormData, setAllFormData] = useState<Store>(
-    cacheFormTableData.allFormData || (defaultParams && defaultParams[1]) || {},
+  const [filterData, setFilterData] = useState<ILogicFilter>(
+    cacheFormTableData.filterData || (defaultParams && defaultParams[1]) || {},
   );
 
   // 获取当前展示的 form 字段值
-  const getActivetFieldValues = useCallback((): Store => {
-    if (!filter) {
-      return {};
+  const getActivetFieldValues = useCallback((): ILogicFilter => {
+    if (!filterUtil) {
+      return {
+        logic: LogicOP.AND,
+        compares: [],
+      };
     }
-    return filter.getFilter();
-  }, [filter]);
+    return filterUtil.getFilter();
+  }, [filterUtil]);
 
-  // const formRef = useRef(form);
-  // formRef.current = form;
   /* 初始化，或改变了 searchType, 恢复表单数据 */
   useEffect(() => {
-    filter && filter.setFilter(allFormData);
-  }, [filter, type]);
+    filterUtil && filterUtil.setFilter(filterData);
+  }, [filterUtil, type]);
 
   // 首次加载，手动提交。为了拿到 form 的 initial values
   useEffect(() => {
@@ -140,24 +135,24 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
 
   const changeType = useCallback(() => {
     const currentFormData = getActivetFieldValues();
-    setAllFormData({ ...allFormData, ...currentFormData });
+    setFilterData({ ...filterData, ...currentFormData });
 
     const targetType = type === 'simple' ? 'advance' : 'simple';
     setType(targetType);
-  }, [type, allFormData, getActivetFieldValues]);
+  }, [type, filterData, getActivetFieldValues]);
 
   const _submit = useCallback(
     (initParams?: any) => {
       setTimeout(() => {
         const activeFormData = getActivetFieldValues();
         // 记录全量数据
-        const _allFormData = { ...allFormData, ...activeFormData };
-        setAllFormData(_allFormData);
+        const _filterData = { ...filterData, ...activeFormData };
+        setFilterData(_filterData);
 
         // has defaultParams
         if (initParams) {
           run(initParams[0], activeFormData, {
-            allFormData: _allFormData,
+            filterData: _filterData,
             type,
           });
           return;
@@ -171,22 +166,22 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
           },
           activeFormData,
           {
-            allFormData: _allFormData,
+            filterData: _filterData,
             type,
           },
         );
         setQuery && setQuery(activeFormData);
       });
     },
-    [getActivetFieldValues, run, params, allFormData, type],
+    [getActivetFieldValues, run, params, filterData, type],
   );
 
   const reset = useCallback(() => {
-    if (filter) {
-      filter.resetFilter();
+    if (filterUtil) {
+      filterUtil.resetFilter();
     }
     _submit();
-  }, [filter, _submit]);
+  }, [filterUtil, _submit]);
 
   const resetPersistFn = usePersistFn(reset);
 

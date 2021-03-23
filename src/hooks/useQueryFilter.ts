@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import qs from 'qs';
-import { ILogicFilter } from '../types/compare';
+import { ILogicFilter, LogicOP } from '../types/compare';
 
 export interface QueryFilter {
   filter?: ILogicFilter;
@@ -26,13 +26,14 @@ export default () => {
     };
     history.replace(`${location.pathname}?${qs.stringify(query)}`);
   };
+
   const queryFilter = useMemo(() => {
     const query = qs.parse(location.search.substr(1));
     return {
       filter:
         typeof query.filter === 'string'
           ? JSON.parse(window.atob(query.filter as string))
-          : undefined,
+          : { logic: LogicOP.AND, compares: [] },
       pageSize: query.pageSize != null ? Number(query.pageSize) : undefined,
       current: query.current != null ? Number(query.current) : undefined,
     };

@@ -64,7 +64,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       const validFilter = filter.filter(item => item.op && item.target != null);
       onChange && onChange(validFilter);
     },
-    [onChange],
+    [onChange, setFilterEditVisible],
   );
 
   const filterValue = useCallback(

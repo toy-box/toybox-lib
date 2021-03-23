@@ -30,7 +30,6 @@ const Toolbar: FC<ToolbarProps> = ({
 
   const handleChange = useCallback(
     (value?: FilterType) => {
-      console.log('handleChange', value);
       onFilterChange && onFilterChange(value);
     },
     [filterSearch],

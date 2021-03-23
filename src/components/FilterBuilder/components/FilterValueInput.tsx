@@ -210,7 +210,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       filterField.key as BusinessFieldType,
       ids,
     );
-    console.log(value, ops, 11123232);
     return ops || [];
   }, [filterField.key, filterFieldService, value]);
 
