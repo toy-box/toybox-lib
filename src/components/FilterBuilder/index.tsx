@@ -56,21 +56,9 @@ export const FilterBuilder: FC<IFilterBuilderProps> = ({
     [compares],
   );
 
-  // const filterFieldService = useCallback(filterItem => {
-  //   const obj =
-  //     filterFieldServices &&
-  //     filterFieldServices.find(field => field.key === filterItem.source);
-  //   // console.log(obj);
-  //   return obj;
-  // }, []);
-
   useEffect(() => {
     onChange(compares);
   }, [compares]);
-
-  useEffect(() => {
-    if (compares !== value) setCompares(value || []);
-  }, [value]);
 
   return (
     <div>

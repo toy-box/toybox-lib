@@ -20,12 +20,9 @@ import Fields from '../../Fields';
 import SelectPro from '../../SelectPro';
 import Search from '../../Search';
 import { SearchLine } from '@airclass/icons';
-// import Fields from '../../Fields';
-// import { Select } from '../../fields/Select';
 import { BusinessFieldType, FieldService } from '../../../types/compare';
 import { FieldMeta } from '../../../types/interface';
 import { OptionItem } from '../../../types/interface';
-// import { filterSearch, filterFindByIds, filterSearchTree } from '../../services/scene.service';
 
 // export interface OptionItem {
 //   label: React.ReactNode;
@@ -57,7 +54,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   singleMode,
   filterFieldService,
 }) => {
-  const [initial, setInitial] = useState(false);
+  // const [initial, setInitial] = useState(false);
   const [treeData, setTreeData] = useState([]);
 
   const antLocale = useContext(LocaleContext);
@@ -109,89 +106,26 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   );
 
   useEffect(() => {
-    const init = () => {
-      if (initial) {
-        return;
+    if (multiple) {
+      if (value != null && !Array.isArray(value)) {
+        onChange([value]);
+      } else if (value == null) {
+        onChange(undefined);
       }
-      if (filterField.type === BusinessFieldType.DATE) {
-        const newValues =
-          value != null ? [moment(value).format('YYYY-MM-DD')] : [];
-        onChange(value);
-      } else if (filterField.type === BusinessFieldType.DATETIME) {
-        const newValues =
-          value != null ? [moment(value).format('YYYY-MM-DD HH:mm:ss')] : [];
-        onChange(value);
-      } else {
-        onChange(value);
+      // if (innerValues != null && !Array.isArray(innerValues)) {
+      //   setInnerValues([innerValues]);
+      // }
+    } else {
+      if (Array.isArray(value) && value.length > 0) {
+        // setInnerValue(innerValue[0]);
+        onChange(value[0]);
       }
-      setInitial(true);
-    };
-    init();
-  }, [filterField.key, filterField.type, initial, onChange, remote, value]);
+      // if (Array.isArray(innerValues)) {
+      //   setInnerValues([innerValues[0]]);
+      // }
+    }
+  }, [multiple]);
 
-  useEffect(
-    () => {
-      if (multiple) {
-        if (value != null && !Array.isArray(value)) {
-          onChange([value]);
-        } else if (value == null) {
-          onChange(undefined);
-        }
-        // if (innerValues != null && !Array.isArray(innerValues)) {
-        //   setInnerValues([innerValues]);
-        // }
-      } else {
-        if (Array.isArray(value) && value.length > 0) {
-          // setInnerValue(innerValue[0]);
-          onChange(value[0]);
-        }
-        // if (Array.isArray(innerValues)) {
-        //   setInnerValues([innerValues[0]]);
-        // }
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [multiple],
-  );
-
-  // const searchOptions = useCallback(async (keyword: string = '') => {
-  //   try {
-  //     const { data } = await filterSearch(sceneSetupState.id, {
-  //       key: filterField.key,
-  //       keyword,
-  //     });
-  //     return data;
-  //   } catch (e) {
-  //     return [];
-  //   };
-  // }, [filterField.key, sceneSetupState.id]);
-
-  // const searchByValue = useCallback(async (ids: (string | number)[]) => {
-  //   const { data } = await filterFindByIds(sceneSetupState.id, {
-  //     key: filterField.key,
-  //     ids
-  //   });
-  //   return data;
-  // }, [filterField.key, sceneSetupState.id]);
-
-  // const loadData = useCallback(async (parentId?: string | number): Promise<SimpleNode[]> => {
-  //   const { data } = await filterSearchTree(sceneSetupState.id, filterField.key, parentId);
-  //   return data.map(d => ({
-  //     id: d.value,
-  //     pId: parentId || 0,
-  //     title: d.label,
-  //     disabled: d.disabled,
-  //   }));
-  // }, [filterField.key, sceneSetupState.id]);
-
-  // const loadByValue = useCallback(async (value) => {
-  //   const ids = Array.isArray(value) ? value : [value];
-  //   const { data } = await filterFindByIds(sceneSetupState.id, {
-  //     key: filterField.key,
-  //     ids,
-  //   });
-  //   return data;
-  // }, [filterField.key, sceneSetupState.id]);
   const searchOptions = useCallback(
     async (value: any) => {
       console.log(value, filterFieldService);
@@ -215,7 +149,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
 
   const findDataTrees = useCallback(
     async parentId => {
-      console.log(value, filterField, 11123232);
       const ops = await filterFieldService?.findDataTrees(
         filterField.key as BusinessFieldType,
         parentId,

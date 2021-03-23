@@ -200,11 +200,11 @@ export default () => {
   const filterFieldTags = filter.filterFieldMetas.map(meta => {
     if (meta.type === 'objectId' || meta.type === 'singleOption') {
       return {
-        ...meta,
+        fieldMeta: meta,
         remote: remoteOfTags.bind(this),
       };
     }
-    return meta;
+    return { fieldMeta: meta };
   });
   const value = [
     {
@@ -219,7 +219,7 @@ export default () => {
     // },
   ];
   const [tagValue, setTagValue] = useState(value);
-  function remoteOfTags(value, key) {
+  function remoteOfTags(key, value) {
     return new Promise(resolve => {
       serviceTest(resolve);
     }).then(res => {
@@ -238,6 +238,7 @@ export default () => {
 
   const removeTag = useCallback(
     index => {
+      console.log(tagValue, index);
       setTagValue(update(tagValue, { $splice: [[index, 1]] }));
     },
     [tagValue],
