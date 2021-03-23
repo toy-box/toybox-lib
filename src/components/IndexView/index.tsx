@@ -3,6 +3,7 @@ import React, {
   useImperativeHandle,
   Ref,
   useCallback,
+  useEffect,
   useState,
   ReactNode,
   ForwardRefRenderFunction,
@@ -11,7 +12,7 @@ import { Button, Dropdown, Menu } from 'antd';
 import update from 'immutability-helper';
 import classNames from 'classnames';
 import { ListUnordered, TableLine, ArrowDownSLine } from '@airclass/icons';
-import useAntdTable from './hooks/useTable';
+import useAntdTable, { PaginatedParams } from './hooks/useTable';
 import MetaTable from '../MetaTable';
 import { BusinessObjectMeta } from '../../types/interface';
 import { OperateItem } from '../MetaTable/components/OperateColumn';
@@ -22,12 +23,22 @@ import TablePanel from './components/TablePanel';
 import Toolbar from './components/Toolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
-import { FieldService } from '../../types/compare';
+import { FieldService, ILogicFilter, LogicOP } from '../../types/compare';
 import { FilterType } from '../FilterSearch';
+import { QueryFilter } from '../../hooks/useQueryFilter';
 
 import './style.less';
 
 const LIST_RENDER = 'listRender';
+
+const DEFAULT_QUERY_FILTER = {
+  current: 1,
+  pageSize: 20,
+  logicFilter: {
+    logic: LogicOP.AND,
+    compares: [],
+  },
+};
 
 export declare type IndexMode = 'table' | 'list' | 'card';
 
@@ -36,11 +47,6 @@ export interface PageResult {
   total: number;
   pageSize?: number;
   current?: number;
-}
-
-export interface Pageable {
-  pageSize: number;
-  current: number;
 }
 
 export interface FilterSearch {
@@ -73,8 +79,8 @@ export interface IndexViewProps {
   urlQuery?: boolean;
   defaultSelectionType?: 'checkbox';
   loadData: (
-    pageable: Pageable,
-    fieldsValue: Record<string, any>,
+    pageable: PaginatedParams[0],
+    logicFilter?: ILogicFilter,
   ) => Promise<PageResult>;
   renderContent?: (...args: any) => ReactNode;
   viewLink?: (...arg: any) => string;
@@ -113,26 +119,40 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
   },
   ref: Ref<any>,
 ) => {
-  const [queryFilter, setQueryFilter] = useQueryFilter();
+  const [uriQuery, setUriQuery] = useQueryFilter();
+  const [queryFilter, setQueryFilter] = useState<QueryFilter | undefined>(
+    uriQuery,
+  );
 
-  const simpleFilter = useMemo(() => queryFilter.filter?.compares, [
-    queryFilter.filter,
+  useEffect(() => {
+    if (urlQuery) {
+      setQueryFilter(uriQuery);
+    }
+  }, [uriQuery, setQueryFilter]);
+
+  const simpleFilter = useMemo(() => queryFilter?.logicFilter?.compares, [
+    queryFilter?.logicFilter?.compares,
   ]);
 
   const setSimpleFilter = useCallback(
     (compares?: FilterType) => {
-      setQueryFilter(
-        update(queryFilter, { filter: { compares: { $set: compares || [] } } }),
-      );
+      const data = update(queryFilter || DEFAULT_QUERY_FILTER, {
+        logicFilter: {
+          compares: { $set: compares || [] },
+        },
+      });
+      if (urlQuery) {
+        return setUriQuery(data);
+      }
+      return setQueryFilter(data);
     },
     [queryFilter, setQueryFilter],
   );
 
-  const filterForm = useMemo(
+  const filterUtil = useMemo(
     () => ({
-      setFilter: setQueryFilter,
-      getFilter: () => queryFilter,
-      resetFilter: () => undefined,
+      getFilter: (...args: any) => queryFilter?.logicFilter,
+      resetFilter: (...args: any) => undefined,
     }),
     [queryFilter, setQueryFilter],
   );
@@ -167,15 +187,24 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
   const [columns, setColumns] = useState<SelectItem[]>(defaultColumns);
   const [visibleKeys, setVisibleKeys] = useState(defaultColumnKeys);
 
-  const { search, tableProps } = useAntdTable(
-    loadData,
-    {
-      defaultPageSize: 20,
-      defaultParams: [
-        { pageSize: queryFilter.pageSize, current: queryFilter.current },
-      ] as any,
+  const { search, tableProps } = useAntdTable(loadData, {
+    filterUtil,
+    defaultPageSize: 20,
+    defaultParams: [
+      { pageSize: queryFilter?.pageSize, current: queryFilter?.current },
+      queryFilter?.logicFilter,
+    ] as any,
+  });
+
+  useEffect(() => {
+    search.submit();
+  }, [queryFilter, search.submit]);
+
+  const handleFilterChange = useCallback(
+    (compares?: FilterType) => {
+      setSimpleFilter(compares);
     },
-    urlQuery ? setQueryFilter : undefined,
+    [setSimpleFilter],
   );
 
   const rowSelection = useMemo(
@@ -339,7 +368,7 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
       <div className={classNames('tbox-index-view', className)} style={style}>
         <Toolbar
           filterSearch={filterSearchProps}
-          onFilterChange={setSimpleFilter}
+          onFilterChange={handleFilterChange}
           filterValue={simpleFilter}
         />
         <TablePanel />

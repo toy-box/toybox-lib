@@ -39,15 +39,12 @@ export interface UseAntdTableFormUtils {
 }
 
 export interface FilterUtil {
-  setFilter: (value: ILogicFilter) => void;
-  getFilter: (...args: any) => ILogicFilter;
+  getFilter: (...args: any) => ILogicFilter | undefined;
   resetFilter: (...args: any) => void;
 }
 
 export interface Result<Item> extends PaginatedResult<Item> {
   search: {
-    type: 'simple' | 'advance';
-    changeType: () => void;
     submit: () => void;
     reset: () => void;
   };
@@ -66,17 +63,14 @@ export interface OptionsWithFormat<R, Item, U>
 function useAntdTable<R = any, Item = any, U extends Item = any>(
   service: CombineService<R, PaginatedParams>,
   options: OptionsWithFormat<R, Item, U>,
-  setQuery?: (data: any) => void,
 ): Result<Item>;
 function useAntdTable<R = any, Item = any, U extends Item = any>(
   service: CombineService<PaginatedFormatReturn<Item>, PaginatedParams>,
   options: BaseOptions<U>,
-  setQuery?: (data: any) => void,
 ): Result<Item>;
 function useAntdTable<R = any, Item = any, U extends Item = any>(
   service: CombineService<any, any>,
   options: BaseOptions<U> | OptionsWithFormat<R, Item, U>,
-  setQuery?: (data: any) => void,
 ): any {
   const {
     filterUtil,
@@ -93,18 +87,8 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
 
   const { params, run } = result;
 
-  const cacheFormTableData = params[2] || ({} as any);
-
-  // 优先从缓存中读
-  const [type, setType] = useState(cacheFormTableData.type);
-
-  // 全量 form 数据，包括 simple 和 advance
-  const [filterData, setFilterData] = useState<ILogicFilter>(
-    cacheFormTableData.filterData || (defaultParams && defaultParams[1]) || {},
-  );
-
   // 获取当前展示的 form 字段值
-  const getActivetFieldValues = useCallback((): ILogicFilter => {
+  const getFilterData = useCallback(() => {
     if (!filterUtil) {
       return {
         logic: LogicOP.AND,
@@ -114,66 +98,41 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
     return filterUtil.getFilter();
   }, [filterUtil]);
 
-  /* 初始化，或改变了 searchType, 恢复表单数据 */
-  useEffect(() => {
-    filterUtil && filterUtil.setFilter(filterData);
-  }, [filterUtil, type]);
-
   // 首次加载，手动提交。为了拿到 form 的 initial values
-  useEffect(() => {
-    // 如果有缓存，则使用缓存，重新请求
-    if (params.length > 0) {
-      run(...params);
-      return;
-    }
+  // useEffect(() => {
+  //   // 如果有缓存，则使用缓存，重新请求
+  //   if (params.length > 0) {
+  //     run(...params);
+  //     return;
+  //   }
 
-    // 如果没有缓存，触发 submit
-    if (!manual) {
-      _submit(defaultParams);
-    }
-  }, []);
-
-  const changeType = useCallback(() => {
-    const currentFormData = getActivetFieldValues();
-    setFilterData({ ...filterData, ...currentFormData });
-
-    const targetType = type === 'simple' ? 'advance' : 'simple';
-    setType(targetType);
-  }, [type, filterData, getActivetFieldValues]);
+  //   // 如果没有缓存，触发 submit
+  //   if (!manual) {
+  //     _submit(defaultParams);
+  //   }
+  // }, []);
 
   const _submit = useCallback(
     (initParams?: any) => {
       setTimeout(() => {
-        const activeFormData = getActivetFieldValues();
-        // 记录全量数据
-        const _filterData = { ...filterData, ...activeFormData };
-        setFilterData(_filterData);
-
+        const activeFilterData = getFilterData();
         // has defaultParams
         if (initParams) {
-          run(initParams[0], activeFormData, {
-            filterData: _filterData,
-            type,
-          });
+          run(initParams[0], activeFilterData);
           return;
         }
-
+        console.log('activeFilterData', activeFilterData);
         run(
           {
             pageSize: options.defaultPageSize || 10,
             ...((params[0] as PaginatedParams[0] | undefined) || {}), // 防止 manual 情况下，第一次触发 submit，此时没有 params[0]
             current: 1,
           },
-          activeFormData,
-          {
-            filterData: _filterData,
-            type,
-          },
+          activeFilterData,
         );
-        setQuery && setQuery(activeFormData);
       });
     },
-    [getActivetFieldValues, run, params, filterData, type],
+    [getFilterData, run, params],
   );
 
   const reset = useCallback(() => {
@@ -203,8 +162,6 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
     ...result,
     search: {
       submit,
-      type,
-      changeType,
       reset,
     },
   };

@@ -194,7 +194,7 @@ const filterFieldService = {
 
 export default () => {
   const loadData = (...args: any) => {
-    console.log('args', args);
+    console.log('loadData', ...args);
     const result = {
       list: data,
       total: 3,
@@ -223,6 +223,7 @@ export default () => {
       loadData={loadData}
       filterSearch={filterSearch}
       visibleColumnSet
+      urlQuery
     />
   );
 };
