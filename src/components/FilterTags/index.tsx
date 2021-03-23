@@ -3,18 +3,19 @@ import FilterTag, { BasicValueType } from '../FilterTag/index';
 import { ICompareOperation } from '../../types/compare';
 import { FieldMeta } from '@/types/interface';
 
-export interface FilterMetaTag extends FieldMeta {
+export interface FilterMetaTag {
+  fieldMeta: FieldMeta;
   ellipsis?: boolean;
   width?: string;
   remote?: (
-    value: BasicValueType[],
     key: string,
+    value: (string | number)[],
   ) => Promise<(string | number)[]>;
 }
 
 export interface FilterTagsProps {
   filterFieldTags: FilterMetaTag[];
-  value?: Partial<ICompareOperation>[];
+  value?: ICompareOperation[];
   remove?: (index: number) => void;
 }
 
@@ -22,11 +23,10 @@ const FilterTags: FC<FilterTagsProps> = ({
   filterFieldTags,
   value,
   remove,
-  // remote,
 }) => {
   const ellipsis = useCallback(
     tag => {
-      const meta = filterFieldTags?.find(val => val.key === tag.key);
+      const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
       return (meta && meta.ellipsis) || true;
     },
     [filterFieldTags],
@@ -34,7 +34,7 @@ const FilterTags: FC<FilterTagsProps> = ({
 
   const width = useCallback(
     tag => {
-      const meta = filterFieldTags?.find(val => val.key === tag.key);
+      const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
       return (meta && meta.width) || '100px';
     },
     [filterFieldTags],
@@ -42,16 +42,16 @@ const FilterTags: FC<FilterTagsProps> = ({
 
   const remote = useCallback(
     tag => {
-      const meta = filterFieldTags?.find(val => val.key === tag.key);
+      const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
       return meta && meta.remote;
     },
     [filterFieldTags],
   );
 
   const remoteMethod = useCallback(
-    async (value, tag) => {
-      const meta = filterFieldTags?.find(val => val.key === tag.key);
-      if (meta && meta.remote) return meta.remote(value, tag.key);
+    async (tag, value) => {
+      const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
+      if (meta && meta.remote) return meta.remote(tag.key, value);
       return value;
     },
     [filterFieldTags],
@@ -59,12 +59,13 @@ const FilterTags: FC<FilterTagsProps> = ({
 
   const filterTags = useMemo(() => {
     let tags: any[] = [];
-    filterFieldTags.forEach(filed => {
-      const meta = value?.filter(val => val.source === filed.key);
+    filterFieldTags.forEach(tag => {
+      const { fieldMeta } = tag;
+      const meta = value?.filter(val => val.source === fieldMeta.key);
       if (meta) {
         meta.forEach(met => {
           tags.push({
-            title: filed.name,
+            title: fieldMeta.name,
             key: met.source,
             op: met.op,
             value: met.target,
@@ -80,13 +81,14 @@ const FilterTags: FC<FilterTagsProps> = ({
     });
     return tags;
   }, [filterFieldTags, value]);
+
   return (
     <div className="filter-tags">
       {filterTags.map((tag, idx) => (
         <FilterTag
           key={idx}
           style={{ width: width(tag) }}
-          remote={remote(tag) ? value => remoteMethod(value, tag) : undefined}
+          remote={remote(tag) ? value => remoteMethod(tag, value) : undefined}
           filter={tag}
           remove={remove ? () => remove(idx) : undefined}
           ellipsis={ellipsis(tag)}

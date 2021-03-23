@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { FieldMeta } from './interface';
 
 export enum CompareOP {
@@ -51,15 +52,18 @@ export enum LogicOP {
   NOR = '$nor',
 }
 
+declare interface OptionValueType {
+  label: ReactNode;
+  title?: string;
+  value: string | number;
+}
+
 export interface FieldService extends FieldMeta {
-  findOptions: (key: string, name: string) => Promise<void> | void;
+  findOptions: (key: string, name: string) => Promise<OptionValueType[]>;
   findOfValues: (
     key: string,
     value: (string | number)[],
-  ) => Promise<void> | void;
-  findDataTrees: (
-    key: string,
-    parentId: string | number,
-  ) => Promise<void> | void;
-  findOtherData: (field: FieldMeta) => Promise<void> | void;
+  ) => Promise<OptionValueType[]>;
+  findDataTrees: (key: string, parentId: string | number) => Promise<void>;
+  findOtherData: (field: FieldMeta) => Promise<void>;
 }

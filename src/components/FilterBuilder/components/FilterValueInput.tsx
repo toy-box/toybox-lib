@@ -194,7 +194,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   // }, [filterField.key, sceneSetupState.id]);
   const searchOptions = useCallback(
     async (value: any) => {
-      // console.log(value, filterField, 11123232);
+      console.log(value, filterFieldService);
       const ops = await filterFieldService?.findOptions(
         filterField.key as BusinessFieldType,
         value,

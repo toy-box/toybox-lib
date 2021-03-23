@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import update from 'immutability-helper';
 import { Button } from '../../';
 import {
@@ -7,11 +7,13 @@ import {
   FilterType,
 } from '../../FilterSearch';
 import { default as FilterTags } from '../../FilterTags';
+import { FieldMeta } from '../../../types/interface';
+import { BusinessFieldType } from '../../../types/compare';
 
 export declare interface ToolbarProps {
   filterSearch?: Omit<IFilterSearchProps, 'value'>;
   filterValue?: FilterType;
-  onFilterChange?: (value: FilterType) => void;
+  onFilterChange?: (value?: FilterType) => void;
 }
 
 const Toolbar: FC<ToolbarProps> = ({
@@ -27,11 +29,38 @@ const Toolbar: FC<ToolbarProps> = ({
   );
 
   const handleChange = useCallback(
-    (value: FilterType) => {
+    (value?: FilterType) => {
       onFilterChange && onFilterChange(value);
     },
     [filterSearch],
   );
+
+  const isRemoteTag = useCallback((fieldMeta: FieldMeta) => {
+    return fieldMeta.type === BusinessFieldType.BUSINESS_OBJECT;
+  }, []);
+
+  const filterFieldTags = useMemo(() => {
+    return (filterSearch?.filterFieldMetas || []).map(fieldMeta => {
+      return {
+        fieldMeta,
+        remote: isRemoteTag(fieldMeta)
+          ? async (key: string, value: (string | number)[]) => {
+              if (filterSearch?.filterFieldService?.findOfValues) {
+                const data = await filterSearch.filterFieldService.findOfValues(
+                  key,
+                  value,
+                );
+                return data.map(
+                  record =>
+                    record.title || record.label?.toString() || record.value,
+                );
+              }
+              return [];
+            }
+          : undefined,
+      };
+    });
+  }, []);
 
   return (
     <div className="tbox-index-view-toolbar">
@@ -53,7 +82,7 @@ const Toolbar: FC<ToolbarProps> = ({
       <div className="tbox-index-view-toolbar-footer">
         {filterSearch && (
           <FilterTags
-            filterFieldTags={filterSearch.filterFieldMetas}
+            filterFieldTags={filterFieldTags}
             value={filterValue}
             remove={idx => removeTag(idx)}
           />

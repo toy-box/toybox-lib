@@ -137,7 +137,7 @@ function findOptions(key, name) {
     serviceTest(resolve, key);
   }).then(res => {
     if (key === 'user') {
-      return userList;
+      return userList.map(user => ({ label: user.name, value: user.id }));
     }
     return [];
   });
@@ -148,7 +148,9 @@ function findOfValues(key, value) {
     serviceTest(resolve, key);
   }).then(res => {
     if (key === 'user') {
-      return userList.filter(user => value.some(v => v === user.id));
+      return userList
+        .filter(user => value.some(v => v === user.id))
+        .map(user => ({ label: user.name, value: user.id }));
     }
   });
 }
@@ -210,6 +212,7 @@ export default () => {
   const filterSearch = {
     filterKeys: ['billCycle', 'user'],
     simpleFilterKeys: ['billCycle', 'user'],
+    filterFieldService,
   };
 
   return (

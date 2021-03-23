@@ -88,14 +88,13 @@ const FilterTag: FC<FilterTagProps> = ({
     [ellipsisStyle, style],
   );
 
-  const text = useMemo(
-    () =>
-      `${title} ${get(
-        localeData.lang,
-        `compareOperation.${op}`,
-      )} ${labelValues && labelValues.join(',')}`,
-    [title, op, labelValues],
-  );
+  const text = useMemo(() => {
+    console.log('labelValues', labelValues);
+    return `${title} ${get(
+      localeData.lang,
+      `compareOperation.${op}`,
+    )} ${labelValues && labelValues.join(',')}`;
+  }, [title, op, labelValues]);
 
   const content = useMemo(() => {
     return ellipsis ? (
