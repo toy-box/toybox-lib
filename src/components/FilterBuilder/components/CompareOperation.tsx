@@ -55,7 +55,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const filterOperations = useMemo(() => {
-    let compareOperation: string[] = [
+    let compareOperation: CompareOP[] = [
       CompareOP.EQ,
       CompareOP.NE,
       CompareOP.IN,
@@ -73,47 +73,31 @@ export const CompareOperation: FC<CompareOperationProps> = ({
           CompareOP.GTE,
           CompareOP.LTE,
         ];
-        return compareOperation.map(op => {
-          return {
-            label: get(localeData.lang, `compareOperation.${op}`),
-            value: op,
-          };
-        });
+        return compareOperationData(compareOperation);
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
         if (filterFieldMeta.parentKey != null) {
           compareOperation = [CompareOP.IN, CompareOP.NIN];
-          return compareOperation.map(op => {
-            return {
-              label: get(localeData.lang, `compareOperation.${op}`),
-              value: op,
-            };
-          });
+          return compareOperationData(compareOperation);
         }
-        return compareOperation.map(op => {
-          return {
-            label: get(localeData.lang, `compareOperation.${op}`),
-            value: op,
-          };
-        });
+        return compareOperationData(compareOperation);
       case BusinessFieldType.SEARCH_ICON:
         compareOperation = [CompareOP.EQ];
-        return compareOperation.map(op => {
-          return {
-            label: get(localeData.lang, `compareOperation.${op}`),
-            value: op,
-          };
-        });
+        return compareOperationData(compareOperation);
       default:
-        return compareOperation.map(op => {
-          return {
-            label: get(localeData.lang, `compareOperation.${op}`),
-            value: op,
-          };
-        });
+        return compareOperationData(compareOperation);
     }
   }, [filterFieldMeta]);
+
+  function compareOperationData(compareOperation: CompareOP[]) {
+    return compareOperation.map(op => {
+      return {
+        label: get(localeData.lang, `compareOperation.${op}`),
+        value: op,
+      };
+    });
+  }
 
   const multiple = useMemo(
     () => filterOperation === CompareOP.IN || filterOperation === CompareOP.NIN,
