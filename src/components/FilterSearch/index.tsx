@@ -50,7 +50,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   onChange,
   onCancel,
 }) => {
-  // const [tagValue, setTagValue] = useState(value);
   const [filterEditVisible, setFilterEditVisible] = useState(false);
   const antLocale = useContext(LocaleContext);
   const locale = useMemo(
