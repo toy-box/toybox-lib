@@ -50,7 +50,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   onChange,
   onCancel,
 }) => {
-  // const [tagValue, setTagValue] = useState(value);
   const [filterEditVisible, setFilterEditVisible] = useState(false);
   const antLocale = useContext(LocaleContext);
   const locale = useMemo(
@@ -63,8 +62,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     (filter: FilterType) => {
       setFilterEditVisible(false);
       const validFilter = filter.filter(item => item.op && item.target != null);
-      console.log('validFilter', validFilter, filter);
-      // setTagValue(validFilter);
       onChange && onChange(validFilter);
     },
     [onChange],
