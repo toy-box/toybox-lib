@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { FC, useState, useMemo, useCallback, useContext } from 'react';
 import { Form, Tooltip, Popover, Button } from 'antd';
 import { CompareOP } from '../../types/compare';
 import localeMap from './locale';
