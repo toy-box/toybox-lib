@@ -22,11 +22,8 @@ import Search from '../../Search';
 import { SearchLine } from '@airclass/icons';
 // import Fields from '../../Fields';
 // import { Select } from '../../fields/Select';
-import {
-  FieldMeta,
-  BusinessFieldType,
-  FieldService,
-} from '../../../types/compare';
+import { BusinessFieldType, FieldService } from '../../../types/compare';
+import { FieldMeta } from '../../../types/interface';
 import { OptionItem } from '../../../types/interface';
 // import { filterSearch, filterFindByIds, filterSearchTree } from '../../services/scene.service';
 
@@ -317,6 +314,10 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               value={value}
               mode={mode}
               field={field}
+              placeholder={`${get(
+                localeData.lang,
+                'filed.placeholderOp.paramSelect',
+              )}${filterField.name}`}
               format={filterField.format || 'YYYY/MM/DD'}
               onChange={value =>
                 handleValue(value?.format(filterField.format || 'YYYY/MM/DD'))
@@ -332,7 +333,10 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               mode={mode}
               field={field}
               showTime
-              style={style}
+              placeholder={`${get(
+                localeData.lang,
+                'filed.placeholderOp.paramSelect',
+              )}${filterField.name}`}
               format={filterField.format || 'YYYY/MM/DD HH:mm:ss'}
               onChange={value =>
                 handleValue(
@@ -355,6 +359,23 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             showSearch
             options={filterField.options}
             value={filterValue}
+            onChange={(value, options) =>
+              handleSelectOptions(value, options as OptionItem)
+            }
+          />
+        );
+      case BusinessFieldType.BUSINESS_OBJECT:
+        return (
+          <SelectPro
+            placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
+            style={style}
+            options={filterField.options}
+            mode={multiple ? 'multiple' : undefined}
+            value={filterValue}
+            params={filterField}
+            showSearch
+            remote={searchOptions}
+            remoteByValue={searchByValue}
             onChange={(value, options) =>
               handleSelectOptions(value, options as OptionItem)
             }

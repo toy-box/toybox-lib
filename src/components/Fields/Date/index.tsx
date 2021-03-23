@@ -57,7 +57,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
           date,
           typeof format === 'function'
             ? format(date)
-            : date.format(format as string),
+            : date?.format(format as string),
         );
     },
     [format, onChange],
@@ -102,8 +102,9 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         onChange={innerOnChange}
         picker={picker}
         open={open}
+        style={{ width: '100%' }}
         mode={dateMode}
-        showTime
+        showTime={showTime}
         onOpenChange={onOpenChange}
         {...fieldProps}
       />

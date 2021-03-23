@@ -10,11 +10,11 @@ import { Button } from 'antd';
 import styled from 'styled-components';
 import update from 'immutability-helper';
 import {
-  FieldMeta,
   ICompareOperation,
   FieldService,
   LogicOP,
 } from '../../../types/compare';
+import { FieldMeta } from '../../../types/interface';
 import localeMap from '../locale';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import FilterBuilder from '../../FilterBuilder';
@@ -24,7 +24,7 @@ export interface IFilterContainerProps {
   value?: Partial<ICompareOperation>[];
   title: string;
   filterFieldService?: FieldService;
-  onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
+  onChange: (compares: Partial<ICompareOperation>[]) => void;
   onCancel?: () => void;
 }
 

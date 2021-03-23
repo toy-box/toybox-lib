@@ -10,7 +10,6 @@ import { Form, Tooltip, Popover, Button } from 'antd';
 import { CompareOP } from '../../types/compare';
 import localeMap from './locale';
 import {
-  FieldMeta,
   ICompareOperation,
   BusinessFieldType,
   FieldService,
@@ -19,7 +18,8 @@ import update from 'immutability-helper';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import Container from './components/Container';
-import { Filter3Line, ContactsBookLine } from '@airclass/icons';
+import { Filter3Line } from '@airclass/icons';
+import { FieldMeta } from '@/types/interface';
 
 export interface LabelValue {
   value: any;
@@ -38,16 +38,17 @@ export interface FilterLabel {
 
 export interface IFilterSearchProps {
   filterFieldMetas: FieldMeta[];
+  simpleFilterKeys?: string[];
   value?: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
-  title: string;
-  // filterLables?: FilterLabel[];
-  onChange: (compares: Partial<ICompareOperation>[]) => Promise<void>;
+  title?: string;
+  onChange?: (compares: Partial<ICompareOperation>[]) => void;
   onCancel?: () => void;
 }
 
 const FilterSearch: FC<IFilterSearchProps> = ({
   filterFieldMetas,
+  simpleFilterKeys = [],
   filterFieldService,
   value,
   title,
@@ -63,12 +64,11 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const save = useCallback(async (filterItem: Partial<ICompareOperation>[]) => {
-    console.log('new compare12121212', filterItem);
+  const save = useCallback((filterItem: Partial<ICompareOperation>[]) => {
     setFilterEditVisible(false);
     const p = filterItem.filter(item => item.op && item.target != null);
     setTagValue(p);
-    onChange(p);
+    onChange && onChange(p);
   }, []);
 
   const filterValue = useCallback(
@@ -91,58 +91,48 @@ const FilterSearch: FC<IFilterSearchProps> = ({
 
   const onValueChange = useCallback(
     (val: any, filterField: FieldMeta) => {
-      console.log(val, filterField, 'filterField');
-      if (val !== undefined) {
-        const idx =
-          tagValue &&
-          tagValue.findIndex(field => field.source === filterField.key);
-        const unSelectValues =
-          tagValue &&
-          tagValue.filter(field => field.source !== filterField.key);
-        let tagValues = tagValue;
-        switch (filterField.type) {
-          case BusinessFieldType.STRING:
-          case BusinessFieldType.SINGLE_OPTION:
-          case BusinessFieldType.OBJECT_ID:
-            const filterItem: Partial<ICompareOperation> = {
-              source: filterField.key,
-              op: '$in' as CompareOP,
-              target: val,
-            };
-            if ((idx || idx === 0) && idx > -1) {
-              if (val) {
-                tagValues = update(unSelectValues, {
-                  [idx]: { $set: filterItem },
-                });
-                setTagValue(tagValues);
-              } else {
-                tagValues = update(unSelectValues, { $splice: [[idx, 1]] });
-                setTagValue(tagValues);
-              }
-            } else {
-              tagValues = update(unSelectValues, { $push: [filterItem] });
-              setTagValue(tagValues);
-            }
-            break;
-          default:
-            const fieldItem: Partial<ICompareOperation> = {
-              source: filterField.key,
-              op: '$eq' as CompareOP,
-              target: val,
-            };
-            if ((idx || idx === 0) && idx > -1) {
-              tagValues = update(unSelectValues, {
-                [idx]: { $set: fieldItem },
-              });
-              setTagValue(tagValues);
-            } else {
-              tagValues = update(unSelectValues, { $push: [fieldItem] });
-              setTagValue(tagValues);
-            }
-            break;
-        }
-        onChange(tagValues as Partial<ICompareOperation>[]);
+      switch (filterField.type) {
+        case BusinessFieldType.STRING:
+        case BusinessFieldType.SINGLE_OPTION:
+        case BusinessFieldType.OBJECT_ID:
+          onValueChangeFunc(val, filterField, '$in');
+          break;
+        default:
+          onValueChangeFunc(val, filterField, '$eq');
+          break;
       }
+    },
+    [tagValue],
+  );
+
+  const onValueChangeFunc = useCallback(
+    (val, filterField, op) => {
+      const idx =
+        tagValue &&
+        tagValue.findIndex(field => field.source === filterField.key);
+      const unSelectValues =
+        tagValue && tagValue.filter(field => field.source !== filterField.key);
+      let tagValues = tagValue;
+      const fieldItem: Partial<ICompareOperation> = {
+        source: filterField.key,
+        op: op as CompareOP,
+        target: val,
+      };
+      if (val || val === 0) {
+        if ((idx || idx === 0) && idx > -1) {
+          tagValues = update(unSelectValues, {
+            [idx]: { $set: fieldItem },
+          });
+          setTagValue(tagValues);
+        } else {
+          tagValues = update(unSelectValues, { $push: [fieldItem] });
+          setTagValue(tagValues);
+        }
+      } else if (!val && (idx || idx === 0) && idx > -1) {
+        tagValues = update(unSelectValues, { $splice: [[idx, 1]] });
+        setTagValue(tagValues);
+      }
+      onChange && onChange(tagValues as Partial<ICompareOperation>[]);
     },
     [tagValue],
   );
@@ -171,42 +161,15 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     );
   }, [filterFieldMetas, tagValue, filterFieldService]);
 
-  const filterLeftFieldMetas = useMemo(() => {
-    return filterFieldMetas.filter(
-      fieldMeta => !fieldMeta.layout || fieldMeta.layout === 'left',
-    );
-  }, [filterFieldMetas]);
-
-  const filterRightFieldMetas = useMemo(() => {
-    return filterFieldMetas.filter(fieldMeta => fieldMeta.layout === 'right');
-  }, [filterFieldMetas]);
-
   const inputStyle = { width: '198px' };
 
   return (
     <div className="filter-model">
       <Form layout="inline">
-        {filterLeftFieldMetas.map(
-          (filterFieldMeta, idx) =>
-            filterFieldMeta.unBasic && (
-              <Form.Item>
-                <FilterValueInput
-                  key={idx}
-                  value={filterValue(filterFieldMeta)}
-                  filterFieldService={filterFieldService}
-                  multiple={false}
-                  singleMode
-                  filterField={filterFieldMeta}
-                  onChange={value => onValueChange(value, filterFieldMeta)}
-                  style={inputStyle}
-                />
-              </Form.Item>
-            ),
-        )}
         <Form.Item>
           <Popover
             overlayClassName="no-padding"
-            placement="right"
+            placement="bottom"
             content={filterContainer}
             trigger="click"
             visible={filterEditVisible}
@@ -218,23 +181,28 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             </Tooltip>
           </Popover>
         </Form.Item>
-        {filterRightFieldMetas.map(
-          (filterFieldMeta, idx) =>
-            filterFieldMeta.unBasic && (
-              <Form.Item>
-                <FilterValueInput
-                  key={idx}
-                  value={filterValue(filterFieldMeta)}
-                  filterFieldService={filterFieldService}
-                  multiple={false}
-                  singleMode
-                  filterField={filterFieldMeta}
-                  onChange={value => onValueChange(value, filterFieldMeta)}
-                  style={inputStyle}
-                />
-              </Form.Item>
-            ),
-        )}
+        {simpleFilterKeys.map((key, idx) => {
+          const fieldMeta = filterFieldMetas.find(field => field.key === key);
+          const flag = fieldMeta?.type === 'searchIcon';
+          let singleMode = true;
+          if (flag) singleMode = simpleFilterKeys.length === idx + 1;
+          return fieldMeta ? (
+            <Form.Item>
+              <FilterValueInput
+                key={idx}
+                value={filterValue(fieldMeta)}
+                filterFieldService={filterFieldService}
+                multiple={false}
+                singleMode={singleMode}
+                filterField={fieldMeta}
+                onChange={value => onValueChange(value, fieldMeta)}
+                style={inputStyle}
+              />
+            </Form.Item>
+          ) : (
+            undefined
+          );
+        })}
       </Form>
     </div>
   );

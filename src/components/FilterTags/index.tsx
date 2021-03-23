@@ -1,6 +1,7 @@
 import React, { FC, useMemo, useCallback, useState } from 'react';
 import FilterTag, { BasicValueType } from '../FilterTag/index';
-import { FieldMeta, ICompareOperation } from '../../types/compare';
+import { ICompareOperation } from '../../types/compare';
+import { FieldMeta } from '@/types/interface';
 
 export interface FilterMetaTag extends FieldMeta {
   ellipsis?: boolean;
@@ -15,7 +16,6 @@ export interface FilterTagsProps {
   filterFieldTags: FilterMetaTag[];
   value?: Partial<ICompareOperation>[];
   remove?: (index: number) => void;
-  // remote?: (value: BasicValueType[], key: string) => Promise<(string | number)[]>;
 }
 
 const FilterTags: FC<FilterTagsProps> = ({

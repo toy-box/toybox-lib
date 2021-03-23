@@ -42,6 +42,7 @@ export interface FieldMeta {
   properties?: { [key: string]: FieldMeta };
   index?: number;
   defaultValue?: any;
+  parentKey?: string;
 }
 
 export interface FieldMetaProfile extends FieldMeta {
@@ -51,7 +52,7 @@ export interface FieldMetaProfile extends FieldMeta {
   remoteByValue?: (
     value: ReactText | ReactText[],
     params?: any,
-  ) => Promise<OptionItem>;
+  ) => Promise<OptionItem[]>;
 }
 
 export interface FieldOption {

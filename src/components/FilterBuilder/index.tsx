@@ -8,12 +8,8 @@ import React, {
 } from 'react';
 import { Button } from 'antd';
 import update from 'immutability-helper';
-import {
-  FieldMeta,
-  ICompareOperation,
-  LogicOP,
-  FieldService,
-} from '../../types/compare';
+import { ICompareOperation, LogicOP, FieldService } from '../../types/compare';
+import { FieldMeta } from '../../types/interface';
 import localeMap from './locale';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import { CompareOperation } from './components/CompareOperation';

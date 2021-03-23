@@ -21,6 +21,7 @@ import TablePanel from './components/TablePanel';
 import Toolbar from './components/Toolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
+import { FieldService, ICompareOperation } from '../../types/compare';
 
 import './style.less';
 
@@ -38,6 +39,12 @@ export interface PageResult {
 export interface Pageable {
   pageSize: number;
   current: number;
+}
+
+export interface FilterSearch {
+  filterKeys: string[];
+  simpleFilterKeys: string[];
+  filterFieldService?: FieldService;
 }
 
 export interface IndexViewProps {
@@ -63,6 +70,7 @@ export interface IndexViewProps {
   ) => Promise<PageResult>;
   renderContent?: (...args: any) => ReactNode;
   viewLink?: (...arg: any) => string;
+  filterSearch?: FilterSearch;
 }
 
 export interface ColumnVisible {
@@ -90,10 +98,12 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     viewLink,
     loadData,
     urlQuery,
+    filterSearch,
   },
   ref: Ref<any>,
 ) => {
   const [query, setQuery] = useQuery();
+  const [filter, setFilter] = useState<Partial<ICompareOperation>[]>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
     [],
   );
@@ -279,10 +289,27 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     [columns, setColumns, visibleColumnSet, visibleKeys, setVisibleKeys],
   );
 
+  const filterSearchProps = useMemo(() => {
+    return filterSearch
+      ? {
+          filterFieldMetas: filterSearch.filterKeys.map(
+            key => objectMeta.properties[key],
+          ),
+          filterFieldService: filterSearch.filterFieldService,
+          simpleFilterKeys: filterSearch.simpleFilterKeys,
+          onChange: console.log,
+        }
+      : undefined;
+  }, []);
+
   return (
     <IndexViewContext.Provider value={content}>
       <div className={classNames('tbox-index-view', className)} style={style}>
-        <Toolbar />
+        <Toolbar
+          filterSearch={filterSearchProps}
+          onFilterChange={setFilter}
+          filterValue={filter}
+        />
         <TablePanel />
         <IndexContent />
       </div>

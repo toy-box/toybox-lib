@@ -15,10 +15,10 @@ import get from 'lodash.get';
 import {
   ICompareOperation,
   CompareOP,
-  FieldMeta,
   BusinessFieldType,
   FieldService,
 } from '../../../types/compare';
+import { FieldMeta } from '../../../types/interface';
 
 const CompareOperationWrapper = styled.div`
   display: flex;
