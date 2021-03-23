@@ -42,6 +42,7 @@ export interface FieldMeta {
   properties?: { [key: string]: FieldMeta };
   index?: number;
   defaultValue?: any;
+  parentKey?: string;
 }
 
 export interface FieldMetaProfile extends FieldMeta {

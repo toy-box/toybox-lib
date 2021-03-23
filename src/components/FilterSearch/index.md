@@ -22,7 +22,7 @@ export default () => {
       console.log(res, 'findOptions');
       return [
         {
-          label: 'SIX',
+          label: '2IX',
           value: '123',
         },
         {
@@ -37,7 +37,6 @@ export default () => {
     return new Promise(resolve => {
       serviceTest(resolve, key);
     }).then(res => {
-      // console.log(res, 1223333);
       if (key === 'deptId') return [{ value: '1', label: 'Expand to load' }];
       return [
         {
@@ -149,77 +148,75 @@ export default () => {
         unique: null,
         unBasic: true,
       },
+      {
+        description: null,
+        exclusiveMaximum: null,
+        exclusiveMinimum: null,
+        format: null,
+        name: '日期时间',
+        key: 'datetime',
+        maxLength: null,
+        maximum: null,
+        minLength: null,
+        minimum: null,
+        options: null,
+        pattern: null,
+        primary: null,
+        properties: null,
+        required: null,
+        type: 'datetime',
+        unique: null,
+      },
+      {
+        description: null,
+        exclusiveMaximum: null,
+        exclusiveMinimum: null,
+        format: null,
+        name: '姓名，拼音，手机号',
+        key: 'value',
+        maxLength: null,
+        maximum: null,
+        minLength: null,
+        minimum: null,
+        options: null,
+        pattern: null,
+        primary: null,
+        properties: null,
+        required: null,
+        titleKey: 'name',
+        type: 'searchIcon',
+        unique: null,
+        unBasic: true,
+        layout: 'right',
+      },
     ],
     filterFieldService: {
       findOptions: (key, name) => findOptions(key, name),
       findOfValues: (key, value) => findOfValues(key, value),
       findDataTrees: (key, parentId) => findDataTrees(key, parentId),
     },
+    simpleFilterKeys: ['deptId', 'copId', 'datetime', 'value'],
   };
-  const filterFieldTags = [
-    {
-      description: null,
-      exclusiveMaximum: null,
-      exclusiveMinimum: null,
-      format: null,
-      key: 'deptId',
-      maxLength: null,
-      maximum: null,
-      minLength: null,
-      minimum: null,
-      name: '部门',
-      options: null,
-      parentKey: 'parent_id',
-      pattern: null,
-      primary: null,
-      properties: null,
-      refObjectId: '5f9630d977b9ec42e4d0dca5',
-      required: null,
-      titleKey: 'name',
-      type: 'objectId',
-      unique: null,
-      unBasic: true,
-      remote: remoteOfTags.bind(this),
-    },
-    {
-      description: null,
-      exclusiveMaximum: null,
-      exclusiveMinimum: null,
-      format: null,
-      key: 'copId',
-      maxLength: null,
-      maximum: null,
-      minLength: null,
-      minimum: null,
-      name: '公司',
-      options: [
-        {
-          label: '12323232',
-          value: '1',
-        },
-        {
-          label: 'bbbbbbb',
-          value: '2',
-        },
-      ],
-      pattern: null,
-      primary: null,
-      properties: null,
-      refObjectId: '5f9630d977b9ec42e4d0dca5',
-      required: null,
-      titleKey: 'name',
-      type: 'singleOption',
-      unique: null,
-      unBasic: true,
-      remote: remoteOfTags.bind(this),
-    },
-  ];
+  const filterFieldTags = filter.filterFieldMetas.map(meta => {
+    if (meta.type === 'objectId' || meta.type === 'singleOption') {
+      return {
+        ...meta,
+        remote: remoteOfTags.bind(this),
+      };
+    }
+    return meta;
+  });
   const value = [
     {
       source: 'deptId',
       op: '$in',
       target: '1',
     },
+    // {
+    //   source: 'value',
+    //   op: '$in',
+    //   target: '1',
+    // },
   ];
   const [tagValue, setTagValue] = useState(value);
   function remoteOfTags(value, key) {

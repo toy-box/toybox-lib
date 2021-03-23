@@ -9,6 +9,7 @@ import React, {
 import { Button } from 'antd';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import styled from 'styled-components';
+import update from 'immutability-helper';
 import { ICompareOperation, FieldService } from '../../../types/compare';
 import localeMap from '../locale';
 import FilterBuilder from '../../FilterBuilder';

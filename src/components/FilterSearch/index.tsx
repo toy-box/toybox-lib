@@ -66,12 +66,15 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const save = useCallback((filter: FilterType) => {
-    setFilterEditVisible(false);
-    const p = filter.filter(item => item.op && item.target != null);
-    setTagValue(p);
-    onChange && onChange(filter);
-  }, []);
+  const save = useCallback(
+    (filter: FilterType) => {
+      setFilterEditVisible(false);
+      const validFilter = filter.filter(item => item.op && item.target != null);
+      setTagValue(validFilter);
+      onChange && onChange(validFilter);
+    },
+    [setTagValue],
+  );
 
   const filterValue = useCallback(
     filed => {
@@ -93,57 +96,46 @@ const FilterSearch: FC<IFilterSearchProps> = ({
 
   const onValueChange = useCallback(
     (val: any, filterField: FieldMeta) => {
-      if (val !== undefined) {
-        const idx =
-          tagValue &&
-          tagValue.findIndex(field => field.source === filterField.key);
-        const unSelectValues =
-          tagValue &&
-          tagValue.filter(field => field.source !== filterField.key);
-        let tagValues = tagValue;
-        switch (filterField.type) {
-          case BusinessFieldType.STRING:
-          case BusinessFieldType.SINGLE_OPTION:
-          case BusinessFieldType.OBJECT_ID:
-            const filterItem: ICompareOperation = {
-              source: filterField.key,
-              op: '$in' as CompareOP,
-              target: val,
-            };
-            if ((idx || idx === 0) && idx > -1) {
-              if (val) {
-                tagValues = update(unSelectValues, {
-                  [idx]: { $set: filterItem },
-                });
-                setTagValue(tagValues);
-              } else {
-                tagValues = update(unSelectValues, { $splice: [[idx, 1]] });
-                setTagValue(tagValues);
-              }
-            } else {
-              tagValues = update(unSelectValues, { $push: [filterItem] });
-              setTagValue(tagValues);
-            }
-            break;
-          default:
-            const fieldItem: ICompareOperation = {
-              source: filterField.key,
-              op: '$eq' as CompareOP,
-              target: val,
-            };
-            if ((idx || idx === 0) && idx > -1) {
-              tagValues = update(unSelectValues, {
-                [idx]: { $set: fieldItem },
-              });
-              setTagValue(tagValues);
-            } else {
-              tagValues = update(unSelectValues, { $push: [fieldItem] });
-              setTagValue(tagValues);
-            }
-            break;
-        }
-        onChange && onChange(tagValues);
+      switch (filterField.type) {
+        case BusinessFieldType.STRING:
+        case BusinessFieldType.SINGLE_OPTION:
+        case BusinessFieldType.OBJECT_ID:
+          handleValueChange(val, filterField, '$in');
+          break;
+        default:
+          handleValueChange(val, filterField, '$eq');
+          break;
       }
+    },
+    [tagValue],
+  );
+
+  const handleValueChange = useCallback(
+    (val, filterField, op) => {
+      const idx =
+        tagValue &&
+        tagValue.findIndex(field => field.source === filterField.key);
+      const unSelectValues =
+        tagValue && tagValue.filter(field => field.source !== filterField.key);
+      let tagValues = tagValue;
+      const fieldItem: ICompareOperation = {
+        source: filterField.key,
+        op: op as CompareOP,
+        target: val,
+      };
+      if (val || val === 0) {
+        if ((idx || idx === 0) && idx > -1) {
+          tagValues = update(unSelectValues, { [idx]: { $set: fieldItem } });
+          setTagValue(tagValues);
+        } else {
+          tagValues = update(unSelectValues, { $push: [fieldItem] });
+          setTagValue(tagValues);
+        }
+      } else if (!val && (idx || idx === 0) && idx > -1) {
+        tagValues = update(unSelectValues, { $splice: [[idx, 1]] });
+        setTagValue(tagValues);
+      }
+      onChange && onChange(tagValues);
     },
     [tagValue],
   );
@@ -175,24 +167,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   return (
     <div className="filter-model">
       <Form layout="inline">
-        {simpleFilterKeys.map((key, idx) => {
-          const fieldMeta = filterFieldMetas.find(field => field.key === key);
-          return fieldMeta ? (
-            <Form.Item>
-              <FilterValueInput
-                key={idx}
-                value={filterValue(fieldMeta)}
-                filterFieldService={filterFieldService}
-                multiple={false}
-                filterField={fieldMeta}
-                onChange={value => onValueChange(value, fieldMeta)}
-                style={inputStyle}
-              />
-            </Form.Item>
-          ) : (
-            undefined
-          );
-        })}
         <Form.Item>
           <Popover
             overlayClassName="no-padding"
@@ -208,6 +182,28 @@ const FilterSearch: FC<IFilterSearchProps> = ({
             </Tooltip>
           </Popover>
         </Form.Item>
+        {simpleFilterKeys.map((key, idx) => {
+          const fieldMeta = filterFieldMetas.find(field => field.key === key);
+          const flag = fieldMeta?.type === 'searchIcon';
+          let singleMode = true;
+          if (flag) singleMode = simpleFilterKeys.length === idx + 1;
+          return fieldMeta ? (
+            <Form.Item>
+              <FilterValueInput
+                key={idx}
+                value={filterValue(fieldMeta)}
+                filterFieldService={filterFieldService}
+                multiple={false}
+                singleMode={singleMode}
+                filterField={fieldMeta}
+                onChange={value => onValueChange(value, fieldMeta)}
+                style={inputStyle}
+              />
+            </Form.Item>
+          ) : (
+            undefined
+          );
+        })}
       </Form>
     </div>
   );

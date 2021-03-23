@@ -30,6 +30,7 @@ export enum BusinessFieldType {
   SINGLE_OPTION = 'singleOption',
   DOCUMENT = 'document',
   PERCENT = 'percent',
+  SEARCH_ICON = 'searchIcon',
 }
 
 export interface ILogicFilter {

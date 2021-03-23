@@ -15,10 +15,10 @@ import get from 'lodash.get';
 import {
   ICompareOperation,
   CompareOP,
-  FieldMeta,
   BusinessFieldType,
   FieldService,
 } from '../../../types/compare';
+import { FieldMeta } from '../../../types/interface';
 
 const CompareOperationWrapper = styled.div`
   display: flex;
@@ -89,6 +89,14 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         }
         const operations = ['$eq', '$ne', '$in', '$nin'];
         return operations.map(op => {
+          return {
+            label: get(localeData.lang, `compareOperation.${op}`),
+            value: op,
+          };
+        });
+      case BusinessFieldType.SEARCH_ICON:
+        const likes = ['$eq'];
+        return likes.map(op => {
           return {
             label: get(localeData.lang, `compareOperation.${op}`),
             value: op,

@@ -17,6 +17,7 @@ const lang = {
       select: '请选择维度',
       value: '请选择维度值',
       param: '请输入',
+      paramSelect: '请选择',
     },
   },
 };
