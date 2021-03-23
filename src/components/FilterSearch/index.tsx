@@ -63,8 +63,6 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     (filter: FilterType) => {
       setFilterEditVisible(false);
       const validFilter = filter.filter(item => item.op && item.target != null);
-      console.log('validFilter', validFilter, filter);
-      // setTagValue(validFilter);
       onChange && onChange(validFilter);
     },
     [onChange],
