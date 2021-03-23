@@ -57,7 +57,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   onChange,
   onCancel,
 }) => {
-  const [tagValue, setTagValue] = useState(value);
+  // const [tagValue, setTagValue] = useState(value);
   const [filterEditVisible, setFilterEditVisible] = useState(false);
   const antLocale = useContext(LocaleContext);
   const locale = useMemo(
@@ -66,14 +66,15 @@ const FilterSearch: FC<IFilterSearchProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const save = useCallback(
+  const handleChange = useCallback(
     (filter: FilterType) => {
       setFilterEditVisible(false);
       const validFilter = filter.filter(item => item.op && item.target != null);
-      setTagValue(validFilter);
+      console.log('validFilter', validFilter, filter);
+      // setTagValue(validFilter);
       onChange && onChange(validFilter);
     },
-    [setTagValue],
+    [onChange],
   );
 
   const filterValue = useCallback(
@@ -94,73 +95,78 @@ const FilterSearch: FC<IFilterSearchProps> = ({
     [value],
   );
 
-  const onValueChange = useCallback(
-    (val: any, filterField: FieldMeta) => {
-      switch (filterField.type) {
-        case BusinessFieldType.STRING:
-        case BusinessFieldType.SINGLE_OPTION:
-        case BusinessFieldType.OBJECT_ID:
-          handleValueChange(val, filterField, '$in');
-          break;
-        default:
-          handleValueChange(val, filterField, '$eq');
-          break;
-      }
-    },
-    [tagValue],
-  );
+  const onValueChange = (val: any, filterField: FieldMeta) => {
+    switch (filterField.type) {
+      case BusinessFieldType.STRING:
+      case BusinessFieldType.SINGLE_OPTION:
+      case BusinessFieldType.OBJECT_ID:
+        handleValueChange(val, filterField, '$in');
+        break;
+      default:
+        handleValueChange(val, filterField, '$eq');
+        break;
+    }
+  };
 
   const handleValueChange = useCallback(
-    (val, filterField, op) => {
-      const idx =
-        tagValue &&
-        tagValue.findIndex(field => field.source === filterField.key);
-      const unSelectValues =
-        tagValue && tagValue.filter(field => field.source !== filterField.key);
-      let tagValues = tagValue;
+    (val, fieldMeta: FieldMeta, op = CompareOP.EQ) => {
       const fieldItem: ICompareOperation = {
-        source: filterField.key,
+        source: fieldMeta.key,
         op: op as CompareOP,
         target: val,
       };
-      if (val || val === 0) {
-        if ((idx || idx === 0) && idx > -1) {
-          tagValues = update(unSelectValues, { [idx]: { $set: fieldItem } });
-          setTagValue(tagValues);
-        } else {
-          tagValues = update(unSelectValues, { $push: [fieldItem] });
-          setTagValue(tagValues);
-        }
-      } else if (!val && (idx || idx === 0) && idx > -1) {
-        tagValues = update(unSelectValues, { $splice: [[idx, 1]] });
-        setTagValue(tagValues);
+      // 如果选项设置空则
+      if (val == null) {
+        return (
+          onChange &&
+          onChange(
+            (value || []).filter(field => field.source !== fieldMeta.key),
+          )
+        );
       }
-      onChange && onChange(tagValues);
+      const refFilters = (value || []).filter(
+        field => field.source === fieldMeta.key,
+      ).length;
+      if (refFilters === 0) {
+        return onChange && onChange(update(value, { $push: [fieldItem] }));
+      }
+      if (refFilters === 1) {
+        const idx = (value || []).findIndex(
+          field => field.source === fieldMeta.key,
+        );
+        return (
+          onChange && onChange(update(value, { [idx]: { $set: fieldItem } }))
+        );
+      }
+      if (refFilters > 1) {
+        const unSelectValues = (value || []).filter(
+          field => field.source !== fieldMeta.key,
+        );
+        return (
+          onChange && onChange(update(unSelectValues, { $push: [fieldItem] }))
+        );
+      }
     },
-    [tagValue],
+    [value, onChange],
   );
 
   const cencel = useCallback(() => {
     setFilterEditVisible(false);
   }, []);
 
-  useEffect(() => {
-    setTagValue(value);
-  }, [value]);
-
   // 子组件
   const filterContainer = useMemo(() => {
     return (
       <Container
         filterFieldMetas={filterFieldMetas}
-        value={tagValue}
+        value={value}
         title={title || localeData.lang.filter['defaultTitle']}
         filterFieldService={filterFieldService}
-        onChange={(filter: FilterType) => save(filter)}
+        onChange={handleChange}
         onCancel={cencel}
       />
     );
-  }, [filterFieldMetas, tagValue, filterFieldService]);
+  }, [filterFieldMetas, value, filterFieldService]);
 
   const inputStyle = { width: '198px' };
 
