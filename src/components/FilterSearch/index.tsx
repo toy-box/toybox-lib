@@ -93,10 +93,10 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
-        handleValueChange(val, filterField, '$in');
+        handleValueChange(val, filterField, CompareOP.IN);
         break;
       default:
-        handleValueChange(val, filterField, '$eq');
+        handleValueChange(val, filterField, CompareOP.EQ);
         break;
     }
   };

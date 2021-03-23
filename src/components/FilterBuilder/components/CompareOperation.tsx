@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useMemo,
-  useState,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { FC, useCallback, useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import update from 'immutability-helper';
 import { Button, Form, Select, Input } from 'antd';
@@ -31,7 +24,6 @@ const inputStyle = { width: '198px' };
 export interface CompareOperationProps {
   filterFieldMetas: FieldMeta[];
   compare: Partial<ICompareOperation>;
-  // compares: Partial<ICompareOperation>[];
   filterFieldService?: FieldService;
   localeData: any;
   onChange: (compare: Partial<ICompareOperation>) => void;
@@ -49,7 +41,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   const [filterKey, setFilterKey] = useState(compare.source);
   const [filterOperation, setFilterOperation] = useState(compare.op);
   const [filterValue, setFilterValue] = useState(compare.target);
-  // const [filterValues, setFilterValues] = useState<(string | number)[]>([]);
 
   const fieldOptions = useMemo(() => {
     return filterFieldMetas.map(field => ({
@@ -64,11 +55,24 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const filterOperations = useMemo(() => {
+    let compareOperation: string[] = [
+      CompareOP.EQ,
+      CompareOP.NE,
+      CompareOP.IN,
+      CompareOP.NIN,
+    ];
     switch (filterFieldMeta?.type) {
       case BusinessFieldType.NUMBER:
       case BusinessFieldType.DATE:
       case BusinessFieldType.DATETIME:
-        const compareOperation = ['$eq', '$ne', '$gt', '$lt', '$gte', '$lte'];
+        compareOperation = [
+          CompareOP.EQ,
+          CompareOP.NE,
+          CompareOP.GT,
+          CompareOP.LT,
+          CompareOP.GTE,
+          CompareOP.LTE,
+        ];
         return compareOperation.map(op => {
           return {
             label: get(localeData.lang, `compareOperation.${op}`),
@@ -79,7 +83,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
         if (filterFieldMeta.parentKey != null) {
-          const compareOperation = ['$in', '$nin'];
+          compareOperation = [CompareOP.IN, CompareOP.NIN];
           return compareOperation.map(op => {
             return {
               label: get(localeData.lang, `compareOperation.${op}`),
@@ -87,24 +91,22 @@ export const CompareOperation: FC<CompareOperationProps> = ({
             };
           });
         }
-        const operations = ['$eq', '$ne', '$in', '$nin'];
-        return operations.map(op => {
+        return compareOperation.map(op => {
           return {
             label: get(localeData.lang, `compareOperation.${op}`),
             value: op,
           };
         });
       case BusinessFieldType.SEARCH_ICON:
-        const likes = ['$eq'];
-        return likes.map(op => {
+        compareOperation = [CompareOP.EQ];
+        return compareOperation.map(op => {
           return {
             label: get(localeData.lang, `compareOperation.${op}`),
             value: op,
           };
         });
       default:
-        const defultOperation = ['$eq', '$ne', '$in', '$nin'];
-        return defultOperation.map(op => {
+        return compareOperation.map(op => {
           return {
             label: get(localeData.lang, `compareOperation.${op}`),
             value: op,
@@ -122,7 +124,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
     (source: string) => {
       setFilterKey(source);
       setFilterValue(undefined);
-      // setFilterValues([]);
       onChange(
         update(compare, {
           target: { $set: undefined },
