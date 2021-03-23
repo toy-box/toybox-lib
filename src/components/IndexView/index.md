@@ -193,7 +193,8 @@ const filterFieldService = {
 };
 
 export default () => {
-  const loadData = () => {
+  const loadData = (...args: any) => {
+    console.log('args', args);
     const result = {
       list: data,
       total: 3,

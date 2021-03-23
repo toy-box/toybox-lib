@@ -89,7 +89,6 @@ const FilterTag: FC<FilterTagProps> = ({
   );
 
   const text = useMemo(() => {
-    console.log('labelValues', labelValues);
     return `${title} ${get(
       localeData.lang,
       `compareOperation.${op}`,
