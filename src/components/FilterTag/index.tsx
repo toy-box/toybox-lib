@@ -1,4 +1,11 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Tag, TagProps, Tooltip } from 'antd';
 import get from 'lodash.get';
 import LocaleContext from 'antd/lib/locale-provider/context';
@@ -47,6 +54,14 @@ const FilterTag: FC<FilterTagProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
   const [labelValues, setLabelValues] = useState<(string | number)[]>([]);
+
+  const handleRemove = useCallback(
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      e.preventDefault();
+      remove && remove();
+    },
+    [remove],
+  );
 
   useEffect(() => {
     if (remote) {
@@ -108,7 +123,7 @@ const FilterTag: FC<FilterTagProps> = ({
       <Tag
         className={className}
         closable={remove != null}
-        onClose={() => remove && remove()}
+        onClose={handleRemove}
         {...tagProps}
       >
         {content}
@@ -118,7 +133,7 @@ const FilterTag: FC<FilterTagProps> = ({
     <Tag
       className={className}
       closable={remove != null}
-      onClose={() => remove && remove()}
+      onClose={handleRemove}
       {...tagProps}
     >
       {content}

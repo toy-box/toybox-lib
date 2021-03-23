@@ -109,11 +109,22 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
   const [queryFilter, setQueryFilter] = useQueryFilter();
   const [simpleFilter, setSimpleFilter] = useState<FilterType>();
 
+  const filterUtil = useMemo(
+    () => ({
+      setFilter: setQueryFilter,
+      getFilter: () => queryFilter,
+      resetFilter: () => undefined,
+    }),
+    [queryFilter, setQueryFilter],
+  );
+
   useEffect(() => {
     if (queryFilter.filter != null && queryFilter.filter.compares != null) {
       setSimpleFilter(queryFilter.filter.compares);
     }
   }, [queryFilter, setSimpleFilter]);
+
+  useEffect;
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
     [],
@@ -151,7 +162,6 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
       defaultPageSize: 20,
       defaultParams: [
         { pageSize: queryFilter.pageSize, current: queryFilter.current },
-        queryFilter.filter,
       ] as any,
     },
     urlQuery ? setQueryFilter : undefined,

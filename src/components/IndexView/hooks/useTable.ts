@@ -58,13 +58,13 @@ export interface Result<Item> extends PaginatedResult<Item> {
 
 export interface BaseOptions<U>
   extends Omit<BasePaginatedOptions<U>, 'paginated'> {
-  form?: FilterUtil;
+  filter?: FilterUtil;
   defaultType?: 'simple' | 'advance';
 }
 
 export interface OptionsWithFormat<R, Item, U>
   extends Omit<PaginatedOptionsWithFormat<R, Item, U>, 'paginated'> {
-  form?: FilterUtil;
+  filter?: FilterUtil;
   defaultType?: 'simple' | 'advance';
 }
 
@@ -84,7 +84,7 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
   setQuery?: (data: any) => void,
 ): any {
   const {
-    form,
+    filter,
     refreshDeps = [],
     manual,
     defaultType = 'simple',
@@ -111,18 +111,18 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
 
   // 获取当前展示的 form 字段值
   const getActivetFieldValues = useCallback((): Store => {
-    if (!form) {
+    if (!filter) {
       return {};
     }
-    return form.getFilter();
-  }, [form]);
+    return filter.getFilter();
+  }, [filter]);
 
   // const formRef = useRef(form);
   // formRef.current = form;
   /* 初始化，或改变了 searchType, 恢复表单数据 */
   useEffect(() => {
-    form && form.setFilter(allFormData);
-  }, [form, type]);
+    filter && filter.setFilter(allFormData);
+  }, [filter, type]);
 
   // 首次加载，手动提交。为了拿到 form 的 initial values
   useEffect(() => {
@@ -182,11 +182,11 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
   );
 
   const reset = useCallback(() => {
-    if (form) {
-      form.resetFilter();
+    if (filter) {
+      filter.resetFilter();
     }
     _submit();
-  }, [form, _submit]);
+  }, [filter, _submit]);
 
   const resetPersistFn = usePersistFn(reset);
 
