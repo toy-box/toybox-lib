@@ -55,6 +55,29 @@ const objectMeta = {
   titleKey: 'name',
 };
 
+const userList = [
+  {
+    id: 'user1',
+    name: '熊丽',
+  },
+  {
+    id: 'user2',
+    name: '小米',
+  },
+  {
+    id: 'user3',
+    name: '大佬',
+  },
+  {
+    id: 'user4',
+    name: '国旅',
+  },
+  {
+    id: 'user5',
+    name: '刘敏',
+  },
+];
+
 const data = [
   {
     id: '1234',
@@ -62,8 +85,8 @@ const data = [
     billCycle: '2020-01-01',
     amount: 2000,
     user: {
-      id: 'xxx',
-      name: '熊丽',
+      id: 'user3',
+      name: '大佬',
     },
   },
   {
@@ -72,8 +95,8 @@ const data = [
     billCycle: '2020-02-01',
     amount: 1300,
     user: {
-      id: 'xxx2',
-      name: '熊丽2',
+      id: 'user1',
+      name: '熊丽',
     },
   },
   {
@@ -103,20 +126,20 @@ const visibleColumns = [
   },
 ];
 
+async function serviceTest(resolve, key) {
+  setTimeout(() => {
+    resolve(key);
+  }, 100);
+}
+
 function findOptions(key, name) {
   return new Promise(resolve => {
     serviceTest(resolve, key);
   }).then(res => {
-    return [
-      {
-        label: 'SIX',
-        value: '123',
-      },
-      {
-        label: 'named',
-        value: '456',
-      },
-    ];
+    if (key === 'user') {
+      return userList;
+    }
+    return [];
   });
 }
 
@@ -124,17 +147,9 @@ function findOfValues(key, value) {
   return new Promise(resolve => {
     serviceTest(resolve, key);
   }).then(res => {
-    if (key === 'deptId') return [{ value: '1', label: 'Expand to load' }];
-    return [
-      {
-        label: 'SIX',
-        value: '123',
-      },
-      {
-        label: 'named',
-        value: '456',
-      },
-    ];
+    if (key === 'user') {
+      return userList.filter(user => value.some(v => v === user.id));
+    }
   });
 }
 
@@ -193,8 +208,8 @@ export default () => {
   };
 
   const filterSearch = {
-    filterKeys: ['billCycle'],
-    simpleFilterKeys: ['billCycle'],
+    filterKeys: ['billCycle', 'user'],
+    simpleFilterKeys: ['billCycle', 'user'],
   };
 
   return (
