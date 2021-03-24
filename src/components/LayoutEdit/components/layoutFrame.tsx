@@ -27,10 +27,19 @@ export interface LayoutFrameProps {
   style?: any;
   fixWidth?: number;
   fixHeight?: number;
+  previewWidth?: number;
 }
 
 const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
-  { src, className, frameWidth, style, fixWidth = 0, fixHeight = 0 },
+  {
+    src,
+    className,
+    frameWidth,
+    style,
+    fixWidth = 0,
+    fixHeight = 0,
+    previewWidth = 375,
+  },
   ref,
 ) => {
   const prefixCls = 'tbox-layout-edit-preview';
@@ -79,13 +88,9 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
 
   const handleDargOverMask = useCallback(
     (event: React.MouseEvent) => {
-      const x =
-        (event.clientX || 0) +
-        scroll.left -
-        ((size.width || 0) - 375) / 2 -
-        fixWidth;
-      const y = (event.clientY || 0) + scroll.top - fixHeight;
-      console.log('move mask', x, y);
+      const leftFix = ((size.width || 0) - previewWidth) / 2;
+      const x = (event.clientX || 0) + scroll.left - leftFix + fixWidth;
+      const y = (event.clientY || 0) + scroll.top + fixHeight;
       if (x > 0 && y > 0) {
         addPalaceholder('card', { x, y });
       }
