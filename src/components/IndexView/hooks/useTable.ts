@@ -12,7 +12,7 @@ import {
   PaginatedFormatReturn,
   PaginatedResult,
 } from '@ahooksjs/use-request/lib/types';
-import { ILogicFilter, LogicOP } from '@/types/compare';
+import { ILogicFilter, LogicOP } from '../../../types/compare';
 
 export {
   CombineService,
