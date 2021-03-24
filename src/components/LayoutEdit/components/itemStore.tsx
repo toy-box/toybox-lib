@@ -5,7 +5,6 @@ import { StoreGroup } from './itemGroup';
 import { GroupType, ItemType, NumPerRowType } from '../interface';
 
 import '../styles/item.less';
-
 interface StoreBaseProps {
   width: number;
   numPreRow: NumPerRowType;

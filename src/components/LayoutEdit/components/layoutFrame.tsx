@@ -25,12 +25,12 @@ export interface LayoutFrameProps {
   className?: string;
   frameWidth?: number;
   style?: any;
+  fixWidth?: number;
+  fixHeight?: number;
 }
 
-const fixWidth = 318 + 24 + 200 - 15;
-
 const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
-  { src, className, frameWidth, style },
+  { src, className, frameWidth, style, fixWidth = 0, fixHeight = 0 },
   ref,
 ) => {
   const prefixCls = 'tbox-layout-edit-preview';
@@ -84,13 +84,13 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
         scroll.left -
         ((size.width || 0) - 375) / 2 -
         fixWidth;
-      const y = (event.clientY || 0) + scroll.top;
+      const y = (event.clientY || 0) + scroll.top - fixHeight;
       console.log('move mask', x, y);
       if (x > 0 && y > 0) {
         addPalaceholder('card', { x, y });
       }
     },
-    [scroll],
+    [scroll, fixWidth, fixHeight],
   );
 
   // iframe onload

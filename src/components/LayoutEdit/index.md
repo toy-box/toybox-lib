@@ -101,7 +101,7 @@ export default () => {
         <LayoutFrame
           src={src}
           ref={ref}
-          width={800}
+          fixWidth={318 + 24 + 200 - 15}
           style={{
             position: 'absolute',
             left: '180px',
