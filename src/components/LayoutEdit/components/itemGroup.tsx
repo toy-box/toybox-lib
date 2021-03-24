@@ -9,7 +9,7 @@ export interface StoreGroupProps {
   items: ItemType[];
   width: number;
   numPreRow: NumPerRowType;
-  itemClass?: string;
+  itemClassName?: string;
   className?: string;
 }
 
@@ -18,7 +18,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   numPreRow,
   width,
   className,
-  itemClass,
+  itemClassName,
 }) => {
   const context = useContext(LayoutEditContext);
 
@@ -60,7 +60,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       forceFallback
     >
       {items.map(item => (
-        <StoreItem key={item.key} item={item} className={itemClass} />
+        <StoreItem key={item.key} item={item} className={itemClassName} />
       ))}
     </ReactSortable>
   );

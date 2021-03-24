@@ -10,6 +10,7 @@ interface StoreBaseProps {
   width: number;
   numPreRow: NumPerRowType;
   className?: string;
+  itemClassName?: string;
   style?: any;
 }
 
@@ -29,12 +30,17 @@ export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
   width,
   numPreRow,
   className,
+  itemClassName,
   style,
 }) => {
   const prefixCls = 'tbox-layout-edit__item-store';
+  const mixStyle = {
+    ...style,
+    width: `${width}px`,
+  };
   if (group) {
     return (
-      <div className={classNames(prefixCls, className)} style={style}>
+      <div className={classNames(prefixCls, className)} style={mixStyle}>
         <Collapse
           bordered={false}
           defaultActiveKey={['1']}
@@ -48,11 +54,12 @@ export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
     );
   }
   return (
-    <div className={classNames(prefixCls, className)} style={style}>
+    <div className={classNames(prefixCls, className)} style={mixStyle}>
       <StoreGroup
         items={dataSource as ItemType[]}
         width={width}
         numPreRow={numPreRow}
+        itemClassName={itemClassName}
       />
     </div>
   );
