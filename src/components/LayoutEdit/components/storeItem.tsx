@@ -3,8 +3,6 @@ import classNames from 'classnames';
 import { ItemType } from '../interface';
 import LayoutEditContext from '../context';
 
-import '../styles/item.less';
-
 interface StoreItemProps {
   item: ItemType;
   className?: string;
