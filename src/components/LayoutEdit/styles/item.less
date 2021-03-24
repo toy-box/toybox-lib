@@ -1,0 +1,47 @@
+@import '../../../styles/theme.less';
+
+.tobx-layout-edit {
+  &__item-store-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    &.num-per-row-1 {
+      > div {
+        width: 100%;
+      }
+    }
+    &.num-per-row-2 {
+      > div {
+        width: 50%;
+      }
+    }
+    &.num-per-row-3 {
+      > div {
+        width: 33.33%;
+      }
+    }
+    &.num-per-row-4 {
+      > div {
+        width: 25%;
+      }
+    }
+    &.num-per-row-5 {
+      > div {
+        width: 20%;
+      }
+    }
+  }
+  &__item-wrapper {
+    &:hover {
+      background: @gray-4;
+      cursor: pointer;
+    }
+    .in-layout {
+      display: none;
+    }
+    .in-store {
+      padding: 4px 8px;
+      display: block;
+    }
+  }
+}

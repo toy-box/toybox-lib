@@ -17,6 +17,19 @@ const ItemRender: FC<{ x: string; remove: () => void }> = props => {
   );
 };
 
+const defaultItems = [
+  {
+    key: 'k1',
+    itemProps: { x: 'k1' },
+    itemRender: props => <ItemRender {...props.itemProps} />,
+  },
+  {
+    key: 'k2',
+    itemProps: { x: 'k2' },
+    itemRender: props => <ItemRender {...props.itemProps} />,
+  },
+];
+
 export default () => {
   const [editable, setEditable] = useState(true);
   const [layout, setLayout] = useState([
