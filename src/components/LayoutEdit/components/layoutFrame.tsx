@@ -91,9 +91,10 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
       const leftFix = ((size.width || 0) - previewWidth) / 2;
       const x = (event.clientX || 0) + scroll.left - leftFix + fixWidth;
       const y = (event.clientY || 0) + scroll.top + fixHeight;
-      if (x > 0 && y > 0) {
-        addPalaceholder('card', { x, y });
-      }
+      // if (x > 0 && y > 0) {
+      //   addPalaceholder('card', { x, y });
+      // }
+      addPalaceholder('card', { x, y });
     },
     [scroll, size.width, fixWidth, fixHeight],
   );
