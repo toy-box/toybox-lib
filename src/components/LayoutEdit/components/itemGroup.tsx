@@ -32,8 +32,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   ]);
 
   const handleDragStart = (evt: Sortable.SortableEvent) => {
-    const item = items[evt.oldIndex as number];
-    context.setDraging && context.setDraging(item.type);
+    context.setDraging && context.setDraging(items[evt.oldIndex as number]);
   };
 
   const handleDragEnd = () => {

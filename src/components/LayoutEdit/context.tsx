@@ -1,6 +1,7 @@
 import React from 'react';
 import Messager from './components/Messager';
 import { LayoutItem } from './components/simpleLayout';
+import { ItemType } from './interface';
 
 export interface LayoutEditContext<LayoutType> {
   layout: LayoutType;
@@ -8,8 +9,8 @@ export interface LayoutEditContext<LayoutType> {
   active?: string;
   setActive: (key: string) => void;
   palaceholder?: (type: string, index: number) => void;
-  draging?: string | number;
-  setDraging?: (draging?: string | number) => void;
+  draging?: ItemType;
+  setDraging?: (draging?: ItemType) => void;
   messager?: Messager;
 }
 
