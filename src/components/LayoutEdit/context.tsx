@@ -8,8 +8,8 @@ export interface LayoutEditContext<LayoutType> {
   active?: string;
   setActive: (key: string) => void;
   palaceholder?: (type: string, index: number) => void;
-  draging?: boolean;
-  setDraging?: (draging: boolean) => void;
+  draging?: string | number;
+  setDraging?: (draging?: string | number) => void;
   messager?: Messager;
 }
 

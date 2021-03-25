@@ -12,7 +12,7 @@ export const StoreItem: FC<StoreItemProps> = ({ item, className }) => {
   const context = useContext(LayoutEditContext);
   const ref = useRef<any>();
   const handleLeaveDrag = useCallback(() => {
-    context.setDraging && context.setDraging(false);
+    context.setDraging && context.setDraging(undefined);
   }, [context.setDraging]);
   return (
     <div

@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useContext, useMemo } from 'react';
-import { ReactSortable } from 'react-sortablejs';
+import { ReactSortable, Sortable } from 'react-sortablejs';
 import classNames from 'classnames';
 import { StoreItem } from './storeItem';
 import { ItemType, NumPerRowType } from '../interface';
@@ -31,14 +31,13 @@ export const StoreGroup: FC<StoreGroupProps> = ({
     items,
   ]);
 
-  const handleDragStart = () => {
-    console.log('start drag');
-    context.setDraging && context.setDraging(true);
+  const handleDragStart = (evt: Sortable.SortableEvent) => {
+    const item = items[evt.oldIndex as number];
+    context.setDraging && context.setDraging(item.type);
   };
 
   const handleDragEnd = () => {
-    console.log('end drag');
-    context.setDraging && context.setDraging(false);
+    context.setDraging && context.setDraging(undefined);
     context.messager && context.messager.broadcast('palaceholderEnd', null);
   };
 
