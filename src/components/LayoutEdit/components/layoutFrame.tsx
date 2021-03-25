@@ -67,6 +67,9 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
         context.change(layout),
       );
       context.messager.on('itemSize', (itemSize: ItemSize) => console.log);
+      context.messager.on('activeItem', (key: string) =>
+        context.setActive(key),
+      );
     }
   }, [context.messager]);
 
