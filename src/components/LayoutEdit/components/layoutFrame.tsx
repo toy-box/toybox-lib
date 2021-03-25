@@ -141,6 +141,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
         className={`${prefixCls}-drag-mask`}
         onMouseMove={handleDargOverMask}
         onMouseLeave={cancelPalaceholder}
+        style={{ height: previewHeight }}
       />
     ) : null;
   }, [context.draging]);
