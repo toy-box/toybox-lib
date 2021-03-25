@@ -1,4 +1,5 @@
 import React, {
+  ReactNode,
   ForwardRefRenderFunction,
   useContext,
   useEffect,
@@ -12,7 +13,7 @@ import classNames from 'classnames';
 import { useScroll, useSize } from 'ahooks';
 import LayoutEditContext from '../context';
 import { LayoutItem } from './simpleLayout';
-import { ItemSize } from '../interface';
+import { ItemSize, Size } from '../interface';
 
 import '../styles/layoutPreview.less';
 
@@ -28,6 +29,9 @@ export interface LayoutFrameProps {
   fixWidth?: number;
   fixHeight?: number;
   previewWidth?: number;
+  minHeight?: number;
+  header?: ReactNode;
+  footer?: ReactNode;
 }
 
 const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
@@ -39,6 +43,9 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
     fixWidth = 0,
     fixHeight = 0,
     previewWidth = 375,
+    minHeight = 1164,
+    header,
+    footer,
   },
   ref,
 ) => {
@@ -54,8 +61,15 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
   );
   const context = useContext(LayoutEditContext);
   const [ready, setReady] = useState(false);
+  const [previewSize, setPreviewSize] = useState<Size>();
   const scroll = useScroll(previewWrapRef);
   const size = useSize(previewWrapRef);
+
+  const previewHeight = useMemo(() => {
+    return minHeight > (previewSize?.height || 0)
+      ? minHeight
+      : previewSize?.height;
+  }, [previewSize]);
 
   // message handle
   useEffect(() => {
@@ -66,7 +80,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
       context.messager.on('setAll', (layout: LayoutItem[]) =>
         context.change(layout),
       );
-      context.messager.on('itemSize', (itemSize: ItemSize) => console.log);
+      context.messager.on('previewSize', (size: Size) => setPreviewSize(size));
       context.messager.on('activeItem', (key: string) =>
         context.setActive(key),
       );
@@ -137,6 +151,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
       style={style}
       ref={previewWrapRef}
     >
+      {header}
       <div className={classNames(prefixCls, className)} style={frameStyle}>
         <iframe
           className={`${prefixCls}-iframe-wrap`}
@@ -145,9 +160,10 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
           allowFullScreen={false}
           ref={innerRef}
           width="100%"
-          height="1164"
+          height={previewHeight}
         />
       </div>
+      {footer}
       {mask}
     </div>
   );
