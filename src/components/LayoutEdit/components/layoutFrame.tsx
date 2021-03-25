@@ -31,7 +31,7 @@ export interface LayoutFrameProps {
   previewWidth?: number;
   minHeight?: number;
   header?: ReactNode;
-  footer?: ReactNode;
+  headerHeight?: number;
 }
 
 const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
@@ -45,7 +45,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
     previewWidth = 375,
     minHeight = 1164,
     header,
-    footer,
+    headerHeight = 0,
   },
   ref,
 ) => {
@@ -66,9 +66,9 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
   const size = useSize(previewWrapRef);
 
   const previewHeight = useMemo(() => {
-    return minHeight > (previewSize?.height || 0)
+    return minHeight > (previewSize?.height || 0 + headerHeight)
       ? minHeight
-      : previewSize?.height;
+      : (previewSize?.height || 0) + headerHeight;
   }, [previewSize]);
 
   // message handle
@@ -152,19 +152,19 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
       style={style}
       ref={previewWrapRef}
     >
-      {header}
       <div className={classNames(prefixCls, className)} style={frameStyle}>
-        <iframe
-          className={`${prefixCls}-iframe-wrap`}
-          src={src}
-          frameBorder="0"
-          allowFullScreen={false}
-          ref={innerRef}
-          width="100%"
-          height={previewHeight}
-        />
+        {header}
+        <div className={`${prefixCls}-iframe-wrap`}>
+          <iframe
+            src={src}
+            frameBorder="0"
+            allowFullScreen={false}
+            ref={innerRef}
+            width="100%"
+            height={previewHeight}
+          />
+        </div>
       </div>
-      {footer}
       {mask}
     </div>
   );
