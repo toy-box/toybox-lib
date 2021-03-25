@@ -71,7 +71,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
   }, [context.messager]);
 
   const addPalaceholder = useCallback(
-    (type: string, pos: { x: number; y: number }) => {
+    (type: unknown, pos: { x: number; y: number }) => {
       context.messager &&
         context.messager.broadcast('palaceholder', { type, pos });
     },
@@ -91,7 +91,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
       const leftFix = ((size.width || 0) - previewWidth) / 2;
       const x = (event.clientX || 0) + scroll.left - leftFix + fixWidth;
       const y = (event.clientY || 0) + scroll.top + fixHeight;
-      addPalaceholder('card', { x, y });
+      addPalaceholder(context.draging, { x, y });
     },
     [scroll, size.width, fixWidth, fixHeight],
   );
