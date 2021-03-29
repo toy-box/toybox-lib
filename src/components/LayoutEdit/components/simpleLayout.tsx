@@ -1,4 +1,5 @@
 import React, { FC, ReactNode, useCallback, useContext, useMemo } from 'react';
+import update from 'immutability-helper';
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
 import { ReactSortable } from 'react-sortablejs';
@@ -58,14 +59,16 @@ export const SimpleLayout: FC<SimpleLayoutProps> = ({
   const context = useContext(LayoutEditContext);
   const items = useMemo(
     () =>
-      sortBy(context.layout, 'index').map(item => ({ id: item.key, ...item })),
+      sortBy(context.layout.items, 'index').map(item => ({
+        id: item.key,
+        ...item,
+      })),
     [context.layout],
   );
 
   const addItem = useCallback(
     (item: any, evt: any) => {
-      console.log('add', item);
-      const reIndex = context.layout.map(i => {
+      const reIndex = context.layout.items.map(i => {
         if (i.index >= evt.newIndex) {
           return {
             ...i,
@@ -82,7 +85,9 @@ export const SimpleLayout: FC<SimpleLayoutProps> = ({
         props: item.props,
         index: evt.newIndex,
       };
-      context.change([...reIndex, newItem]);
+      context.change(
+        update(context.layout, { items: { $set: [...reIndex, newItem] } }),
+      );
       return newItem;
     },
     [context.change],
@@ -90,7 +95,11 @@ export const SimpleLayout: FC<SimpleLayoutProps> = ({
 
   const setList = useCallback(
     (newState: any[], sortable: any, store: any) => {
-      context.change(newState.map((item, index) => ({ ...item, index })));
+      context.change(
+        update(context.layout, {
+          items: { $set: newState.map((item, index) => ({ ...item, index })) },
+        }),
+      );
     },
     [context.change],
   );

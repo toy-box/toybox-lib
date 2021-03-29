@@ -143,7 +143,7 @@ const itemRender = props => {
 };
 
 export default () => {
-  const [layout, setLayout] = useState(layoutItems);
+  const [layout, setLayout] = useState({ items: layoutItems });
   const [active, setActive] = useState();
   const change = useCallback(
     (state: any) => {

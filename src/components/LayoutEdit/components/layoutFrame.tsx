@@ -11,9 +11,8 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import { useScroll, useSize } from 'ahooks';
-import LayoutEditContext from '../context';
-import { LayoutItem } from './simpleLayout';
-import { ItemSize, Size } from '../interface';
+import LayoutEditContext, { LayoutType } from '../context';
+import { Size } from '../interface';
 
 import '../styles/layoutPreview.less';
 
@@ -77,7 +76,7 @@ const LayoutFrame: ForwardRefRenderFunction<any, LayoutFrameProps> = (
       context.messager.on('ready', () => {
         setReady(true);
       });
-      context.messager.on('setAll', (layout: LayoutItem[]) =>
+      context.messager.on('setAll', (layout: LayoutType<any>) =>
         context.change(layout),
       );
       context.messager.on('previewSize', (size: Size) => setPreviewSize(size));

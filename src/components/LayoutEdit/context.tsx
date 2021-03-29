@@ -3,8 +3,13 @@ import Messager from './components/Messager';
 import { LayoutItem } from './components/simpleLayout';
 import { ItemType } from './interface';
 
-export interface LayoutEditContext<LayoutType> {
-  layout: LayoutType;
+export interface LayoutType<LayoutItemType> {
+  items: LayoutItemType[];
+  [key: string]: any;
+}
+
+export interface LayoutEditContext<LayoutItemType> {
+  layout: LayoutType<LayoutItemType>;
   change: (layout: unknown) => void;
   active?: string;
   setActive: (key: string) => void;
@@ -14,8 +19,8 @@ export interface LayoutEditContext<LayoutType> {
   messager?: Messager;
 }
 
-const LayoutEditContext = React.createContext<LayoutEditContext<LayoutItem[]>>({
-  layout: [],
+const LayoutEditContext = React.createContext<LayoutEditContext<LayoutItem>>({
+  layout: { items: [] },
   change: (layout: unknown) => console.log(layout),
   setActive: (key: string) => console.log(key),
   palaceholder: (type: string, index: number) =>
