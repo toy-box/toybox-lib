@@ -11,6 +11,7 @@ interface StoreBaseValue {
   className?: string;
   itemClassName?: string;
   style?: any;
+  forceFallback?: boolean;
   onDragStart?: (item: ItemType) => void;
   onDragEnd?: () => void;
 }
@@ -35,6 +36,7 @@ export const ItemStore: FC<ItemStoreProps> = ({
   className,
   itemClassName,
   style,
+  forceFallback,
   onDragStart,
   onDragEnd,
 }) => {
@@ -67,6 +69,7 @@ export const ItemStore: FC<ItemStoreProps> = ({
         itemClassName={itemClassName}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
+        forceFallback={forceFallback}
       />
     </div>
   );

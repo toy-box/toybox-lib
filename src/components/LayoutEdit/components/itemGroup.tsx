@@ -14,6 +14,7 @@ export interface StoreGroupProps {
   groupName?: string;
   onDragStart?: (item: ItemType) => void;
   onDragEnd?: () => void;
+  forceFallback?: boolean;
 }
 
 export const StoreGroup: FC<StoreGroupProps> = ({
@@ -25,6 +26,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   groupName = 'storeItem',
   onDragStart,
   onDragEnd,
+  forceFallback = true,
 }) => {
   const context = useContext(LayoutEditContext);
 
@@ -60,7 +62,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       setList={() => undefined}
       onStart={handleDragStart}
       onEnd={handleDragEnd}
-      forceFallback
+      forceFallback={forceFallback}
     >
       {items.map(item => (
         <StoreItem key={item.key} item={item} className={itemClassName} />
