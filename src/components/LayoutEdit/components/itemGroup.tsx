@@ -11,6 +11,7 @@ export interface StoreGroupProps {
   numPreRow: NumPerRowType;
   itemClassName?: string;
   className?: string;
+  groupName?: string;
 }
 
 export const StoreGroup: FC<StoreGroupProps> = ({
@@ -19,6 +20,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   width,
   className,
   itemClassName,
+  groupName = 'storeItem',
 }) => {
   const context = useContext(LayoutEditContext);
 
@@ -50,7 +52,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       )}
       style={style}
       list={list}
-      group={{ name: 'storeItem', pull: 'clone', put: false }}
+      group={{ name: groupName, pull: 'clone', put: false }}
       sort={false}
       setList={() => undefined}
       onStart={handleDragStart}
