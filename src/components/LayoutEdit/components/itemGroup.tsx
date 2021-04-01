@@ -12,6 +12,8 @@ export interface StoreGroupProps {
   itemClassName?: string;
   className?: string;
   groupName?: string;
+  onDragStart?: (item: ItemType) => void;
+  onDragEnd?: () => void;
 }
 
 export const StoreGroup: FC<StoreGroupProps> = ({
@@ -21,6 +23,8 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   className,
   itemClassName,
   groupName = 'storeItem',
+  onDragStart,
+  onDragEnd,
 }) => {
   const context = useContext(LayoutEditContext);
 
@@ -34,12 +38,11 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   ]);
 
   const handleDragStart = (evt: Sortable.SortableEvent) => {
-    context.setDraging && context.setDraging(items[evt.oldIndex as number]);
+    onDragStart && onDragStart(items[evt.oldIndex as number]);
   };
 
   const handleDragEnd = () => {
-    context.setDraging && context.setDraging(undefined);
-    context.messager && context.messager.broadcast('palaceholderEnd', null);
+    onDragEnd && onDragEnd();
   };
 
   return (

@@ -121,7 +121,7 @@ export default () => {
 ```tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from 'antd';
-import { ItemStore, SimpleLayout } from '@toy-box/toybox-lib';
+import { ItemStoreWrap, SimpleLayout } from '@toy-box/toybox-lib';
 import LayoutEditContext from './context';
 import 'antd/dist/antd.css';
 
@@ -177,7 +177,7 @@ export default () => {
           setActive,
         }}
       >
-        <ItemStore dataSource={items} width={200} numPreRow={2} />
+        <ItemStoreWrap dataSource={items} width={200} numPreRow={2} />
         <SimpleLayout />
       </LayoutEditContext.Provider>
     </div>

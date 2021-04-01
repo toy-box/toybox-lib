@@ -5,25 +5,29 @@ import { StoreGroup } from './itemGroup';
 import { GroupType, ItemType, NumPerRowType } from '../interface';
 
 import '../styles/item.less';
-interface StoreBaseProps {
+interface StoreBaseValue {
   width: number;
   numPreRow: NumPerRowType;
   className?: string;
   itemClassName?: string;
   style?: any;
+  onDragStart?: (item: ItemType) => void;
+  onDragEnd?: () => void;
 }
 
-interface ItemStoreProps extends StoreBaseProps {
+export interface ItemStoreValue extends StoreBaseValue {
   dataSource: ItemType[];
   group?: false;
 }
 
-interface GroupItemStoreProps extends StoreBaseProps {
+export interface GroupItemStoreValue extends StoreBaseValue {
   dataSource: GroupType[];
   group: true;
 }
 
-export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
+export declare type ItemStoreProps = ItemStoreValue | GroupItemStoreValue;
+
+export const ItemStore: FC<ItemStoreProps> = ({
   dataSource,
   group,
   width,
@@ -31,6 +35,8 @@ export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
   className,
   itemClassName,
   style,
+  onDragStart,
+  onDragEnd,
 }) => {
   const prefixCls = 'tbox-layout-edit__item-store';
   const mixStyle = {
@@ -59,6 +65,8 @@ export const ItemStore: FC<ItemStoreProps | GroupItemStoreProps> = ({
         width={width}
         numPreRow={numPreRow}
         itemClassName={itemClassName}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
       />
     </div>
   );
