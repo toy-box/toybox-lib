@@ -189,7 +189,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               filterField.name
             }`}
             value={value}
-            onChange={e => handleValue(e.target.value)}
+            onChange={handleValue}
           />
         );
       case BusinessFieldType.SEARCH_ICON:
@@ -203,7 +203,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
                   'filed.placeholderOp.param',
                 )}${filterField.name}`}
                 value={value}
-                onChange={value => handleValue(value)}
+                onChange={handleValue}
               >
                 <SearchLine />
               </Search.IconSearch>
@@ -361,7 +361,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               filterField.name
             }`}
             value={value}
-            onChange={e => handleValue(e.target.value)}
+            onChange={handleValue}
           />
           // <Input
           //   disabled={filterField == null}
