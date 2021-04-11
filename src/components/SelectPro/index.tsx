@@ -129,7 +129,7 @@ const SelectPro: ForwardRefRenderFunction<any, SelectProProps> = (
     if (Array.isArray(current)) {
       return current.map(opt => opt.title || opt.label?.toString());
     }
-    return current ? current.title : null;
+    return current ? current.title || current.label?.toString() : null;
   }, [current]);
 
   useImperativeHandle(ref, () => ({
