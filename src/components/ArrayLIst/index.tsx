@@ -3,10 +3,11 @@ import update from 'immutability-helper';
 import { Button } from 'antd';
 import { ReactSortable, ReactSortableProps } from 'react-sortablejs';
 import classNames from 'classnames';
+import { omit } from '@/utils';
 
 export interface ItemRenderProps<T> {
-  value: T;
-  onChange: (value: T) => void;
+  dataSource: T;
+  onChange: (data: T) => void;
 }
 
 export interface ArrayListProps<T>
@@ -14,8 +15,9 @@ export interface ArrayListProps<T>
     ReactSortableProps<T>,
     'ghostClass' | 'chosenClass' | 'dragClass'
   > {
-  value?: Array<T>;
-  onChange?: (value: Array<T>) => void;
+  dataSource?: Array<T>;
+  onChange?: (data: Array<T>) => void;
+  addMore?: () => void;
   addEnable?: boolean;
   removable?: boolean;
   max?: number;
@@ -28,9 +30,10 @@ export interface ArrayListProps<T>
 }
 
 const ArrayItem: FC<ArrayListProps<any>> = ({
-  value,
+  dataSource = [],
   onChange,
   max,
+  addMore,
   addEnable,
   addText = '添加',
   sortable,
@@ -43,30 +46,19 @@ const ArrayItem: FC<ArrayListProps<any>> = ({
   renderItem: RenderItem,
 }) => {
   const disabled = useMemo(() => {
-    return max != null && (value || []).length >= max;
-  }, [max, value]);
+    return max != null && dataSource.length >= max;
+  }, [max, dataSource]);
 
   const handleAddMore = useCallback(() => {
     if (disabled) {
       return;
     }
-    const newItem = {
-      image: undefined,
-      link: {
-        type: undefined,
-        props: undefined,
-      },
-    };
-    const newArray = [...(value || []), newItem];
-    onChange && onChange(newArray);
-  }, [disabled, onChange, value]);
+    addMore && addMore();
+  }, [disabled, onChange, dataSource]);
 
   const handleChange = useCallback(
     (arrayValue: any[]) => {
-      const _value = arrayValue.map(v => {
-        const { selected, chosen, ..._itemValue } = v;
-        return _itemValue;
-      });
+      const _value = arrayValue.map(v => omit(v, ['selected', 'chosen']));
       onChange && onChange(_value);
     },
     [onChange],
@@ -74,18 +66,21 @@ const ArrayItem: FC<ArrayListProps<any>> = ({
 
   const handleItemChange = useCallback(
     (index: number, itemValue: any) => {
-      const { selected, chosen, ..._itemValue } = itemValue;
       onChange &&
-        onChange(update(value || [], { [index]: { $set: _itemValue } }));
+        onChange(
+          update(dataSource || [], {
+            [index]: { $set: omit(itemValue, ['selected', 'chosen']) },
+          }),
+        );
     },
-    [onChange, value],
+    [onChange, dataSource],
   );
 
   const handleRemove = useCallback(
     (index: number) => {
-      onChange && onChange(update(value || [], { $splice: [[index, 1]] }));
+      onChange && onChange(update(dataSource || [], { $splice: [[index, 1]] }));
     },
-    [onChange, value],
+    [onChange, dataSource],
   );
 
   const innerItemRender = useCallback(
@@ -105,6 +100,23 @@ const ArrayItem: FC<ArrayListProps<any>> = ({
     [RenderItem, handleItemChange, handleRemove],
   );
 
+  const addRender = useMemo(() => {
+    return (
+      <React.Fragment>
+        {addEnable && (
+          <Button
+            onClick={handleAddMore}
+            type="primary"
+            block
+            disabled={disabled}
+          >
+            {addText}
+          </Button>
+        )}
+      </React.Fragment>
+    );
+  }, [addEnable]);
+
   return (
     <React.Fragment>
       {sortable ? (
@@ -112,7 +124,7 @@ const ArrayItem: FC<ArrayListProps<any>> = ({
           tag="div"
           className={classNames('array-item', className)}
           style={style}
-          list={value || []}
+          list={dataSource}
           sort={sortable}
           setList={handleChange}
           handle={handle}
@@ -120,27 +132,18 @@ const ArrayItem: FC<ArrayListProps<any>> = ({
           chosenClass={chosenClass}
           dragClass={dragClass}
         >
-          {(value || []).map((itemValue, index) =>
+          {dataSource.map((itemValue, index) =>
             innerItemRender(itemValue, index),
           )}
         </ReactSortable>
       ) : (
         <div className={classNames('array-item', className)} style={style}>
-          {(value || []).map((itemValue, index) =>
+          {dataSource.map((itemValue, index) =>
             innerItemRender(itemValue, index),
           )}
         </div>
       )}
-      {addEnable && (
-        <Button
-          onClick={handleAddMore}
-          type="primary"
-          block
-          disabled={disabled}
-        >
-          {addText}
-        </Button>
-      )}
+      {addRender}
     </React.Fragment>
   );
 };
