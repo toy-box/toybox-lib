@@ -5,9 +5,9 @@ import { StoreGroup, StoreGroupProps } from './itemGroup';
 import { GroupType, ItemType, NumPerRowType } from '../interface';
 
 import '../styles/item.less';
-import Sortable from 'sortablejs';
+
 interface StoreBaseValue
-  extends Omit<StoreGroupProps, 'onDragStart' | 'onDragMove' | 'onDragEnd'> {
+  extends Pick<StoreGroupProps, 'onDragStart' | 'onDragMove' | 'onDragEnd'> {
   width: number;
   numPreRow: NumPerRowType;
   className?: string;
@@ -39,6 +39,7 @@ export const ItemStore: FC<ItemStoreProps> = ({
   forceFallback,
   onDragStart,
   onDragEnd,
+  onDragMove,
 }) => {
   const prefixCls = 'tbox-layout-edit__item-store';
   const mixStyle = {
@@ -69,6 +70,7 @@ export const ItemStore: FC<ItemStoreProps> = ({
         itemClassName={itemClassName}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
+        onDragMove={onDragMove}
         forceFallback={forceFallback}
       />
     </div>

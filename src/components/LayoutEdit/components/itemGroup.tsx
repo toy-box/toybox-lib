@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext, useMemo } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { ReactSortable, Sortable } from 'react-sortablejs';
 import classNames from 'classnames';
 import { StoreItem } from './storeItem';
