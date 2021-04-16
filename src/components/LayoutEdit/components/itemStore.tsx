@@ -5,6 +5,7 @@ import { StoreGroup } from './itemGroup';
 import { GroupType, ItemType, NumPerRowType } from '../interface';
 
 import '../styles/item.less';
+import Sortable from 'sortablejs';
 interface StoreBaseValue {
   width: number;
   numPreRow: NumPerRowType;
@@ -12,8 +13,9 @@ interface StoreBaseValue {
   itemClassName?: string;
   style?: any;
   forceFallback?: boolean;
-  onDragStart?: (item: ItemType) => void;
-  onDragEnd?: () => void;
+  onDragStart?: (item: ItemType, evt?: Sortable.SortableEvent) => void;
+  onDragMove?: (evt?: Sortable.MoveEvent, originalEvent?: Event) => void;
+  onDragEnd?: (item?: ItemType, evt?: Sortable.SortableEvent) => void;
 }
 
 export interface ItemStoreValue extends StoreBaseValue {
