@@ -12,9 +12,9 @@ export interface StoreGroupProps {
   itemClassName?: string;
   className?: string;
   groupName?: string;
-  onDragStart?: (item: ItemType, evt?: Sortable.SortableEvent) => void;
-  onDragMove?: (evt?: Sortable.MoveEvent, originalEvent?: Event) => void;
-  onDragEnd?: (item?: ItemType, evt?: Sortable.SortableEvent) => void;
+  onDragStart?: (item: ItemType, evt: Sortable.SortableEvent) => void;
+  onDragMove?: (evt: Sortable.MoveEvent, originalEvent: Event) => void;
+  onDragEnd?: (item: ItemType, evt: Sortable.SortableEvent) => void;
   forceFallback?: boolean;
 }
 

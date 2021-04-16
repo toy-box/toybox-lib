@@ -1,21 +1,19 @@
 import React, { FC } from 'react';
 import { Collapse } from 'antd';
 import classNames from 'classnames';
-import { StoreGroup } from './itemGroup';
+import { StoreGroup, StoreGroupProps } from './itemGroup';
 import { GroupType, ItemType, NumPerRowType } from '../interface';
 
 import '../styles/item.less';
 import Sortable from 'sortablejs';
-interface StoreBaseValue {
+interface StoreBaseValue
+  extends Omit<StoreGroupProps, 'onDragStart' | 'onDragMove' | 'onDragEnd'> {
   width: number;
   numPreRow: NumPerRowType;
   className?: string;
   itemClassName?: string;
   style?: any;
   forceFallback?: boolean;
-  onDragStart?: (item: ItemType, evt?: Sortable.SortableEvent) => void;
-  onDragMove?: (evt?: Sortable.MoveEvent, originalEvent?: Event) => void;
-  onDragEnd?: (item?: ItemType, evt?: Sortable.SortableEvent) => void;
 }
 
 export interface ItemStoreValue extends StoreBaseValue {
