@@ -12,8 +12,9 @@ export interface StoreGroupProps {
   itemClassName?: string;
   className?: string;
   groupName?: string;
-  onDragStart?: (item: ItemType) => void;
-  onDragEnd?: () => void;
+  onDragStart?: (item: ItemType, evt?: Sortable.SortableEvent) => void;
+  onDragMove?: (evt?: Sortable.MoveEvent, originalEvent?: Event) => void;
+  onDragEnd?: (item?: ItemType, evt?: Sortable.SortableEvent) => void;
   forceFallback?: boolean;
 }
 
@@ -25,6 +26,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   itemClassName,
   groupName = 'storeItem',
   onDragStart,
+  onDragMove,
   onDragEnd,
   forceFallback = true,
 }) => {
@@ -40,11 +42,15 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   ]);
 
   const handleDragStart = (evt: Sortable.SortableEvent) => {
-    onDragStart && onDragStart(items[evt.oldIndex as number]);
+    onDragStart && onDragStart(items[evt.oldIndex as number], evt);
   };
 
-  const handleDragEnd = () => {
-    onDragEnd && onDragEnd();
+  const handleDragMove = (evt: Sortable.MoveEvent, originalEvent: Event) => {
+    onDragMove && onDragMove(evt, originalEvent);
+  };
+
+  const handleDragEnd = (evt: Sortable.SortableEvent) => {
+    onDragEnd && onDragEnd(items[evt.oldIndex as number], evt);
   };
 
   return (
@@ -61,6 +67,7 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       sort={false}
       setList={() => undefined}
       onStart={handleDragStart}
+      onMove={handleDragMove}
       onEnd={handleDragEnd}
       forceFallback={forceFallback}
     >
