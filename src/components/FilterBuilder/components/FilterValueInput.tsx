@@ -9,7 +9,6 @@ import React, {
   useContext,
 } from 'react';
 import { DatePicker, Input, InputNumber, Select as AntSelect } from 'antd';
-// import { useSelector } from 'react-redux';
 import { SelectValue, LabeledValue } from 'antd/lib/select';
 import { RawValueType } from 'rc-tree-select/lib/interface';
 import moment from 'moment';
@@ -23,11 +22,6 @@ import { SearchLine } from '@airclass/icons';
 import { BusinessFieldType, FieldService } from '../../../types/compare';
 import { FieldMeta } from '../../../types/interface';
 import { OptionItem } from '../../../types/interface';
-
-// export interface OptionItem {
-//   label: React.ReactNode;
-//   value: React.ReactText;
-// }
 
 function isReactText(value: ReactNode): boolean {
   return typeof value === 'string' || typeof value === 'number';
@@ -63,9 +57,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     [antLocale],
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
-  // const [innerValues, setInnerValues] = useState<(number | string)[]>([]);
-
-  // const sceneSetupState = useSelector(state => state.sceneSetup);
 
   const remote = useMemo(
     () =>
@@ -237,10 +228,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         );
       case BusinessFieldType.DATE:
         return (
-          // <DatePicker
-          //   value={value != null ? moment(value) : null}
-          //   onChange={value => handleValue(value?.format('YYYY/MM/DD'))}
-          // />
           <div style={style}>
             <Fields.FieldDate
               value={value}

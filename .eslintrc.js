@@ -2,8 +2,11 @@ const base = require('@umijs/fabric/dist/eslint');
 
 module.exports = {
   ...base,
+  plugins: ['react-hooks'],
   rules: {
     ...base.rules,
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     'arrow-parens': 0,
     'react/no-array-index-key': 0,
     'react/sort-comp': 0,

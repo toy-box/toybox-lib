@@ -129,7 +129,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   const onValueChange = useCallback(
     (value: any) => {
       if (value === filterValue) return;
-      console.log(value, filterValue);
       setFilterValue(value);
       onChange(update(compare, { target: { $set: value } }));
     },
@@ -162,7 +161,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   }, [compare]);
 
   return (
-    <CompareOperationWrapper>
+    <div className="tbox-filter-compare">
       <Form layout="inline">
         <Form.Item>
           <Select
@@ -187,6 +186,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
           <Button type="text" onClick={remove} icon={<CloseLine />}></Button>
         </Form.Item>
       </Form>
-    </CompareOperationWrapper>
+    </div>
   );
 };

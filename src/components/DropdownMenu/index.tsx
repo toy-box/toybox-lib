@@ -86,6 +86,7 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
             default:
               return (
                 <Menu.Item
+                  key={idx}
                   onClick={(item as MenuItem).callback}
                   icon={item.icon}
                   disabled={item.disabled}

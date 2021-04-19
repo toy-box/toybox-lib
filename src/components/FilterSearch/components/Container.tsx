@@ -9,10 +9,9 @@ import React, {
 import { Button } from 'antd';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import styled from 'styled-components';
-import update from 'immutability-helper';
 import { ICompareOperation, FieldService } from '../../../types/compare';
 import localeMap from '../locale';
-import FilterBuilder from '../../FilterBuilder';
+import { FilterBuilder } from '../../FilterBuilder';
 import { FieldMeta } from '../../../types/interface';
 import { FilterType } from '..';
 
@@ -50,19 +49,17 @@ const ButtonPanelWrapper = styled.div`
 `;
 
 export const Container: FC<IFilterContainerProps> = ({
-  value,
+  value = [],
   filterFieldMetas,
   onChange,
   onCancel,
   title,
   filterFieldService,
 }) => {
-  const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(
-    value || [],
-  );
-  const [initCompares, setInitCompares] = useState<
-    Partial<ICompareOperation>[]
-  >(value || []);
+  const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(value);
+  // const [initCompares, setInitCompares] = useState<
+  //   Partial<ICompareOperation>[]
+  // >(value || []);
 
   const antLocale = useContext(LocaleContext);
   const locale = useMemo(
@@ -71,22 +68,22 @@ export const Container: FC<IFilterContainerProps> = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const handleFilter = useCallback(
-    async (filterItem: Partial<ICompareOperation>[]) => {
-      setInitCompares(filterItem);
-    },
-    [initCompares],
-  );
+  // const handleFilter = useCallback(
+  //   (filterItem: Partial<ICompareOperation>[]) => {
+  //     setInitCompares(filterItem);
+  //   },
+  //   [initCompares],
+  // );
 
   const handleSave = useCallback(
     () =>
       onChange &&
       onChange(
-        initCompares.filter(
+        compares.filter(
           item => item.source != null && item.op != null,
         ) as FilterType,
       ),
-    [initCompares, onChange],
+    [compares, onChange],
   );
 
   useEffect(() => {
@@ -95,22 +92,14 @@ export const Container: FC<IFilterContainerProps> = ({
 
   return (
     <FilterSetupWrapper>
-      <h3>
-        {/* <FormattedMessage id="report.builder.label.filter" />
-        <FormattedMessage id="report.builder.label.and" /> */}
-        {title}
-      </h3>
+      <h3>{title}</h3>
       <FilterSetupItemsWrapper>
-        {/* <BuilderContext.Provider value={contentValue}> */}
         <FilterBuilder
           filterFieldMetas={filterFieldMetas}
           value={compares}
           filterFieldService={filterFieldService}
-          onChange={(filterItem: Partial<ICompareOperation>[]) =>
-            handleFilter(filterItem)
-          }
+          onChange={setCompares}
         />
-        {/* </BuilderContext.Provider> */}
       </FilterSetupItemsWrapper>
       <ButtonPanelWrapper>
         <Button size="small" type="primary" onClick={handleSave}>

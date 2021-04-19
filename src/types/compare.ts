@@ -12,11 +12,6 @@ export enum CompareOP {
   NIN = '$nin',
 }
 
-export interface FieldOption {
-  label: string;
-  value: string;
-}
-
 export enum BusinessFieldType {
   INTEGER = 'integer',
   NUMBER = 'number',
@@ -37,6 +32,11 @@ export enum BusinessFieldType {
 export interface ILogicFilter {
   logic: LogicOP;
   compares: ICompareOperation[];
+}
+
+export interface IUncheckLogicFilter {
+  logic: LogicOP;
+  compares: Partial<ICompareOperation>[];
 }
 
 export interface ICompareOperation {

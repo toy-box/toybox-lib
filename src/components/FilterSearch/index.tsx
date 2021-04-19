@@ -4,7 +4,6 @@ import LocaleContext from 'antd/lib/locale-provider/context';
 import { Filter3Line } from '@airclass/icons';
 import update from 'immutability-helper';
 import { CompareOP } from '../../types/compare';
-import localeMap from './locale';
 import {
   ICompareOperation,
   BusinessFieldType,
@@ -13,6 +12,7 @@ import {
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
 import Container from './components/Container';
 import { FieldMeta } from '../../types/interface';
+import localeMap from './locale';
 
 export interface LabelValue {
   value: any;
@@ -184,9 +184,8 @@ const FilterSearch: FC<IFilterSearchProps> = ({
           let singleMode = true;
           if (flag) singleMode = simpleFilterKeys.length === idx + 1;
           return fieldMeta ? (
-            <Form.Item>
+            <Form.Item key={idx}>
               <FilterValueInput
-                key={idx}
                 value={filterValue(fieldMeta)}
                 filterFieldService={filterFieldService}
                 multiple={false}

@@ -1,6 +1,7 @@
 const lang = {
   operate: {
     add: '添加',
+    addSegment: '添加或 条件',
   },
   compareOperation: {
     $eq: '等于',
