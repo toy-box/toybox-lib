@@ -16,11 +16,9 @@ dayjs.extend(LocalizedFormat);
 
 export declare type FieldBasePickerProps = Omit<
   PickerBaseProps<Dayjs>,
-  'mode' | 'value' | 'picker'
+  'mode' | 'picker'
 > &
-  Omit<BaseFieldProps, 'value' | 'onChange'> & {
-    value?: Dayjs;
-  };
+  Omit<BaseFieldProps, 'value' | 'onChange'>;
 
 export declare type FieldDateProps = FieldBasePickerProps & {
   picker?: DatePickerProps['picker'];
