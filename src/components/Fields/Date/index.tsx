@@ -19,7 +19,7 @@ export declare type FieldBasePickerProps = Omit<
   'mode' | 'value' | 'picker'
 > &
   Omit<BaseFieldProps, 'value' | 'onChange'> & {
-    value?: string | number | Date | Dayjs;
+    value?: Dayjs;
   };
 
 export declare type FieldDateProps = FieldBasePickerProps & {

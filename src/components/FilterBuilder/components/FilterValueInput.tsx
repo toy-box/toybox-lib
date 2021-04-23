@@ -8,10 +8,9 @@ import React, {
   ReactText,
   useContext,
 } from 'react';
-import { DatePicker, Input, InputNumber, Select as AntSelect } from 'antd';
-import { SelectValue, LabeledValue } from 'antd/lib/select';
+import { InputNumber } from 'antd';
+import { SelectValue } from 'antd/lib/select';
 import { RawValueType } from 'rc-tree-select/lib/interface';
-import moment from 'moment';
 import get from 'lodash.get';
 import localeMap from '../locale';
 import LocaleContext from 'antd/lib/locale-provider/context';
@@ -48,7 +47,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   singleMode,
   filterFieldService,
 }) => {
-  // const [initial, setInitial] = useState(false);
   const [treeData, setTreeData] = useState([]);
 
   const antLocale = useContext(LocaleContext);
@@ -86,11 +84,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
 
   const handleTreeSelect = useCallback(
     (labelValue: RawValueType | RawValueType[]) => {
-      // if (Array.isArray(labelValue)) {
-      //   handleValue(labelValue.map(l => l));
-      // } else {
-      //   handleValue(labelValue);
-      // }
       handleValue(labelValue as RawValueType | RawValueType[]);
     },
     [handleValue],
@@ -144,8 +137,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         filterField.key as BusinessFieldType,
         parentId,
       );
-      // setTreeData([{ id: '1', pId: 0, value: '1', title: 'Expand to load' }]);
-      // return [];
       return ops || [];
     },
     [filterField.key, filterFieldService],
