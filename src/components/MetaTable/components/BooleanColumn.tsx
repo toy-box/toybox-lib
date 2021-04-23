@@ -4,11 +4,22 @@ import { useColumnLink } from '../hooks';
 import { ColumnFCProps } from '../interface';
 
 interface BooleanColumnProps extends ColumnFCProps {
-  text: boolean;
+  text?: boolean;
 }
 
-export const BooleanColumn: FC<BooleanColumnProps> = ({ text, record, columnMeta }) => {
+export const BooleanColumn: FC<BooleanColumnProps> = ({
+  text,
+  record,
+  columnMeta,
+}) => {
   const { align, component, fixed, link, ...field } = columnMeta;
   const linkHandle = useColumnLink(record, link);
-  return <Fields.FieldBoolean field={field} onClick={linkHandle} value={text} mode="read" />
-}
+  return (
+    <Fields.FieldBoolean
+      field={field}
+      onClick={linkHandle}
+      value={text}
+      mode="read"
+    />
+  );
+};
