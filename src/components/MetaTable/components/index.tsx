@@ -4,7 +4,6 @@ import { ObjectColumn } from './ObjectColumn';
 import { DefaultColumn } from './DefaultColumn';
 import { BooleanColumn } from './BooleanColumn';
 import { SingleOptionColumn } from './SingleOptionColumn';
-import { ReactNode } from 'react';
 import { ColumnFCProps } from '../interface';
 
 export const DefaultColumnRenderMap: Record<string, FC<ColumnFCProps>> = {
