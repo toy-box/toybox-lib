@@ -73,7 +73,6 @@ export type ColumnMeta = {
   link?: (...args: any) => string | string;
   sorter?: boolean;
   sortDirections?: SortOrder[];
-  isDimension?: boolean;
 } & FieldMeta;
 
 export type MetaPageMode = 'list' | 'view';

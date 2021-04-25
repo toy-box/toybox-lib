@@ -6,3 +6,4 @@ export { default as useScollSize } from './useScollSize';
 export { default as useQuery } from './useQuery';
 export { default as useQueryFilter } from './useQueryFilter';
 export { default as useFetchOptions } from './useFetchOptions';
+export { default as usePivot } from './usePivot';

@@ -14,8 +14,13 @@ import { ColumnMeta } from '../../types/interface';
 import './style.less';
 import { metaRender } from '../../utils/meta';
 import { DefaultColumnRenderMap } from './components';
+import { usePivot } from '@/hooks';
 
 export type RowData = Record<string, any>;
+
+export type PivotOption = {
+  dimensions: string[];
+};
 
 export interface MetaTableProps
   extends Pick<
@@ -63,6 +68,10 @@ export interface MetaTableProps
    * @description 表格标题
    */
   title?: (dataSource: RowData[]) => ReactNode;
+  /**
+   * @description 表格交叉显示配置
+   */
+  pivotOption?: PivotOption;
 }
 
 export const columnFactory = (
@@ -87,6 +96,7 @@ const MetaTable: FC<MetaTableProps> = ({
   expandable,
   bordered,
   rowSelection,
+  pivotOption,
   summary,
   title,
   onChange,
@@ -95,6 +105,62 @@ const MetaTable: FC<MetaTableProps> = ({
   const mergeRenders = useMemo(() => {
     return Object.assign(DefaultColumnRenderMap, columnComponents);
   }, [columnComponents]);
+
+  const leftMetas = useMemo(() => {
+    if (pivotOption) {
+      return columnMetas.filter(meta =>
+        pivotOption.dimensions.includes(meta.key),
+      );
+    }
+    return columnMetas;
+  }, [columnMetas, pivotOption]);
+
+  const rightMetas = useMemo(() => {
+    if (pivotOption) {
+      return columnMetas.filter(
+        meta => !pivotOption.dimensions.includes(meta.key),
+      );
+    }
+    return [];
+  }, [columnMetas]);
+
+  const innerColumnMetas = useMemo(() => [...leftMetas, ...rightMetas], [
+    columnMetas,
+    pivotOption,
+  ]);
+
+  const [rows, posIndexes] = usePivot(
+    dataSource || [],
+    innerColumnMetas,
+    pivotOption?.dimensions,
+  );
+
+  const rowSpanIndexes = useMemo(
+    () =>
+      posIndexes.map(posIndex => {
+        const arr: number[] = [];
+        posIndex.forEach(pos => {
+          const empty: number[] = new Array(pos - 1).fill(0);
+          arr.push(...[pos, ...empty]);
+        });
+        return arr;
+      }),
+    [posIndexes],
+  );
+
+  const getRowSpan = useCallback(
+    (columnMeta: ColumnMeta, index: number) => {
+      if (pivotOption) {
+        const posIndex =
+          rowSpanIndexes[
+            pivotOption.dimensions.findIndex(d => d === columnMeta.key)
+          ];
+        return posIndex ? posIndex[index] : undefined;
+      }
+      return undefined;
+    },
+    [pivotOption],
+  );
 
   const makeColumns = useCallback(
     (columnMetas: ColumnMeta[]) => {
@@ -105,21 +171,32 @@ const MetaTable: FC<MetaTableProps> = ({
             title: columnMeta.name,
             dataIndex: columnMeta.key,
             align: columnMeta.align,
-            render: metaRender(
-              columnMeta,
-              mergeRenders,
-              DefaultColumnRenderMap['string'],
-            ),
+            render: (text, record, index) => {
+              const MetaRender = metaRender(
+                columnMeta,
+                mergeRenders,
+                DefaultColumnRenderMap['string'],
+              );
+              const obj = {
+                children: (
+                  <MetaRender text={text} record={record} index={index} />
+                ),
+                props: {
+                  rowSpan: getRowSpan(columnMeta, index),
+                },
+              };
+              return obj;
+            },
           };
         },
       );
       return columns;
     },
-    [mergeRenders],
+    [mergeRenders, posIndexes],
   );
 
   const columns = useMemo(() => {
-    const columns = makeColumns(columnMetas);
+    const columns = makeColumns(innerColumnMetas);
     if (operateItems != null && operateItems.length > 0) {
       columns.push({
         key: 'meta-table-operate',
@@ -130,7 +207,7 @@ const MetaTable: FC<MetaTableProps> = ({
       });
     }
     return columns;
-  }, [columnMetas, makeColumns]);
+  }, [innerColumnMetas, makeColumns]);
 
   const mixExpandable = useMemo(() => {
     return expandable
@@ -169,7 +246,7 @@ const MetaTable: FC<MetaTableProps> = ({
       size={size}
       columns={columns}
       onChange={onChange}
-      dataSource={dataSource}
+      dataSource={rows}
       pagination={pagination}
       summary={summary}
       title={title}

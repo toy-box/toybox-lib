@@ -8,7 +8,15 @@ export function metaRender(
   defaultRender: FC<ColumnFCProps>,
 ) {
   const columnFactory = (columnMeta: ColumnMeta, render: FC<ColumnFCProps>) => {
-    return (text: any, record: { [key: string]: any }, index: number) => {
+    return ({
+      text,
+      record,
+      index,
+    }: {
+      text: any;
+      record: { [key: string]: any };
+      index: number;
+    }) => {
       return render({ text, record, index, columnMeta });
     };
   };
