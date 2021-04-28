@@ -1,5 +1,5 @@
-import { ColumnMeta } from '../types';
 import { useMemo } from 'react';
+import { ColumnMeta } from '../../../types';
 
 declare type RowType = Record<string, any>;
 declare type PosIndex = number[];

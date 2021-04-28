@@ -14,7 +14,7 @@ import { ColumnMeta } from '../../types/interface';
 import './style.less';
 import { metaRender } from '../../utils/meta';
 import { DefaultColumnRenderMap } from './components';
-import { usePivot } from '@/hooks';
+import { usePivot } from './hooks';
 
 export type RowData = Record<string, any>;
 
