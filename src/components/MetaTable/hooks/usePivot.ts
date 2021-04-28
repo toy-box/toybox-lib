@@ -5,28 +5,37 @@ declare type RowType = Record<string, any>;
 declare type PosIndex = number[];
 
 const compare = (columnMeta: ColumnMeta, prev: any, current: any) => {
-  if (prev == null) {
-    return 0;
-  }
-  if (columnMeta.type === 'businessObject') {
-    if (
-      prev[columnMeta.key][columnMeta.idKey || 'id'] <
-      current[columnMeta.key][columnMeta.idKey || 'id']
-    ) {
+  if (columnMeta.type === 'businessObject' || columnMeta.type === 'document') {
+    const prevObj = prev != null ? prev[columnMeta.key] : null;
+    const currentObj = current != null ? current[columnMeta.key] : null;
+    const prevValue = prevObj ? prevObj[columnMeta.idKey || 'id'] : null;
+    const currentValue = currentObj
+      ? currentObj[columnMeta.idKey || 'id']
+      : null;
+    if (prevValue < currentValue) {
       return -1;
     }
-    if (
-      prev[columnMeta.key][columnMeta.idKey || 'id'] >
-      current[columnMeta.key][columnMeta.idKey || 'id']
-    ) {
+    if (prevValue > currentValue) {
+      return 1;
+    }
+    if (prevValue == null && currentValue != null) {
+      return -1;
+    }
+    if (prevValue != null && currentValue == null) {
       return 1;
     }
     return 0;
   }
-  if (prev[columnMeta.key] < current[columnMeta.key]) {
+  if (
+    (prev != null ? prev[columnMeta.key] : null) <
+    (current != null ? current[columnMeta.key] : null)
+  ) {
     return -1;
   }
-  if (prev[columnMeta.key] > current[columnMeta.key]) {
+  if (
+    (prev != null ? prev[columnMeta.key] : null) >
+    (current != null ? current[columnMeta.key] : null)
+  ) {
     return 1;
   }
   return 0;
@@ -56,13 +65,24 @@ const mulSortMetaData = (
 
 const sortPosIndex = (columnMeta: ColumnMeta, rows: RowType[]) => {
   const newRowIndex: number[] = [];
-  let prev: any;
   let pos = 0;
   rows.forEach((row, index) => {
-    if (compare(columnMeta, rows[index - 1], row) != 0) {
+    if (pos === 0) {
       pos++;
+    } else {
+      if (compare(columnMeta, rows[index - 1], row) !== 0) {
+        if (pos > 0) {
+          newRowIndex.push(pos);
+          pos = 1;
+        }
+      } else {
+        pos++;
+        console.log('same', index + 1, pos, rows[index - 1], row);
+      }
     }
-    newRowIndex[pos] = (newRowIndex[pos] || 0) + 1;
+    if (index === rows.length - 1) {
+      newRowIndex.push(pos);
+    }
   });
   return newRowIndex;
 };
@@ -76,12 +96,10 @@ const mulSortPosIndex = (
 
   let start = -1;
   posIndex.forEach(pos => {
-    newPosIndex.push(
-      ...sortPosIndex(
-        columnMeta,
-        rows.filter((row, idx) => idx >= start && idx < start + pos),
-      ),
+    const rowsInPos = rows.filter(
+      (row, idx) => idx > start && idx <= start + pos,
     );
+    newPosIndex.push(...sortPosIndex(columnMeta, rowsInPos));
     start += pos;
   });
 
