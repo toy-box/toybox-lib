@@ -1,7 +1,12 @@
 import React, { FC, useCallback, useMemo, useState, ReactNode } from 'react';
 import { Table } from 'antd';
 import update from 'immutability-helper';
-import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/lib/table';
+import {
+  ColumnsType,
+  ColumnType,
+  TablePaginationConfig,
+  TableProps,
+} from 'antd/lib/table';
 import { RenderExpandIconProps } from 'rc-table/lib/interface';
 import {
   operateFactory,
@@ -199,10 +204,13 @@ const MetaTable: FC<MetaTableProps> = ({
               };
               return obj;
             },
-            onHeaderCell: (column: { width: number }) => ({
-              width: column.width,
-              onResize: handleResize(index),
-            }),
+            onHeaderCell: resizableTitle
+              ? (column: ColumnType<Record<string, any>>) =>
+                  ({
+                    width: column.width,
+                    onResize: handleResize(index),
+                  } as React.HTMLAttributes<HTMLElement>)
+              : undefined,
           };
         },
       );
@@ -230,7 +238,6 @@ const MetaTable: FC<MetaTableProps> = ({
       e: React.SyntheticEvent<Element, Event>,
       data: ResizeCallbackData,
     ) => {
-      console.log('handleResize', data.size);
       setColumnWidths(
         update(columnWidths, { [index]: { $set: data.size.width } }),
       );
