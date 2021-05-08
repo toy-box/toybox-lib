@@ -91,7 +91,9 @@ export default () => {
     );
   }, [objectMeta]);
 
-  return <MetaTable dataSource={data} columnMetas={columnMetas} />;
+  return (
+    <MetaTable resizableTitle dataSource={data} columnMetas={columnMetas} />
+  );
 };
 ```
 

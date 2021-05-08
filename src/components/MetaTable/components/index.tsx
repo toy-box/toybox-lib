@@ -5,6 +5,10 @@ import { DefaultColumn } from './DefaultColumn';
 import { BooleanColumn } from './BooleanColumn';
 import { SingleOptionColumn } from './SingleOptionColumn';
 import { ColumnFCProps } from '../interface';
+export {
+  default as ResizableTitle,
+  ResizeCallbackData,
+} from './ResizableTitle';
 
 export const DefaultColumnRenderMap: Record<string, FC<ColumnFCProps>> = {
   businessObject: ObjectColumn,

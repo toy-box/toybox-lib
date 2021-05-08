@@ -77,7 +77,6 @@ const sortPosIndex = (columnMeta: ColumnMeta, rows: RowType[]) => {
         }
       } else {
         pos++;
-        console.log('same', index + 1, pos, rows[index - 1], row);
       }
     }
     if (index === rows.length - 1) {

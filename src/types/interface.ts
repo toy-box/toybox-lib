@@ -73,6 +73,7 @@ export type ColumnMeta = {
   link?: (...args: any) => string | string;
   sorter?: boolean;
   sortDirections?: SortOrder[];
+  width?: number;
 } & FieldMeta;
 
 export type MetaPageMode = 'list' | 'view';

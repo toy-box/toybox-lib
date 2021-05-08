@@ -1,5 +1,6 @@
-import React, { FC, useMemo, useCallback, ReactNode } from 'react';
+import React, { FC, useCallback, useMemo, useState, ReactNode } from 'react';
 import { Table } from 'antd';
+import update from 'immutability-helper';
 import { ColumnsType, TablePaginationConfig, TableProps } from 'antd/lib/table';
 import { RenderExpandIconProps } from 'rc-table/lib/interface';
 import {
@@ -13,7 +14,11 @@ import { ColumnMeta } from '../../types/interface';
 
 import './style.less';
 import { metaRender } from '../../utils/meta';
-import { DefaultColumnRenderMap } from './components';
+import {
+  DefaultColumnRenderMap,
+  ResizableTitle,
+  ResizeCallbackData,
+} from './components';
 import { usePivot } from './hooks';
 
 export type RowData = Record<string, any>;
@@ -36,6 +41,7 @@ export interface MetaTableProps
     | 'showHeader'
     | 'summary'
   > {
+  resizableTitle?: boolean;
   /**
    * @description 字段源属性
    */
@@ -92,6 +98,7 @@ const MetaTable: FC<MetaTableProps> = ({
   pagination,
   operateItems,
   operateHeader,
+  resizableTitle,
   showHeader,
   expandable,
   bordered,
@@ -102,6 +109,10 @@ const MetaTable: FC<MetaTableProps> = ({
   onChange,
   rowClassName,
 }) => {
+  const [columnWidths, setColumnWidths] = useState<number[]>(
+    Array(columnMetas.length).fill(100),
+  );
+
   const mergeRenders = useMemo(() => {
     return Object.assign(DefaultColumnRenderMap, columnComponents);
   }, [columnComponents]);
@@ -163,14 +174,15 @@ const MetaTable: FC<MetaTableProps> = ({
   );
 
   const makeColumns = useCallback(
-    (columnMetas: ColumnMeta[]) => {
+    (columnMetas: ColumnMeta[], columnWidths: number[]) => {
       const columns: ColumnsType<Record<string, any>> = columnMetas.map(
-        columnMeta => {
+        (columnMeta, index) => {
           return {
             key: columnMeta.key,
             title: columnMeta.name,
             dataIndex: columnMeta.key,
             align: columnMeta.align,
+            width: columnWidths[index] || columnMeta.width,
             render: (text, record, index) => {
               const MetaRender = metaRender(
                 columnMeta,
@@ -187,6 +199,10 @@ const MetaTable: FC<MetaTableProps> = ({
               };
               return obj;
             },
+            onHeaderCell: (column: { width: number }) => ({
+              width: column.width,
+              onResize: handleResize(index),
+            }),
           };
         },
       );
@@ -196,7 +212,7 @@ const MetaTable: FC<MetaTableProps> = ({
   );
 
   const columns = useMemo(() => {
-    const columns = makeColumns(innerColumnMetas);
+    const columns = makeColumns(innerColumnMetas, columnWidths);
     if (operateItems != null && operateItems.length > 0) {
       columns.push({
         key: 'meta-table-operate',
@@ -207,7 +223,19 @@ const MetaTable: FC<MetaTableProps> = ({
       });
     }
     return columns;
-  }, [innerColumnMetas, makeColumns]);
+  }, [innerColumnMetas, makeColumns, columnWidths]);
+
+  const handleResize = (index: number) => {
+    return (
+      e: React.SyntheticEvent<Element, Event>,
+      data: ResizeCallbackData,
+    ) => {
+      console.log('handleResize', data.size);
+      setColumnWidths(
+        update(columnWidths, { [index]: { $set: data.size.width } }),
+      );
+    };
+  };
 
   const mixExpandable = useMemo(() => {
     return expandable
@@ -239,8 +267,21 @@ const MetaTable: FC<MetaTableProps> = ({
       : undefined;
   }, [expandable]);
 
+  const components = useMemo(
+    () =>
+      resizableTitle
+        ? {
+            header: {
+              cell: ResizableTitle,
+            },
+          }
+        : undefined,
+    [resizableTitle],
+  );
+
   return (
     <Table
+      components={components}
       rowKey={rowKey}
       rowClassName={rowClassName}
       size={size}
