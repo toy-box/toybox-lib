@@ -38,11 +38,11 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
   const menu = useMemo(() => {
     return (
       <Menu>
-        {items.map((item, idx) => {
+        {items.map((item, index) => {
           switch (item.type) {
             case 'subMenu':
               return (
-                <Menu.SubMenu title={item.text}>
+                <Menu.SubMenu title={item.text} key={index}>
                   {(item as MenuSub).items.map((subItem, idx) =>
                     subItem.type === 'divider' ? (
                       <Menu.Divider key={idx} />
@@ -61,12 +61,12 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
                 </Menu.SubMenu>
               );
             case 'divider':
-              return <Menu.Divider />;
+              return <Menu.Divider key={index} />;
             case 'item':
             default:
               return (
                 <Menu.Item
-                  key={idx}
+                  key={index}
                   onClick={(item as MenuItem).callback}
                   icon={item.icon}
                   disabled={item.disabled}
