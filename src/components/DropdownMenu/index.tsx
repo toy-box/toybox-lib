@@ -35,27 +35,6 @@ export interface MenuSub {
 }
 
 const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
-  // const ItemRender = ({ item }: { item: MeunBaseItem}) => {
-  //   switch (item.type) {
-  //     case 'subMenu':
-  //       return <Menu.SubMenu title={item.text}>
-  //         {(item as MenuSub).items.map((subItem, idx) => <ItemRender key={idx} item={item} />)}
-  //       </Menu.SubMenu>;
-  //     case 'divider':
-  //       return <Menu.Divider />;
-  //     case 'item':
-  //     default:
-  //       return <Menu.Item
-  //         onClick={(item as MenuItem).callback}
-  //         icon={item.icon}
-  //         disabled={item.disabled}
-  //         danger={item.danger}
-  //       >
-  //         {item.text}
-  //       </Menu.Item>;
-  //   }
-  // };
-
   const menu = useMemo(() => {
     return (
       <Menu>
@@ -71,11 +50,11 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
                       <Menu.Item
                         key={idx}
                         onClick={(subItem as MenuItem).callback}
-                        icon={item.icon}
-                        disabled={item.disabled}
-                        danger={item.danger}
+                        icon={subItem.icon}
+                        disabled={subItem.disabled}
+                        danger={subItem.danger}
                       >
-                        {item.text}
+                        {subItem.text}
                       </Menu.Item>
                     ),
                   )}
