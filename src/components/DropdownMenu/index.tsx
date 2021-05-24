@@ -1,7 +1,8 @@
 import React, { FC, Fragment, ReactNode, useCallback, useMemo } from 'react';
-import { Button, Dropdown, Menu } from 'antd';
+import { Dropdown, Menu } from 'antd';
 import { MoreFill } from '@airclass/icons';
 import { DropDownProps } from 'antd/lib/dropdown';
+import { default as Button } from '../Button';
 
 export interface DropdownMenuProps extends Omit<DropDownProps, 'overlay'> {
   items: MeunBaseItem[];
@@ -103,11 +104,7 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
 
   return (
     <Dropdown overlay={menu} {...props}>
-      {children || (
-        <Button type="text">
-          <MoreFill />
-        </Button>
-      )}
+      {children || <Button type="text" icon={<MoreFill />} />}
     </Dropdown>
   );
 };
