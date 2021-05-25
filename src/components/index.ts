@@ -6,6 +6,7 @@ export { default as ButtonGroup } from './ButtonGroup';
 export { default as DatePicker } from './DatePicker';
 export { default as Calendar } from './Calendar';
 export { default as CardList } from './CardList';
+export { default as CheckText } from './CheckText';
 export { default as TabContainer } from './TabContainer';
 export { default as TimePicker } from './TimePicker';
 export { default as DropdownMenu } from './DropdownMenu';
