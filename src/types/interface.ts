@@ -25,6 +25,7 @@ export interface FieldMeta {
   name: string;
   type: string;
   description?: string;
+  primary?: boolean;
   options?: FieldOption[];
   refObjectId?: string;
   unique?: boolean;
@@ -35,6 +36,10 @@ export interface FieldMeta {
   exclusiveMinimum?: number;
   maxLength?: number;
   minLength?: number;
+  decimalScale?: number;
+  multipleOf?: number;
+  minProperties?: number;
+  maxProperties?: number;
   pattern?: string;
   format?: string;
   idKey?: string;
