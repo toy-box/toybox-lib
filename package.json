@@ -1,6 +1,6 @@
 {
   "name": "@toy-box/toybox-lib",
-  "version": "0.1.79",
+  "version": "0.1.80",
   "author": "DivXPro",
   "license": "GPL-3.0-only",
   "homepage": "https://toy-box.github.io/toybox-lib",
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@airclass/icons": "^4.3.4",
-    "@toy-box/meta-schema": "^0.0.3",
+    "@toy-box/meta-schema": "^0.0.4",
     "@types/numbro": "^1.9.3",
     "ahooks": "^2.9.4",
     "antd": "^4.11.2",
