@@ -4,6 +4,7 @@ export { default as BusinessObjectPage } from './BusinessObjectPage';
 export { default as Button } from './Button';
 export { default as ButtonGroup } from './ButtonGroup';
 export { default as DatePicker } from './DatePicker';
+export { default as DateFilter } from './DateFilter';
 export { default as Calendar } from './Calendar';
 export { default as CardList } from './CardList';
 export { default as CheckText } from './CheckText';

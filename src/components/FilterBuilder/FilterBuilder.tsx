@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-} from 'react';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import update from 'immutability-helper';
 import { ICompareOperation, FieldService } from '../../types/compare';
 import { FieldMeta } from '../../types/interface';
