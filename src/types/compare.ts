@@ -34,6 +34,7 @@ export enum BusinessFieldType {
   DOCUMENT = 'document',
   PERCENT = 'percent',
   OBJECT = 'object',
+  SEARCH_ICON = 'searchIcon',
 }
 
 export interface ILogicFilter {

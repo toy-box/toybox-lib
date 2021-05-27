@@ -10,6 +10,7 @@ import {
   CompareOP,
   BusinessFieldType,
   FieldService,
+  UniteCompareOP,
 } from '../../../types/compare';
 import { FieldMeta } from '../../../types/interface';
 
@@ -119,7 +120,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const onOperationChange = useCallback(
-    (op: CompareOP) => {
+    (op: UniteCompareOP) => {
       setFilterOperation(op);
       onChange(update(compare, { op: { $set: op } }));
     },
