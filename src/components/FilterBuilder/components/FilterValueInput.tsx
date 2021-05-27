@@ -18,7 +18,11 @@ import Fields from '../../Fields';
 import SelectPro from '../../SelectPro';
 import Search from '../../Search';
 import { SearchLine } from '@airclass/icons';
-import { BusinessFieldType, FieldService } from '../../../types/compare';
+import {
+  BusinessFieldType,
+  FieldService,
+  BusinessFieldTypeWild,
+} from '../../../types';
 import { FieldMeta } from '../../../types/interface';
 import { OptionItem } from '../../../types/interface';
 
@@ -59,6 +63,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   const remote = useMemo(
     () =>
       filterField.type === BusinessFieldType.OBJECT_ID ||
+      filterField.type === BusinessFieldType.OBJECT ||
       filterField.type === 'businessObject' ||
       filterField.type === 'document',
     [filterField.type],
@@ -160,7 +165,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
 
   const input = useMemo(() => {
     switch (filterField?.type) {
-      case BusinessFieldType.STRING:
+      case BusinessFieldTypeWild.STRING:
         return (
           <Fields.FieldString
             disabled={filterField == null}
@@ -174,7 +179,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             onChange={handleValue}
           />
         );
-      case BusinessFieldType.SEARCH_ICON:
+      case BusinessFieldTypeWild.SEARCH_ICON:
         if (singleMode) {
           return (
             <div style={style}>
@@ -274,7 +279,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             }
           />
         );
-      case BusinessFieldType.BUSINESS_OBJECT:
+      case BusinessFieldTypeWild.BUSINESS_OBJECT:
         return (
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}

@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useContext, useMemo } from 'react';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import update from 'immutability-helper';
+import { AddCircleFill } from '@airclass/icons';
 import Button from '../Button';
 import FilterBuilder from './FilterBuilder';
 import localeMap from './locale';
@@ -8,14 +9,14 @@ import {
   ICompareOperation,
   FieldService,
   IUncheckLogicFilter,
-} from '../../types/compare';
+  LogicOP,
+} from '../../types';
 import { FieldMeta } from '../../types/interface';
 
 import './styles/multi.less';
-import { AddCircleFill } from '@airclass/icons';
 
 export interface IMultiFilterBuilderProps {
-  segmentlogic?: Toybox.Meta.Types.LogicOP;
+  segmentlogic?: LogicOP;
   filterFieldMetas: FieldMeta[];
   value?: IUncheckLogicFilter[];
   filterFieldService?: FieldService;
@@ -25,7 +26,7 @@ export interface IMultiFilterBuilderProps {
 }
 
 const MultiFilterBuilder: FC<IMultiFilterBuilderProps> = ({
-  segmentlogic = Toybox.Meta.Types.LogicOP.AND,
+  segmentlogic = LogicOP.AND,
   filterFieldMetas,
   value = [],
   filterFieldService,

@@ -5,13 +5,14 @@ import {
   OptionGroupData,
   OptionsType,
 } from 'rc-select/lib/interface';
+import { IBusinessObjectMeta, IFieldMeta, IFieldOption } from './meta';
 
 export type RowData = Record<string, any>;
 export declare type Key = string | number;
 
-export type BusinessObjectMeta = Toybox.Meta.Types.IBusinessObjectMeta;
+export type BusinessObjectMeta = IBusinessObjectMeta;
 
-export type FieldMeta = Toybox.Meta.Types.IFieldMeta;
+export type FieldMeta = IFieldMeta;
 
 export interface FieldMetaProfile extends FieldMeta {
   disabled?: boolean;
@@ -23,7 +24,7 @@ export interface FieldMetaProfile extends FieldMeta {
   ) => Promise<OptionItem[]>;
 }
 
-export type FieldOption = Toybox.Meta.Types.IFieldOption;
+export type FieldOption = IFieldOption;
 
 export type OptionItem = OptionData | OptionGroupData;
 

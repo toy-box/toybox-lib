@@ -7,8 +7,7 @@ import {
   FilterType,
 } from '../../FilterSearch';
 import { default as FilterTags } from '../../FilterTags';
-import { FieldMeta } from '../../../types/interface';
-import { BusinessFieldType } from '../../../types/compare';
+import { IFieldMeta, BusinessFieldTypeWild } from '../../../types';
 
 export declare interface ToolbarProps {
   filterSearch?: Omit<IFilterSearchProps, 'value'>;
@@ -35,8 +34,11 @@ const Toolbar: FC<ToolbarProps> = ({
     [filterSearch],
   );
 
-  const isRemoteTag = useCallback((fieldMeta: FieldMeta) => {
-    return fieldMeta.type === BusinessFieldType.BUSINESS_OBJECT;
+  const isRemoteTag = useCallback((fieldMeta: IFieldMeta) => {
+    return (
+      fieldMeta.type === BusinessFieldTypeWild.BUSINESS_OBJECT ||
+      fieldMeta.type === BusinessFieldTypeWild.OBJECT
+    );
   }, []);
 
   const filterFieldTags = useMemo(() => {

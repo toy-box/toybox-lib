@@ -7,7 +7,9 @@ import {
   ICompareOperation,
   BusinessFieldType,
   FieldService,
-} from '../../types/compare';
+  UniteCompareOP,
+  CompareOP,
+} from '../../types';
 import { FilterValueInput } from '../FilterBuilder/components/FilterValueInput';
 import Container from './components/Container';
 import { FieldMeta } from '../../types/interface';
@@ -25,7 +27,7 @@ export declare type FilterType = ICompareOperation[];
 export interface FilterLabel {
   title: string;
   key: string;
-  op: Toybox.Meta.Types.UniteCompareOP;
+  op: UniteCompareOP;
   labelValue: LabelValueType;
   ellipsis?: boolean;
 }
@@ -72,9 +74,7 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       const metaArr = value?.filter(val => val.source === filed.key);
       if (metaArr && metaArr.length > 1) return;
       const isShowMeta =
-        meta &&
-        (meta.op === Toybox.Meta.Types.CompareOP.IN ||
-          meta.op === Toybox.Meta.Types.CompareOP.EQ);
+        meta && (meta.op === CompareOP.IN || meta.op === CompareOP.EQ);
       if (
         meta &&
         isShowMeta &&
@@ -91,20 +91,16 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
-        handleValueChange(val, filterField, Toybox.Meta.Types.CompareOP.IN);
+        handleValueChange(val, filterField, CompareOP.IN);
         break;
       default:
-        handleValueChange(val, filterField, Toybox.Meta.Types.CompareOP.EQ);
+        handleValueChange(val, filterField, CompareOP.EQ);
         break;
     }
   };
 
   const handleValueChange = useCallback(
-    (
-      val,
-      fieldMeta: FieldMeta,
-      op: Toybox.Meta.Types.UniteCompareOP = Toybox.Meta.Types.CompareOP.EQ,
-    ) => {
+    (val, fieldMeta: FieldMeta, op: UniteCompareOP = CompareOP.EQ) => {
       const fieldItem: ICompareOperation = {
         source: fieldMeta.key,
         op: op,

@@ -27,7 +27,8 @@ import {
   FieldService,
   ILogicFilter,
   ICompareOperation,
-} from '../../types/compare';
+  LogicOP,
+} from '../../types';
 import { FilterType } from '../FilterSearch';
 import { QueryFilter } from '../../hooks/useQueryFilter';
 
@@ -39,7 +40,7 @@ const DEFAULT_QUERY_FILTER = {
   current: 1,
   pageSize: 20,
   logicFilter: {
-    logic: Toybox.Meta.Types.LogicOP.AND,
+    logic: LogicOP.AND,
     compares: [],
   },
 };

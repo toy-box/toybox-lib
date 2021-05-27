@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import { FieldMeta } from './interface';
+import { LogicOP, ICompareOperation } from './filter';
 
-export enum BusinessFieldType {
+export enum BusinessFieldTypeWild {
   INTEGER = 'integer',
   NUMBER = 'number',
   STRING = 'string',
@@ -19,14 +20,10 @@ export enum BusinessFieldType {
   SEARCH_ICON = 'searchIcon',
 }
 
-export type ILogicFilter = Toybox.Meta.Types.ILogicFilter;
-
 export interface IUncheckLogicFilter {
-  logic: Toybox.Meta.Types.LogicOP;
+  logic: LogicOP;
   compares: Partial<ICompareOperation>[];
 }
-
-export type ICompareOperation = Toybox.Meta.Types.ICompareOperation;
 
 declare interface OptionValueType {
   label: ReactNode;

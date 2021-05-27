@@ -9,8 +9,11 @@ import {
   ICompareOperation,
   BusinessFieldType,
   FieldService,
-} from '../../../types/compare';
-import { FieldMeta } from '../../../types/interface';
+  CompareOP,
+  FieldMeta,
+  BusinessFieldTypeWild,
+  UniteCompareOP,
+} from '../../../types/';
 
 const CompareOperationWrapper = styled.div`
   display: flex;
@@ -54,47 +57,42 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const filterOperations = useMemo(() => {
-    let compareOperation: Toybox.Meta.Types.CompareOP[] = [
-      Toybox.Meta.Types.CompareOP.EQ,
-      Toybox.Meta.Types.CompareOP.NE,
-      Toybox.Meta.Types.CompareOP.IN,
-      Toybox.Meta.Types.CompareOP.NIN,
+    let compareOperation: CompareOP[] = [
+      CompareOP.EQ,
+      CompareOP.NE,
+      CompareOP.IN,
+      CompareOP.NIN,
     ];
     switch (filterFieldMeta?.type) {
       case BusinessFieldType.NUMBER:
       case BusinessFieldType.DATE:
       case BusinessFieldType.DATETIME:
         compareOperation = [
-          Toybox.Meta.Types.CompareOP.EQ,
-          Toybox.Meta.Types.CompareOP.NE,
-          Toybox.Meta.Types.CompareOP.GT,
-          Toybox.Meta.Types.CompareOP.LT,
-          Toybox.Meta.Types.CompareOP.GTE,
-          Toybox.Meta.Types.CompareOP.LTE,
+          CompareOP.EQ,
+          CompareOP.NE,
+          CompareOP.GT,
+          CompareOP.LT,
+          CompareOP.GTE,
+          CompareOP.LTE,
         ];
         return compareOperationData(compareOperation);
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
         if (filterFieldMeta.parentKey != null) {
-          compareOperation = [
-            Toybox.Meta.Types.CompareOP.IN,
-            Toybox.Meta.Types.CompareOP.NIN,
-          ];
+          compareOperation = [CompareOP.IN, CompareOP.NIN];
           return compareOperationData(compareOperation);
         }
         return compareOperationData(compareOperation);
-      case BusinessFieldType.SEARCH_ICON:
-        compareOperation = [Toybox.Meta.Types.CompareOP.EQ];
+      case BusinessFieldTypeWild.SEARCH_ICON:
+        compareOperation = [CompareOP.EQ];
         return compareOperationData(compareOperation);
       default:
         return compareOperationData(compareOperation);
     }
   }, [filterFieldMeta]);
 
-  function compareOperationData(
-    compareOperation: Toybox.Meta.Types.CompareOP[],
-  ) {
+  function compareOperationData(compareOperation: CompareOP[]) {
     return compareOperation.map(op => {
       return {
         label: get(localeData.lang, `compareOperation.${op}`),
@@ -104,9 +102,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   }
 
   const multiple = useMemo(
-    () =>
-      filterOperation === Toybox.Meta.Types.CompareOP.IN ||
-      filterOperation === Toybox.Meta.Types.CompareOP.NIN,
+    () => filterOperation === CompareOP.IN || filterOperation === CompareOP.NIN,
     [filterOperation],
   );
 
@@ -125,7 +121,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const onOperationChange = useCallback(
-    (op: Toybox.Meta.Types.UniteCompareOP) => {
+    (op: UniteCompareOP) => {
       setFilterOperation(op);
       onChange(update(compare, { op: { $set: op } }));
     },
