@@ -12,6 +12,13 @@ export enum CompareOP {
   NIN = '$nin',
 }
 
+export enum DateCompareOP {
+  UNIT_DATE_RANGE = '$unitDateRange',
+  BETWEEN = '$between',
+}
+
+export type UniteCompareOP = CompareOP | DateCompareOP;
+
 export enum BusinessFieldType {
   INTEGER = 'integer',
   NUMBER = 'number',
@@ -26,7 +33,7 @@ export enum BusinessFieldType {
   SINGLE_OPTION = 'singleOption',
   DOCUMENT = 'document',
   PERCENT = 'percent',
-  SEARCH_ICON = 'searchIcon',
+  OBJECT = 'object',
 }
 
 export interface ILogicFilter {
@@ -41,7 +48,7 @@ export interface IUncheckLogicFilter {
 
 export interface ICompareOperation {
   source: string;
-  op: CompareOP;
+  op: UniteCompareOP;
   target?: number | string | number[] | string[] | Date | Date[];
 }
 
