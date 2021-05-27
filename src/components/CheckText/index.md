@@ -9,9 +9,13 @@ import { CheckText } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';
 
 export default () => (
-  <Space>
-    <CheckText text="check item 1" />
-    <CheckText checked text="check item 2" />
-  </Space>
+  <ul>
+    <li>
+      <CheckText text="check item 1" />
+    </li>
+    <li>
+      <CheckText checked text="check item 2" />
+    </li>
+  </ul>
 );
 ```

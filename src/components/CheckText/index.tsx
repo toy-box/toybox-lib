@@ -1,6 +1,6 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import classNames from 'classnames';
-import { CheckLine } from '@airclass/icons';
+import { CheckFill } from '@airclass/icons';
 import './style.less';
 
 export interface CheckTextProps {
@@ -8,10 +8,11 @@ export interface CheckTextProps {
   checked?: boolean;
 }
 
-const CheckText: FC<CheckTextProps> = ({ text, checked }) => {
+const CheckText: FC<CheckTextProps> = ({ text, checked, children }) => {
+  const checkIcon = useMemo(() => (children ? children : <CheckFill />), []);
   return (
     <div className={classNames('tbox-check-text', { checked })}>
-      {<CheckLine className="tbox-check-text-icon" />}
+      <span className="tbox-check-text-icon">{checkIcon}</span>
       <span>{text}</span>
     </div>
   );
