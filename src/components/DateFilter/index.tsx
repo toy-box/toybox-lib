@@ -2,11 +2,7 @@ import React, { FC } from 'react';
 import { Select } from 'antd';
 import LocaleReceiver from 'antd/lib/locale-provider/LocaleReceiver';
 import { zhCN } from './locale';
-import {
-  DateFilterUnitTypeGroup,
-  DateFilterValueType,
-  DateFilterLocale,
-} from './interface';
+import { DateFilterUnitTypeGroup, DateFilterValueType } from './interface';
 import { CSSProperties } from 'styled-components';
 
 const { Option, OptGroup } = Select;
@@ -170,7 +166,7 @@ const optionGroups: DateFilterUnitTypeGroup[] = [
 
 export interface DateFilterProps<T> {
   value?: T;
-  onChange?: (value: T) => void;
+  onChange?: (value: T, text?: string) => void;
   style?: CSSProperties;
   className?: string;
   placeholder?: string;
@@ -184,21 +180,29 @@ const DateFilter: FC<DateFilterProps<DateFilterValueType>> = ({
   placeholder,
 }) => {
   const render = (locale: any) => {
-    const getLable = (labelValue: string) => {
-      return locale.lang[labelValue];
+    const getText = (labelValue: string) => {
+      const text = locale.lang[labelValue];
+      switch (text) {
+        case 'string':
+          return text as string;
+        case 'number':
+          return (text as number).toString();
+        default:
+          return labelValue;
+      }
     };
     return (
       <Select
         value={value}
-        onChange={onChange}
+        onChange={value => onChange && onChange(value, getText(value))}
         style={style}
         className={className}
-        placeholder={placeholder || getLable('placeholder')}
+        placeholder={placeholder || getText('placeholder')}
       >
         {optionGroups.map(optGroup => (
-          <OptGroup label={getLable(optGroup.group)}>
+          <OptGroup label={getText(optGroup.group)}>
             {optGroup.options.map(opt => (
-              <Option value={opt.labelValue}>{getLable(opt.labelValue)}</Option>
+              <Option value={opt.labelValue}>{getText(opt.labelValue)}</Option>
             ))}
           </OptGroup>
         ))}
