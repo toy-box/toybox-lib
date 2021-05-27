@@ -7,10 +7,8 @@ import { CloseLine } from '@airclass/icons';
 import get from 'lodash.get';
 import {
   ICompareOperation,
-  CompareOP,
   BusinessFieldType,
   FieldService,
-  UniteCompareOP,
 } from '../../../types/compare';
 import { FieldMeta } from '../../../types/interface';
 
@@ -56,42 +54,47 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const filterOperations = useMemo(() => {
-    let compareOperation: CompareOP[] = [
-      CompareOP.EQ,
-      CompareOP.NE,
-      CompareOP.IN,
-      CompareOP.NIN,
+    let compareOperation: Toybox.Meta.Types.CompareOP[] = [
+      Toybox.Meta.Types.CompareOP.EQ,
+      Toybox.Meta.Types.CompareOP.NE,
+      Toybox.Meta.Types.CompareOP.IN,
+      Toybox.Meta.Types.CompareOP.NIN,
     ];
     switch (filterFieldMeta?.type) {
       case BusinessFieldType.NUMBER:
       case BusinessFieldType.DATE:
       case BusinessFieldType.DATETIME:
         compareOperation = [
-          CompareOP.EQ,
-          CompareOP.NE,
-          CompareOP.GT,
-          CompareOP.LT,
-          CompareOP.GTE,
-          CompareOP.LTE,
+          Toybox.Meta.Types.CompareOP.EQ,
+          Toybox.Meta.Types.CompareOP.NE,
+          Toybox.Meta.Types.CompareOP.GT,
+          Toybox.Meta.Types.CompareOP.LT,
+          Toybox.Meta.Types.CompareOP.GTE,
+          Toybox.Meta.Types.CompareOP.LTE,
         ];
         return compareOperationData(compareOperation);
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
         if (filterFieldMeta.parentKey != null) {
-          compareOperation = [CompareOP.IN, CompareOP.NIN];
+          compareOperation = [
+            Toybox.Meta.Types.CompareOP.IN,
+            Toybox.Meta.Types.CompareOP.NIN,
+          ];
           return compareOperationData(compareOperation);
         }
         return compareOperationData(compareOperation);
       case BusinessFieldType.SEARCH_ICON:
-        compareOperation = [CompareOP.EQ];
+        compareOperation = [Toybox.Meta.Types.CompareOP.EQ];
         return compareOperationData(compareOperation);
       default:
         return compareOperationData(compareOperation);
     }
   }, [filterFieldMeta]);
 
-  function compareOperationData(compareOperation: CompareOP[]) {
+  function compareOperationData(
+    compareOperation: Toybox.Meta.Types.CompareOP[],
+  ) {
     return compareOperation.map(op => {
       return {
         label: get(localeData.lang, `compareOperation.${op}`),
@@ -101,7 +104,9 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   }
 
   const multiple = useMemo(
-    () => filterOperation === CompareOP.IN || filterOperation === CompareOP.NIN,
+    () =>
+      filterOperation === Toybox.Meta.Types.CompareOP.IN ||
+      filterOperation === Toybox.Meta.Types.CompareOP.NIN,
     [filterOperation],
   );
 
@@ -120,7 +125,11 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const onOperationChange = useCallback(
-    (op: UniteCompareOP) => {
+    (
+      op:
+        | Toybox.Meta.Types.UniteCompareOP
+        | Toybox.Meta.Types.UniteCompareOpType,
+    ) => {
       setFilterOperation(op);
       onChange(update(compare, { op: { $set: op } }));
     },

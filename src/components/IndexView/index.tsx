@@ -23,7 +23,11 @@ import TablePanel from './components/TablePanel';
 import Toolbar from './components/Toolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
-import { FieldService, ILogicFilter, LogicOP } from '../../types/compare';
+import {
+  FieldService,
+  ILogicFilter,
+  ICompareOperation,
+} from '../../types/compare';
 import { FilterType } from '../FilterSearch';
 import { QueryFilter } from '../../hooks/useQueryFilter';
 
@@ -35,7 +39,7 @@ const DEFAULT_QUERY_FILTER = {
   current: 1,
   pageSize: 20,
   logicFilter: {
-    logic: LogicOP.AND,
+    logic: Toybox.Meta.Types.LogicOP.AND,
     compares: [],
   },
 };
@@ -369,7 +373,7 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
         <Toolbar
           filterSearch={filterSearchProps}
           onFilterChange={handleFilterChange}
-          filterValue={simpleFilter}
+          filterValue={simpleFilter as ICompareOperation[]}
         />
         <TablePanel />
         <IndexContent />

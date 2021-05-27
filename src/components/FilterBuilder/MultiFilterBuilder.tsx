@@ -6,9 +6,7 @@ import FilterBuilder from './FilterBuilder';
 import localeMap from './locale';
 import {
   ICompareOperation,
-  ILogicFilter,
   FieldService,
-  LogicOP,
   IUncheckLogicFilter,
 } from '../../types/compare';
 import { FieldMeta } from '../../types/interface';
@@ -17,7 +15,7 @@ import './styles/multi.less';
 import { AddCircleFill } from '@airclass/icons';
 
 export interface IMultiFilterBuilderProps {
-  segmentlogic?: LogicOP;
+  segmentlogic?: Toybox.Meta.Types.LogicOP;
   filterFieldMetas: FieldMeta[];
   value?: IUncheckLogicFilter[];
   filterFieldService?: FieldService;
@@ -27,7 +25,7 @@ export interface IMultiFilterBuilderProps {
 }
 
 const MultiFilterBuilder: FC<IMultiFilterBuilderProps> = ({
-  segmentlogic = LogicOP.AND,
+  segmentlogic = Toybox.Meta.Types.LogicOP.AND,
   filterFieldMetas,
   value = [],
   filterFieldService,

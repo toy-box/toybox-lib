@@ -3,7 +3,6 @@ import { Form, Tooltip, Popover, Button } from 'antd';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import { Filter3Line } from '@airclass/icons';
 import update from 'immutability-helper';
-import { CompareOP } from '../../types/compare';
 import {
   ICompareOperation,
   BusinessFieldType,
@@ -26,7 +25,7 @@ export declare type FilterType = ICompareOperation[];
 export interface FilterLabel {
   title: string;
   key: string;
-  op: CompareOP;
+  op: Toybox.Meta.Types.UniteCompareOP;
   labelValue: LabelValueType;
   ellipsis?: boolean;
 }
@@ -73,7 +72,9 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       const metaArr = value?.filter(val => val.source === filed.key);
       if (metaArr && metaArr.length > 1) return;
       const isShowMeta =
-        meta && (meta.op === CompareOP.IN || meta.op === CompareOP.EQ);
+        meta &&
+        (meta.op === Toybox.Meta.Types.CompareOP.IN ||
+          meta.op === Toybox.Meta.Types.CompareOP.EQ);
       if (
         meta &&
         isShowMeta &&
@@ -90,19 +91,23 @@ const FilterSearch: FC<IFilterSearchProps> = ({
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
-        handleValueChange(val, filterField, CompareOP.IN);
+        handleValueChange(val, filterField, Toybox.Meta.Types.CompareOP.IN);
         break;
       default:
-        handleValueChange(val, filterField, CompareOP.EQ);
+        handleValueChange(val, filterField, Toybox.Meta.Types.CompareOP.EQ);
         break;
     }
   };
 
   const handleValueChange = useCallback(
-    (val, fieldMeta: FieldMeta, op = CompareOP.EQ) => {
+    (
+      val,
+      fieldMeta: FieldMeta,
+      op: Toybox.Meta.Types.UniteCompareOP = Toybox.Meta.Types.CompareOP.EQ,
+    ) => {
       const fieldItem: ICompareOperation = {
         source: fieldMeta.key,
-        op: op as CompareOP,
+        op: op,
         target: val,
       };
       // 如果选项设置空则

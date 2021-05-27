@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import qs from 'qs';
 import { PaginatedParams } from '@ahooksjs/use-request/lib/types';
-import { ILogicFilter, LogicOP } from '../types/compare';
+import { ILogicFilter } from '../types/compare';
 
 export type QueryFilter = PaginatedParams[0] & {
   logicFilter?: ILogicFilter;
@@ -34,7 +34,7 @@ export default () => {
       logicFilter:
         typeof qf.logicFilter === 'string'
           ? JSON.parse(window.atob(qf.logicFilter as string))
-          : { logic: LogicOP.AND, compares: [] },
+          : { logic: Toybox.Meta.Types.LogicOP.AND, compares: [] },
       pageSize: qf.pageSize != null ? Number(qf.pageSize) : undefined,
       current: qf.current != null ? Number(qf.current) : undefined,
       sorter: qf.sorter,
