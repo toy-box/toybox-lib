@@ -125,11 +125,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const onOperationChange = useCallback(
-    (
-      op:
-        | Toybox.Meta.Types.UniteCompareOP
-        | Toybox.Meta.Types.UniteCompareOpType,
-    ) => {
+    (op: Toybox.Meta.Types.UniteCompareOP) => {
       setFilterOperation(op);
       onChange(update(compare, { op: { $set: op } }));
     },
