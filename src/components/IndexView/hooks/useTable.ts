@@ -12,7 +12,7 @@ import {
   PaginatedFormatReturn,
   PaginatedResult,
 } from '@ahooksjs/use-request/lib/types';
-import { ILogicFilter } from '../../../types/compare';
+import { ILogicFilter, LogicOP } from '../../../types';
 
 export {
   CombineService,
@@ -91,7 +91,7 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
   const getFilterData = useCallback(() => {
     if (!filterUtil) {
       return {
-        logic: Toybox.Meta.Types.LogicOP.AND,
+        logic: LogicOP.AND,
         compares: [],
       };
     }
@@ -121,7 +121,6 @@ function useAntdTable<R = any, Item = any, U extends Item = any>(
           run(initParams[0], activeFilterData);
           return;
         }
-        console.log('activeFilterData', activeFilterData);
         run(
           {
             pageSize: options.defaultPageSize || 10,

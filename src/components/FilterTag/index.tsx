@@ -10,6 +10,7 @@ import { Tag, TagProps, Tooltip } from 'antd';
 import get from 'lodash.get';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import localeMap from './locale';
+import { UniteCompareOP } from '@/types';
 
 export interface LabelValue {
   value: any;
@@ -25,7 +26,7 @@ export declare type RangeValueType = [number | Date, number | Date];
 export interface FilterData {
   title: string;
   key: string;
-  op: Toybox.Meta.Types.UniteCompareOP;
+  op: UniteCompareOP;
   value: BasicValueType | BasicValueType[] | RangeValueType;
   labelValue?: LabelValueType;
 }

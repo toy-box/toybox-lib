@@ -1,7 +1,6 @@
 import React, { FC, useMemo, useCallback, useState } from 'react';
 import FilterTag from '../FilterTag/index';
-import { ICompareOperation } from '../../types/compare';
-import { FieldMeta } from '../../types/interface';
+import { FieldMeta, ICompareOperation } from '../../types';
 
 export interface FilterMetaTag {
   fieldMeta: FieldMeta;

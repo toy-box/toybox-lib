@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useContext, useMemo } from 'react';
 import update from 'immutability-helper';
-import { ICompareOperation, FieldService } from '../../types/compare';
+import { ICompareOperation, FieldService } from '../../types';
 import { FieldMeta } from '../../types/interface';
 import localeMap from './locale';
 import LocaleContext from 'antd/lib/locale-provider/context';
