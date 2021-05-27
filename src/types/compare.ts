@@ -1,23 +1,11 @@
 import { ReactNode } from 'react';
 import { FieldMeta } from './interface';
 
-export enum CompareOP {
-  EQ = '$eq',
-  GT = '$gt',
-  GTE = '$gte',
-  IN = '$in',
-  LT = '$lt',
-  LTE = '$lte',
-  NE = '$ne',
-  NIN = '$nin',
-}
+export type CompareOP = Toybox.Meta.Types.CompareOP;
 
-export enum DateCompareOP {
-  UNIT_DATE_RANGE = '$unitDateRange',
-  BETWEEN = '$between',
-}
+export type DateCompareOP = Toybox.Meta.Types.DateCompareOP;
 
-export type UniteCompareOP = CompareOP | DateCompareOP;
+export type UniteCompareOP = Toybox.Meta.Types.UniteCompareOP;
 
 export enum BusinessFieldType {
   INTEGER = 'integer',
@@ -37,28 +25,16 @@ export enum BusinessFieldType {
   SEARCH_ICON = 'searchIcon',
 }
 
-export interface ILogicFilter {
-  logic: LogicOP;
-  compares: ICompareOperation[];
-}
+export type ILogicFilter = Toybox.Meta.Types.ILogicFilter;
 
 export interface IUncheckLogicFilter {
   logic: LogicOP;
   compares: Partial<ICompareOperation>[];
 }
 
-export interface ICompareOperation {
-  source: string;
-  op: UniteCompareOP;
-  target?: number | string | number[] | string[] | Date | Date[];
-}
+export type ICompareOperation = Toybox.Meta.Types.ICompareOperation;
 
-export enum LogicOP {
-  AND = '$and',
-  OR = '$or',
-  NOT = '$not',
-  NOR = '$nor',
-}
+export type LogicOP = Toybox.Meta.Types.LogicOP;
 
 declare interface OptionValueType {
   label: ReactNode;

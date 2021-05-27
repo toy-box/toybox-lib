@@ -5,50 +5,13 @@ import {
   OptionGroupData,
   OptionsType,
 } from 'rc-select/lib/interface';
-import { FieldType } from '../components/Fields/interface';
 
 export type RowData = Record<string, any>;
 export declare type Key = string | number;
 
-export interface BusinessObjectMeta {
-  key: string;
-  idKey?: string;
-  name: string;
-  description: string;
-  properties: { [key: string]: FieldMeta };
-  titleKey: string;
-  type?: FieldType;
-}
+export type BusinessObjectMeta = Toybox.Meta.Types.IBusinessObjectMeta;
 
-export interface FieldMeta {
-  key: string;
-  name: string;
-  type: string;
-  description?: string;
-  primary?: boolean;
-  options?: FieldOption[];
-  refObjectId?: string;
-  unique?: boolean;
-  required?: boolean;
-  maximum?: number;
-  minimum?: number;
-  exclusiveMaximum?: number;
-  exclusiveMinimum?: number;
-  maxLength?: number;
-  minLength?: number;
-  decimalScale?: number;
-  multipleOf?: number;
-  minProperties?: number;
-  maxProperties?: number;
-  pattern?: string;
-  format?: string;
-  idKey?: string;
-  titleKey?: string;
-  properties?: { [key: string]: FieldMeta };
-  index?: number;
-  defaultValue?: any;
-  parentKey?: string;
-}
+export type FieldMeta = Toybox.Meta.Types.IFieldMeta;
 
 export interface FieldMetaProfile extends FieldMeta {
   disabled?: boolean;
@@ -60,10 +23,7 @@ export interface FieldMetaProfile extends FieldMeta {
   ) => Promise<OptionItem[]>;
 }
 
-export interface FieldOption {
-  label: string;
-  value: string;
-}
+export type FieldOption = Toybox.Meta.Types.IFieldOption;
 
 export type OptionItem = OptionData | OptionGroupData;
 
