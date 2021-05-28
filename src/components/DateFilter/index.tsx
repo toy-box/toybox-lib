@@ -15,6 +15,11 @@ export interface DateFilterProps<T> {
   localeName?: string;
 }
 
+export function getText(labelValue: string, localeName = 'zhCN') {
+  const text = locales[localeName].lang[labelValue];
+  return text || labelValue;
+}
+
 const DateFilter: FC<DateFilterProps<DateFilterValueType>> = ({
   value,
   onChange,
@@ -23,15 +28,12 @@ const DateFilter: FC<DateFilterProps<DateFilterValueType>> = ({
   placeholder,
   localeName = 'zhCN',
 }) => {
-  const getText = (labelValue: string) => {
-    const text = locales[localeName].lang[labelValue];
-    return text || labelValue;
-  };
-
   return (
     <Select
       value={value}
-      onChange={value => onChange && onChange(value, getText(value))}
+      onChange={value =>
+        onChange && onChange(value, getText(value, localeName))
+      }
       style={style}
       className={className}
       placeholder={placeholder || getText('placeholder')}
