@@ -206,7 +206,7 @@ function VerticalTable<RecordType = DefaultRecordType>({
   // =========================== Render =============================
   const transformColumns = useCallback(
     (innerColumns: ColumnsType<RecordType>): ColumnsType<RecordType> => {
-      const cols = transformSelectionColumns(innerColumns);
+      const cols = transformSelectionColumns(innerColumns.map(col => col));
       return transformTitleColumns(cols);
     },
     [transformTitleColumns, transformSelectionColumns],

@@ -48,7 +48,7 @@
     "lodash.throttle": "^4.1.1",
     "nanoid": "^3.1.22",
     "numbro": "^2.3.2",
-    "qs": "^6.9.6",
+    "qs": "^6.10.1",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^16.14.0",
     "react-grid-layout": "^1.2.2",
@@ -61,15 +61,9 @@
   "peerDependencies": {
     "@airclass/icons": "^4.3.4",
     "ahooks": "^2.9.4",
-    "antd": "^4.11.2",
-    "classnames": "^2.2.6",
-    "dayjs": "^1.10.4",
-    "immutability-helper": "^3.1.1",
-    "lodash.debounce": "^4.0.8",
-    "lodash.intersection": "^4.4.0",
     "react": "^16.14.0",
-    "react-router": "^5.2.0",
-    "styled-components": "^5.2.1"
+    "react-dom": "^16.14.0",
+    "react-router": "^5.2.0"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.11",
@@ -77,6 +71,7 @@
     "@types/lodash.get": "^4.4.6",
     "@types/lodash.intersection": "^4.4.6",
     "@types/lodash.sortby": "^4.7.6",
+    "@types/qs": "^6.9.6",
     "@types/react": "^16.14.6",
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-dom": "^16.9.12",
@@ -84,6 +79,7 @@
     "@types/react-resizable": "^1.7.2",
     "@types/styled-components": "^5.1.7",
     "@umijs/test": "^3.0.5",
+    "babel-plugin-import": "^1.13.3",
     "dumi": "^1.0.13",
     "eslint-plugin-react-hooks": "^4.2.0",
     "father-build": "^1.17.2",

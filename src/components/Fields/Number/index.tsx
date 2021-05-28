@@ -18,7 +18,7 @@ const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = (
   { mode, value, style, onChange, onClick, ...otherProps },
   ref: Ref<any>,
 ) => {
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement | null>(null);
   useImperativeHandle(
     ref,
     () => ({

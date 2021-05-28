@@ -111,7 +111,7 @@ const usePivot = (
   dimensions: string[] = [],
 ) => {
   const pivotData = useMemo(() => {
-    let rows = dataSource;
+    let rows = dataSource.map(item => item);
     let posIndexes: Array<number[]> = [];
     dimensions.forEach((key, keyIdx) => {
       const columnMeta = columnMetas.find(c => c.key === key);

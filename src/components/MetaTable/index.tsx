@@ -45,6 +45,7 @@ export interface MetaTableProps
     | 'size'
     | 'showHeader'
     | 'summary'
+    | 'title'
   > {
   resizableTitle?: boolean;
   /**
@@ -75,10 +76,7 @@ export interface MetaTableProps
    * @description 行自定义class
    */
   rowClassName?: (record: RowData, index: number) => string;
-  /**
-   * @description 表格标题
-   */
-  title?: (dataSource: RowData[]) => ReactNode;
+
   /**
    * @description 表格交叉显示配置
    */
@@ -146,7 +144,7 @@ const MetaTable: FC<MetaTableProps> = ({
   ]);
 
   const [rows, posIndexes] = usePivot(
-    dataSource || [],
+    (dataSource || []).map(item => item),
     innerColumnMetas,
     pivotOption?.dimensions,
   );
