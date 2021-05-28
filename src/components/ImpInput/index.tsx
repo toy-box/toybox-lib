@@ -1,4 +1,4 @@
-import React, { FC, useState, useMemo } from 'react';
+import React, { FC, useState, useMemo, useRef } from 'react';
 import { Input } from 'antd';
 import { InputProps } from 'antd/lib/input';
 
@@ -17,7 +17,7 @@ const ImpInput: FC<ImpInputProps> = props => {
     inputClassName,
     ...other
   } = props;
-
+  const inputRef = useRef<Input | null>(null);
   const [active, setActive] = useState(false);
   const [innerValue, setInnerValue] = useState(value);
 
@@ -30,6 +30,7 @@ const ImpInput: FC<ImpInputProps> = props => {
       return;
     }
     setActive(true);
+    setTimeout(() => inputRef.current?.focus(), 300);
   };
 
   const onPressEnterHandle = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -59,6 +60,7 @@ const ImpInput: FC<ImpInputProps> = props => {
     <div className="toybox-imp-input">
       {active ? (
         <Input
+          ref={inputRef}
           className={inputClassName}
           onBlur={onBlurHandle}
           onPressEnter={onPressEnterHandle}
