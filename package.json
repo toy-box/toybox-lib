@@ -61,6 +61,7 @@
   "peerDependencies": {
     "@airclass/icons": "^4.3.4",
     "ahooks": "^2.9.4",
+    "antd": "^4.11.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-router": "^5.2.0"
