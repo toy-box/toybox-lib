@@ -15,12 +15,6 @@ import {
   UniteCompareOP,
 } from '../../../types/';
 
-const CompareOperationWrapper = styled.div`
-  display: flex;
-  margin-top: 20px;
-  margin-bottom: 20px;
-`;
-
 const inputStyle = { width: '198px' };
 
 export interface CompareOperationProps {
