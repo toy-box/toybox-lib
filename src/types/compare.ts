@@ -25,10 +25,11 @@ export interface IUncheckLogicFilter {
   compares: Partial<ICompareOperation>[];
 }
 
-declare interface OptionValueType {
+export interface OptionValueType {
   label: ReactNode;
   title?: string;
   value: string | number;
+  disabled?: boolean;
 }
 
 export interface SimpleNode {
