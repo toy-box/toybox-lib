@@ -31,7 +31,7 @@ const FilterTags: FC<FilterTagsProps> = ({
     [filterFieldTags],
   );
 
-  const width = useCallback(
+  const getWidth = useCallback(
     tag => {
       const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
       return (meta && meta.width) || '100px';
@@ -86,7 +86,7 @@ const FilterTags: FC<FilterTagsProps> = ({
       {filterTags.map((tag, idx) => (
         <FilterTag
           key={idx}
-          style={{ width: width(tag) }}
+          style={{ width: getWidth(tag) }}
           remote={remote(tag) ? value => remoteMethod(tag, value) : undefined}
           filter={tag}
           remove={remove ? () => remove(idx) : undefined}
