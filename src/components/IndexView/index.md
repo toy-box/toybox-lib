@@ -36,7 +36,7 @@ const objectMeta = {
     user: {
       key: 'user',
       name: '用户',
-      type: 'businessObject',
+      type: 'object',
       titleKey: 'name',
       properties: {
         id: {

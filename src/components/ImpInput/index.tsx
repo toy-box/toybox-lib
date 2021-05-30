@@ -1,32 +1,31 @@
-import React, { FC, useState, useMemo, useRef } from 'react';
+import React, { FC, useState, useRef } from 'react';
 import { Input } from 'antd';
+import classNames from 'classnames';
 import { InputProps } from 'antd/lib/input';
+
+import './style.less';
 
 export type ImpInputProps = {
   onSave?: (value: string | number | readonly string[] | undefined) => void;
   inputClassName?: string;
 } & InputProps;
 
-const ImpInput: FC<ImpInputProps> = props => {
-  const {
-    value,
-    onSave,
-    onPressEnter,
-    onChange,
-    onBlur,
-    inputClassName,
-    ...other
-  } = props;
+const ImpInput: FC<ImpInputProps> = ({
+  value,
+  onSave,
+  onPressEnter,
+  onChange,
+  onBlur,
+  disabled,
+  inputClassName,
+  ...other
+}) => {
   const inputRef = useRef<Input | null>(null);
   const [active, setActive] = useState(false);
   const [innerValue, setInnerValue] = useState(value);
 
-  const disabled = useMemo(() => {
-    return props.disabled;
-  }, [props.disabled]);
-
   const activeHandle = () => {
-    if (props.disabled) {
+    if (disabled) {
       return;
     }
     setActive(true);
@@ -57,7 +56,7 @@ const ImpInput: FC<ImpInputProps> = props => {
   };
 
   return (
-    <div className="toybox-imp-input">
+    <div className="tbox-imp-input">
       {active ? (
         <Input
           ref={inputRef}
@@ -70,7 +69,7 @@ const ImpInput: FC<ImpInputProps> = props => {
         />
       ) : (
         <div
-          className={`${disabled ? 'disabled' : ' '} toybox-imp-input__text`}
+          className={classNames('tbox-imp-input__text', { disabled })}
           onClick={activeHandle}
         >
           {value}

@@ -25,7 +25,7 @@ export interface IFilterContainerProps {
 }
 
 const FilterSetupWrapper = styled.div`
-  width: 560px;
+  width: 620px;
   padding: 12px 0;
   h3 {
     padding: 0 16px;
@@ -33,7 +33,7 @@ const FilterSetupWrapper = styled.div`
 `;
 
 const FilterSetupItemsWrapper = styled.div`
-  height: 380px;
+  height: 420px;
   overflow: auto;
   padding: 0 16px;
 `;
@@ -57,9 +57,6 @@ export const Container: FC<IFilterContainerProps> = ({
   filterFieldService,
 }) => {
   const [compares, setCompares] = useState<Partial<ICompareOperation>[]>(value);
-  // const [initCompares, setInitCompares] = useState<
-  //   Partial<ICompareOperation>[]
-  // >(value || []);
 
   const antLocale = useContext(LocaleContext);
   const locale = useMemo(
@@ -67,13 +64,6 @@ export const Container: FC<IFilterContainerProps> = ({
     [antLocale],
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
-
-  // const handleFilter = useCallback(
-  //   (filterItem: Partial<ICompareOperation>[]) => {
-  //     setInitCompares(filterItem);
-  //   },
-  //   [initCompares],
-  // );
 
   const handleSave = useCallback(
     () =>

@@ -4,74 +4,99 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  ReactNode,
-  ReactText,
   useContext,
 } from 'react';
 import { InputNumber } from 'antd';
 import { SelectValue } from 'antd/lib/select';
 import { RawValueType } from 'rc-tree-select/lib/interface';
+import LocaleContext from 'antd/lib/locale-provider/context';
+import dayjs, { Dayjs } from 'dayjs';
 import get from 'lodash.get';
 import localeMap from '../locale';
-import LocaleContext from 'antd/lib/locale-provider/context';
+import DatePicker from '../../DatePicker';
 import Fields from '../../Fields';
 import SelectPro from '../../SelectPro';
-import Search from '../../Search';
-import { SearchLine } from '@airclass/icons';
+import DateFilter from '../../DateFilter';
 import {
   BusinessFieldType,
   FieldService,
-  BusinessFieldTypeWild,
+  FieldMeta,
+  OptionItem,
+  UniteCompareOP,
+  DateCompareOP,
 } from '../../../types';
-import { FieldMeta } from '../../../types/interface';
-import { OptionItem } from '../../../types/interface';
 
-function isReactText(value: ReactNode): boolean {
-  return typeof value === 'string' || typeof value === 'number';
-}
+declare type RangeValue = [
+  string | number | undefined,
+  string | number | undefined,
+];
+
+export declare type FilterValueInputType =
+  | 'string'
+  | 'number'
+  | 'date'
+  | 'datetime'
+  | 'tree'
+  | 'select'
+  | 'unitDateRange'
+  | 'dateBetween';
 
 export interface FilterValueInputProps {
-  filterField: FieldMeta;
+  fieldMeta: FieldMeta;
+  operation?: UniteCompareOP;
   value?: any;
   multiple?: boolean;
-  onChange: (value: any) => void;
+  onChange: (value: any, text?: string[]) => void;
   style?: any;
   mode?: 'read' | 'edit' | 'update';
-  filterFieldService?: FieldService;
-  singleMode?: boolean;
+  fieldMetaService?: FieldService;
+  locale?: string;
 }
 
 export const FilterValueInput: FC<FilterValueInputProps> = ({
-  filterField,
+  fieldMeta,
+  operation,
   value,
   onChange,
   multiple,
   style,
   mode = 'edit',
-  singleMode,
-  filterFieldService,
+  fieldMetaService,
+  locale = 'zh_CN',
 }) => {
   const [treeData, setTreeData] = useState([]);
 
   const antLocale = useContext(LocaleContext);
-  const locale = useMemo(
-    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+  const localeName = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : locale),
     [antLocale],
   );
-  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
+  const localeData = useMemo(() => localeMap[localeName], [localeName]);
 
   const remote = useMemo(
     () =>
-      filterField.type === BusinessFieldType.OBJECT_ID ||
-      filterField.type === BusinessFieldType.OBJECT ||
-      filterField.type === 'businessObject' ||
-      filterField.type === 'document',
-    [filterField.type],
+      fieldMeta &&
+      (fieldMeta.type === BusinessFieldType.OBJECT_ID ||
+        fieldMeta.type === BusinessFieldType.OBJECT ||
+        fieldMeta.type === 'businessObject' ||
+        fieldMeta.type === 'document'),
+    [fieldMeta],
   );
 
+  const inputType = useMemo(() => {
+    console.log('fieldMeta', fieldMeta);
+    switch (fieldMeta.type) {
+      case BusinessFieldType.STRING:
+        return 'stirng';
+      default:
+        return;
+    }
+    return;
+  }, [fieldMeta]);
+
   const handleValue = useCallback(
-    (value?: any) => {
-      onChange(value === undefined ? null : value);
+    (value?: any, text?: string[]) => {
+      onChange(value === undefined ? null : value, text);
     },
     [onChange],
   );
@@ -101,50 +126,45 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       } else if (value == null) {
         onChange(undefined);
       }
-      // if (innerValues != null && !Array.isArray(innerValues)) {
-      //   setInnerValues([innerValues]);
-      // }
     } else {
       if (Array.isArray(value) && value.length > 0) {
-        // setInnerValue(innerValue[0]);
         onChange(value[0]);
       }
-      // if (Array.isArray(innerValues)) {
-      //   setInnerValues([innerValues[0]]);
-      // }
     }
   }, [multiple]);
 
   const searchOptions = useCallback(
     async (value: any) => {
-      console.log(value, filterFieldService);
-      const ops = await filterFieldService?.findOptions(
-        filterField.key as BusinessFieldType,
+      if (fieldMeta == null) {
+        return [];
+      }
+      const ops = await fieldMetaService?.findOptions(
+        fieldMeta.key as BusinessFieldType,
         value,
       );
       return ops || ([] as OptionItem[]);
     },
-    [filterField.key, filterFieldService],
+    [fieldMeta, fieldMetaService],
   );
 
   const searchByValue = useCallback(async () => {
     const ids = Array.isArray(value) ? value : [value];
-    const ops = await filterFieldService?.findOfValues(
-      filterField.key as BusinessFieldType,
+    const ops = await fieldMetaService?.findOfValues(
+      fieldMeta.key as BusinessFieldType,
       ids,
     );
     return ops || [];
-  }, [filterField.key, filterFieldService, value]);
+  }, [fieldMeta.key, fieldMetaService, value]);
 
   const findDataTrees = useCallback(
     async parentId => {
-      const ops = await filterFieldService?.findDataTrees(
-        filterField.key as BusinessFieldType,
+      const ops = await fieldMetaService?.findDataTrees(
+        fieldMeta.key as BusinessFieldType,
         parentId,
       );
       return ops || [];
     },
-    [filterField.key, filterFieldService],
+    [fieldMeta.key, fieldMetaService],
   );
 
   const filterValue = useMemo(() => {
@@ -157,65 +177,36 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     }
   }, [value, multiple]);
 
-  const field = {
+  const treeFieldMeta = {
     key: 'tree',
     name: 'Tree',
     type: 'treeSelect',
   };
 
   const input = useMemo(() => {
-    switch (filterField?.type) {
-      case BusinessFieldTypeWild.STRING:
+    switch (fieldMeta?.type) {
+      case BusinessFieldType.STRING:
         return (
           <Fields.FieldString
-            disabled={filterField == null}
-            field={field}
+            disabled={fieldMeta == null}
+            field={fieldMeta}
             mode={mode}
             style={style}
             placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
-              filterField.name
+              fieldMeta.name
             }`}
             value={value}
+            allowClear
             onChange={handleValue}
           />
         );
-      case BusinessFieldTypeWild.SEARCH_ICON:
-        if (singleMode) {
-          return (
-            <div style={style}>
-              <Search.IconSearch
-                disabled={filterField == null}
-                placeholder={`${get(
-                  localeData.lang,
-                  'filed.placeholderOp.param',
-                )}${filterField.name}`}
-                value={value}
-                onChange={handleValue}
-              >
-                <SearchLine />
-              </Search.IconSearch>
-            </div>
-          );
-        }
-        return (
-          <div style={style}>
-            <Search
-              disabled={filterField == null}
-              placeholder={`${get(
-                localeData.lang,
-                'filed.placeholderOp.param',
-              )}${filterField.name}`}
-              value={value}
-              onChange={value => handleValue(value)}
-            />
-          </div>
-        );
       case BusinessFieldType.NUMBER:
+      case BusinessFieldType.INTEGER:
         return (
           <InputNumber
-            disabled={filterField == null}
+            disabled={fieldMeta == null}
             placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
-              filterField.name
+              fieldMeta.name
             }`}
             style={style}
             value={value}
@@ -223,40 +214,60 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           />
         );
       case BusinessFieldType.DATE:
-        return (
-          <div style={style}>
-            <Fields.FieldDate
-              value={value}
-              mode={mode}
-              field={field}
-              placeholder={`${get(
-                localeData.lang,
-                'filed.placeholderOp.paramSelect',
-              )}${filterField.name}`}
-              format={filterField.format || 'YYYY/MM/DD'}
-              onChange={value =>
-                handleValue(value?.format(filterField.format || 'YYYY/MM/DD'))
-              }
-            />
-          </div>
-        );
       case BusinessFieldType.DATETIME:
+        const format =
+          fieldMeta.type === BusinessFieldType.DATE
+            ? 'YYYY/MM/DD'
+            : 'YYYY/MM/DD HH:mm:ss';
+        if (operation === DateCompareOP.UNIT_DATE_RANGE) {
+          return (
+            <DateFilter
+              style={style}
+              value={value}
+              onChange={(value, text) => handleValue(value, text ? [text] : [])}
+            />
+          );
+        }
+        if (operation === DateCompareOP.BETWEEN) {
+          const innerValue =
+            value != null
+              ? ([dayjs(value[0]), dayjs(value[1])] as [Dayjs, Dayjs])
+              : undefined;
+          return (
+            <DatePicker.RangePicker
+              value={innerValue}
+              format={format}
+              onChange={value => {
+                const doValue = value
+                  ? ([
+                      value[0] ? value[0].toJSON() : undefined,
+                      value[1] ? value[1].toJSON() : undefined,
+                    ] as RangeValue)
+                  : undefined;
+                const doValues = value
+                  ? [
+                      value[0] ? value[0].format(format) : '',
+                      value[1] ? value[1].format(format) : '',
+                    ]
+                  : [];
+                handleValue(doValue, doValues);
+              }}
+            />
+          );
+        }
         return (
           <div style={style}>
             <Fields.FieldDate
               value={value}
               mode={mode}
-              field={field}
-              showTime
+              field={fieldMeta}
               placeholder={`${get(
                 localeData.lang,
                 'filed.placeholderOp.paramSelect',
-              )}${filterField.name}`}
-              format={filterField.format || 'YYYY/MM/DD HH:mm:ss'}
+              )}${fieldMeta.name}`}
+              format={fieldMeta.format || format}
               onChange={value =>
-                handleValue(
-                  value?.format(filterField.format || 'YYYY/MM/DD HH:mm:ss'),
-                )
+                handleValue(value?.format(fieldMeta.format || format))
               }
             />
           </div>
@@ -264,30 +275,30 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       case BusinessFieldType.SINGLE_OPTION:
         return (
           <SelectPro
-            disabled={filterField == null}
+            disabled={fieldMeta == null}
             placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
-              filterField.name
+              fieldMeta.name
             }`}
             mode={multiple ? 'multiple' : undefined}
             allowClear
             style={style}
             showSearch
-            options={filterField.options}
+            options={fieldMeta.options}
             value={filterValue}
             onChange={(value, options) =>
               handleSelectOptions(value, options as OptionItem)
             }
           />
         );
-      case BusinessFieldTypeWild.BUSINESS_OBJECT:
+      case BusinessFieldType.OBJECT:
         return (
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
-            options={filterField.options}
+            options={fieldMeta.options}
             mode={multiple ? 'multiple' : undefined}
             value={filterValue}
-            params={filterField}
+            params={fieldMeta}
             showSearch
             remote={searchOptions}
             remoteByValue={searchByValue}
@@ -298,13 +309,13 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         );
       case BusinessFieldType.OBJECT_ID:
         if (
-          filterField.parentKey != null &&
-          filterField.parentKey !== '' &&
+          fieldMeta.parentKey != null &&
+          fieldMeta.parentKey !== '' &&
           multiple
         ) {
           return (
             <Fields.FieldTreeSelect
-              field={field}
+              field={fieldMeta}
               style={style}
               mode={mode}
               placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
@@ -321,10 +332,10 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
-            options={filterField.options}
+            options={fieldMeta.options}
             mode={multiple ? 'multiple' : undefined}
             value={filterValue}
-            params={filterField}
+            params={fieldMeta}
             showSearch
             remote={searchOptions}
             remoteByValue={searchByValue}
@@ -336,29 +347,20 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       default:
         return (
           <Fields.FieldString
-            disabled={filterField == null}
-            field={field}
+            disabled={fieldMeta == null}
+            field={fieldMeta}
             mode={mode}
             style={style}
             placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
-              filterField.name
+              fieldMeta.name
             }`}
             value={value}
-            onChange={handleValue}
+            onChange={value => handleValue(value, [value])}
           />
-          // <Input
-          //   disabled={filterField == null}
-          //   placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
-          //     filterField.name
-          //   }`}
-          //   style={style}
-          //   value={value}
-          //   onChange={e => handleValue(e.target.value)}
-          // />
         );
     }
   }, [
-    filterField,
+    fieldMeta,
     style,
     value,
     multiple,

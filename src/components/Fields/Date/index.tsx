@@ -11,6 +11,7 @@ import { PickerBaseProps } from 'antd/lib/date-picker/generatePicker';
 import DatePicker from '../../DatePicker';
 import { BaseFieldProps } from '../interface';
 import { parseValueToMoment } from '../../../utils';
+import { BusinessFieldType } from '../../../types';
 
 dayjs.extend(LocalizedFormat);
 
@@ -23,10 +24,9 @@ export declare type FieldBasePickerProps = Omit<
 export declare type FieldDateProps = FieldBasePickerProps & {
   picker?: DatePickerProps['picker'];
   dateMode?: PickerBaseProps<Dayjs>['mode'];
-  showTime?: boolean;
 };
 
-const defaultFormat = 'YYYY-MM-DD';
+const defaultFormat = 'YYYY/MM/DD';
 
 const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   {
@@ -35,6 +35,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     defaultValue,
     placeholder,
     mode,
+    field,
     format = defaultFormat,
     fieldProps,
     picker,
@@ -42,12 +43,14 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     bordered,
     onChange,
     onClick,
-    showTime,
     onOpenChange,
     dateMode,
   },
   ref: Ref<any>,
 ) => {
+  const showTime = useMemo(() => field.type === BusinessFieldType.DATETIME, [
+    field.type,
+  ]);
   const innerOnChange = useCallback(
     (date: Dayjs) => {
       onChange &&

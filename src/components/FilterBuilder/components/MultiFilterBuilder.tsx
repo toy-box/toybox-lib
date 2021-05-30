@@ -2,18 +2,18 @@ import React, { FC, useCallback, useContext, useMemo } from 'react';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import update from 'immutability-helper';
 import { AddCircleFill } from '@airclass/icons';
-import Button from '../Button';
+import Button from '../../Button';
 import FilterBuilder from './FilterBuilder';
-import localeMap from './locale';
+import localeMap from '../locale';
 import {
   ICompareOperation,
   FieldService,
   IUncheckLogicFilter,
   LogicOP,
-} from '../../types';
-import { FieldMeta } from '../../types/interface';
+} from '../../../types';
+import { FieldMeta } from '../../../types/interface';
 
-import './styles/multi.less';
+import '../styles/multi.less';
 
 export interface IMultiFilterBuilderProps {
   segmentlogic?: LogicOP;

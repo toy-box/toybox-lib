@@ -1,14 +1,14 @@
 import React, { FC, useCallback, useContext, useMemo } from 'react';
 import update from 'immutability-helper';
-import { ICompareOperation, FieldService } from '../../types';
-import { FieldMeta } from '../../types/interface';
-import localeMap from './locale';
-import LocaleContext from 'antd/lib/locale-provider/context';
-import { CompareOperation } from './components/CompareOperation';
-import Button from '../Button';
-
-import './styles/index.less';
 import { AddCircleLine } from '@airclass/icons';
+import LocaleContext from 'antd/lib/locale-provider/context';
+import { ICompareOperation, FieldService } from '../../../types';
+import { FieldMeta } from '../../../types/interface';
+import localeMap from '../locale';
+import { CompareOperation } from './CompareOperation';
+import Button from '../../Button';
+
+import '../styles/index.less';
 
 export type IUncheckCompares = Partial<ICompareOperation>[];
 
@@ -36,7 +36,6 @@ export const FilterBuilder = ({
 
   const handleFilterItem = useCallback(
     (filterItem: Partial<ICompareOperation>, index: number) => {
-      console.log('new compare', filterItem);
       onChange && onChange(update(value, { [index]: { $set: filterItem } }));
     },
     [onChange, value],

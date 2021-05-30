@@ -68,11 +68,6 @@ export default () => {
     return new Promise(resolve => {
       serviceTest(resolve, key);
     }).then(res => {
-      // console.log(res, 1223333);
-      // if (parentId != 0) return [{
-      //   id: '2', pId: 1, value: '2', title: 'Expand to load'
-      // }];
-      console.log(parentId, 'parentId');
       if (parentId === '2') return [];
       if (parentId)
         return [
@@ -88,7 +83,6 @@ export default () => {
   }
 
   const onChange = useCallback((compares, key) => {
-    console.log(compares, 'compares');
     setTagValue(compares);
   }, []);
 
@@ -184,7 +178,7 @@ export default () => {
         properties: null,
         required: null,
         titleKey: 'name',
-        type: 'searchIcon',
+        type: 'string',
         unique: null,
         unBasic: true,
         layout: 'right',
@@ -212,11 +206,6 @@ export default () => {
       op: '$in',
       target: '1',
     },
-    // {
-    //   source: 'value',
-    //   op: '$in',
-    //   target: '1',
-    // },
   ];
   const [tagValue, setTagValue] = useState(value);
   function remoteOfTags(key, value) {
@@ -238,7 +227,6 @@ export default () => {
 
   const removeTag = useCallback(
     index => {
-      console.log(tagValue, index);
       setTagValue(update(tagValue, { $splice: [[index, 1]] }));
     },
     [tagValue],

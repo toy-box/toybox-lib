@@ -1,21 +1,21 @@
 import React, { FC, useCallback, useMemo, useState, useEffect } from 'react';
-import styled from 'styled-components';
 import update from 'immutability-helper';
 import { Button, Form, Select, Input } from 'antd';
-import { FilterValueInput } from './FilterValueInput';
 import { CloseLine } from '@airclass/icons';
 import get from 'lodash.get';
+import { FilterValueInput } from './FilterValueInput';
 import {
   ICompareOperation,
   BusinessFieldType,
   FieldService,
-  CompareOP,
   FieldMeta,
   BusinessFieldTypeWild,
+  CompareOP,
+  DateCompareOP,
   UniteCompareOP,
 } from '../../../types/';
 
-const inputStyle = { width: '198px' };
+const inputStyle = { width: '240px' };
 
 export interface CompareOperationProps {
   filterFieldMetas: FieldMeta[];
@@ -34,10 +34,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   localeData,
   filterFieldService,
 }) => {
-  const [filterKey, setFilterKey] = useState(compare.source);
-  const [filterOperation, setFilterOperation] = useState(compare.op);
-  const [filterValue, setFilterValue] = useState(compare.target);
-
   const fieldOptions = useMemo(() => {
     return filterFieldMetas.map(field => ({
       label: field.name,
@@ -46,12 +42,12 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   }, [filterFieldMetas]);
 
   const filterFieldMeta = useMemo(
-    () => filterFieldMetas.find(f => f.key === filterKey),
-    [filterFieldMetas, filterKey],
+    () => filterFieldMetas.find(f => f.key === compare.source),
+    [filterFieldMetas, compare.source],
   );
 
   const filterOperations = useMemo(() => {
-    let compareOperation: CompareOP[] = [
+    let compareOperation: UniteCompareOP[] = [
       CompareOP.EQ,
       CompareOP.NE,
       CompareOP.IN,
@@ -59,17 +55,26 @@ export const CompareOperation: FC<CompareOperationProps> = ({
     ];
     switch (filterFieldMeta?.type) {
       case BusinessFieldType.NUMBER:
-      case BusinessFieldType.DATE:
-      case BusinessFieldType.DATETIME:
-        compareOperation = [
+        return compareOperationData([
           CompareOP.EQ,
           CompareOP.NE,
           CompareOP.GT,
           CompareOP.LT,
           CompareOP.GTE,
           CompareOP.LTE,
-        ];
-        return compareOperationData(compareOperation);
+        ]);
+      case BusinessFieldType.DATE:
+      case BusinessFieldType.DATETIME:
+        return compareOperationData([
+          DateCompareOP.UNIT_DATE_RANGE,
+          DateCompareOP.BETWEEN,
+          CompareOP.EQ,
+          CompareOP.NE,
+          CompareOP.GT,
+          CompareOP.LT,
+          CompareOP.GTE,
+          CompareOP.LTE,
+        ]);
       case BusinessFieldType.STRING:
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
@@ -86,7 +91,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
     }
   }, [filterFieldMeta]);
 
-  function compareOperationData(compareOperation: CompareOP[]) {
+  function compareOperationData(compareOperation: UniteCompareOP[]) {
     return compareOperation.map(op => {
       return {
         label: get(localeData.lang, `compareOperation.${op}`),
@@ -96,14 +101,15 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   }
 
   const multiple = useMemo(
-    () => filterOperation === CompareOP.IN || filterOperation === CompareOP.NIN,
-    [filterOperation],
+    () =>
+      compare.op === CompareOP.IN ||
+      compare.op === CompareOP.NIN ||
+      compare.op === DateCompareOP.BETWEEN,
+    [compare.op],
   );
 
   const onKeyChange = useCallback(
     (source: string) => {
-      setFilterKey(source);
-      setFilterValue(undefined);
       onChange(
         update(compare, {
           target: { $set: undefined },
@@ -111,34 +117,45 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         }),
       );
     },
-    [onChange, compare, filterKey, filterFieldMeta, filterOperation],
+    [onChange, compare, filterFieldMeta],
   );
 
   const onOperationChange = useCallback(
     (op: UniteCompareOP) => {
-      setFilterOperation(op);
-      onChange(update(compare, { op: { $set: op } }));
+      if (
+        compare.op === DateCompareOP.UNIT_DATE_RANGE ||
+        compare.op === DateCompareOP.BETWEEN ||
+        op === DateCompareOP.UNIT_DATE_RANGE ||
+        op === DateCompareOP.BETWEEN
+      ) {
+        onChange(
+          update(compare, { op: { $set: op }, target: { $set: undefined } }),
+        );
+      } else {
+        onChange(update(compare, { op: { $set: op } }));
+      }
     },
-    [onChange, compare, filterKey, filterFieldMeta, filterValue],
+    [compare],
   );
 
   const onValueChange = useCallback(
     (value: any) => {
-      if (value === filterValue) return;
-      setFilterValue(value);
+      if (value === compare.target) return;
       onChange(update(compare, { target: { $set: value } }));
     },
     [compare, onChange],
   );
 
-  const FilterValue = useMemo(() => {
+  const filterValueInput = useMemo(() => {
+    console.log('filterValueInput', filterFieldMeta);
     return filterFieldMeta ? (
       <FilterValueInput
-        value={filterValue}
+        value={compare.target}
         multiple={multiple}
-        filterField={filterFieldMeta}
-        filterFieldService={filterFieldService}
+        fieldMeta={filterFieldMeta}
+        fieldMetaService={filterFieldService}
         onChange={onValueChange}
+        operation={compare.op}
         style={inputStyle}
       />
     ) : (
@@ -148,13 +165,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         style={inputStyle}
       />
     );
-  }, [filterValue, filterFieldMeta, multiple, onValueChange]);
-
-  useEffect(() => {
-    setFilterKey(compare.source);
-    setFilterOperation(compare.op);
-    setFilterValue(compare.target);
-  }, [compare]);
+  }, [filterFieldMeta, multiple, compare, onValueChange]);
 
   return (
     <div className="tbox-filter-compare">
@@ -162,7 +173,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         <Form.Item>
           <Select
             style={{ width: '154px' }}
-            value={filterKey}
+            value={compare.source}
             options={fieldOptions}
             placeholder={get(localeData.lang, 'filed.placeholderOp.select')}
             onChange={onKeyChange}
@@ -170,14 +181,14 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         </Form.Item>
         <Form.Item>
           <Select
-            style={{ width: '84px' }}
-            value={filterOperation}
+            style={{ width: '92px' }}
+            value={compare.op}
             options={filterOperations}
             onChange={onOperationChange}
             showArrow={false}
           />
         </Form.Item>
-        <Form.Item>{FilterValue}</Form.Item>
+        <Form.Item>{filterValueInput}</Form.Item>
         <Form.Item style={{ marginRight: 0 }}>
           <Button type="text" onClick={remove} icon={<CloseLine />}></Button>
         </Form.Item>

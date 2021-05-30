@@ -1,8 +1,8 @@
-import { default as zhCN } from './zh_CN';
+import { default as zh_CN } from './zh_CN';
 import { DateFilterLocale } from '../interface';
 
 const locales: Record<string, DateFilterLocale> = {
-  zhCN,
+  zh_CN,
 };
 
 export default locales;

@@ -181,17 +181,13 @@ const FilterSearch: FC<IFilterSearchProps> = ({
         </Form.Item>
         {simpleFilterKeys.map((key, idx) => {
           const fieldMeta = filterFieldMetas.find(field => field.key === key);
-          const flag = fieldMeta?.type === 'searchIcon';
-          let singleMode = true;
-          if (flag) singleMode = simpleFilterKeys.length === idx + 1;
           return fieldMeta ? (
             <Form.Item key={idx}>
               <FilterValueInput
                 value={filterValue(fieldMeta)}
-                filterFieldService={filterFieldService}
+                fieldMetaService={filterFieldService}
                 multiple={false}
-                singleMode={singleMode}
-                filterField={fieldMeta}
+                fieldMeta={fieldMeta}
                 onChange={value => onValueChange(value, fieldMeta)}
                 style={inputStyle}
               />

@@ -1,5 +1,6 @@
-import React, { CSSProperties, FC } from 'react';
+import React, { CSSProperties, FC, useContext, useMemo } from 'react';
 import { Select } from 'antd';
+import LocaleContext from 'antd/lib/locale-provider/context';
 import locales from './locales';
 import { DateFilterValueType } from './interface';
 import { optionGroups } from './config';
@@ -12,10 +13,10 @@ export interface DateFilterProps<T> {
   style?: CSSProperties;
   className?: string;
   placeholder?: string;
-  localeName?: string;
+  locale?: string;
 }
 
-export function getText(labelValue: string, localeName = 'zhCN') {
+export function getText(labelValue: string, localeName = 'zh_CN') {
   const text = locales[localeName].lang[labelValue];
   return text || labelValue;
 }
@@ -26,8 +27,14 @@ const DateFilter: FC<DateFilterProps<DateFilterValueType>> = ({
   style,
   className,
   placeholder,
-  localeName = 'zhCN',
+  locale = 'zh_CN',
 }) => {
+  const antLocale = useContext(LocaleContext);
+  const localeName = useMemo(
+    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
+    [antLocale],
+  );
+
   return (
     <Select
       value={value}
