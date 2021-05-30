@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { FieldMeta } from './interface';
 import { LogicOP, ICompareOperation } from './filter';
 
 export enum BusinessFieldTypeWild {
@@ -40,7 +39,7 @@ export interface SimpleNode {
   disabled?: boolean;
 }
 
-export interface FieldService extends FieldMeta {
+export interface FieldService {
   findOptions: (key: string, name: string) => Promise<OptionValueType[]>;
   findOfValues: (
     key: string,
