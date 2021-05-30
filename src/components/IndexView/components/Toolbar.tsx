@@ -5,7 +5,7 @@ import {
   default as FilterSearch,
   IFilterSearchProps,
   FilterType,
-} from '../../FilterSearch';
+} from '../../FilterSearch/components/FilterSearch';
 import { default as FilterTags } from '../../FilterTags';
 import { IFieldMeta, BusinessFieldTypeWild } from '../../../types';
 

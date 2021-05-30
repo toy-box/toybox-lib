@@ -15,7 +15,7 @@ import {
   UniteCompareOP,
 } from '../../../types/';
 
-const inputStyle = { width: '240px' };
+const inputStyle = { width: '320px' };
 
 export interface CompareOperationProps {
   filterFieldMetas: FieldMeta[];
@@ -147,7 +147,6 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const filterValueInput = useMemo(() => {
-    console.log('filterValueInput', filterFieldMeta);
     return filterFieldMeta ? (
       <FilterValueInput
         value={compare.target}

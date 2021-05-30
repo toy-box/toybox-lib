@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
   useContext,
+  CSSProperties,
 } from 'react';
 import { InputNumber } from 'antd';
 import { SelectValue } from 'antd/lib/select';
@@ -47,7 +48,7 @@ export interface FilterValueInputProps {
   value?: any;
   multiple?: boolean;
   onChange: (value: any, text?: string[]) => void;
-  style?: any;
+  style?: CSSProperties;
   mode?: 'read' | 'edit' | 'update';
   fieldMetaService?: FieldService;
   locale?: string;
@@ -84,7 +85,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   );
 
   const inputType = useMemo(() => {
-    console.log('fieldMeta', fieldMeta);
     switch (fieldMeta.type) {
       case BusinessFieldType.STRING:
         return 'stirng';
@@ -252,6 +252,12 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
                   : [];
                 handleValue(doValue, doValues);
               }}
+              style={style}
+              showTime={
+                fieldMeta.type === BusinessFieldType.DATETIME
+                  ? { format: 'HH:mm' }
+                  : false
+              }
             />
           );
         }

@@ -12,7 +12,7 @@ export { default as TabContainer } from './TabContainer';
 export { default as TimePicker } from './TimePicker';
 export { default as DropdownMenu } from './DropdownMenu';
 export { default as FilterTag } from './FilterTag';
-export { default as FilterSearch } from './FilterSearch';
+export { default as FilterSearch, FilterContainer } from './FilterSearch';
 export { FilterBuilder, MultiFilterBuilder } from './FilterBuilder';
 export { default as FilterTags } from './FilterTags';
 export { default as Fields } from './Fields';

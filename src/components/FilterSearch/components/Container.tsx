@@ -13,7 +13,7 @@ import { ICompareOperation, FieldService } from '../../../types';
 import localeMap from '../locale';
 import { FilterBuilder } from '../../FilterBuilder';
 import { FieldMeta } from '../../../types/interface';
-import { FilterType } from '..';
+import { FilterType } from './FilterSearch';
 
 export interface IFilterContainerProps {
   filterFieldMetas: FieldMeta[];
@@ -25,17 +25,17 @@ export interface IFilterContainerProps {
 }
 
 const FilterSetupWrapper = styled.div`
-  width: 620px;
+  width: 680px;
   padding: 12px 0;
   h3 {
-    padding: 0 16px;
+    padding: 0 8px;
   }
 `;
 
 const FilterSetupItemsWrapper = styled.div`
   height: 420px;
   overflow: auto;
-  padding: 0 16px;
+  padding: 0 8px;
 `;
 
 const ButtonPanelWrapper = styled.div`

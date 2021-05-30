@@ -29,7 +29,7 @@ import {
   ICompareOperation,
   LogicOP,
 } from '../../types';
-import { FilterType } from '../FilterSearch';
+import { FilterType } from '../FilterSearch/components/FilterSearch';
 import { QueryFilter } from '../../hooks/useQueryFilter';
 
 import './style.less';

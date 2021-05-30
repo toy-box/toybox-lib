@@ -105,7 +105,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         open={open}
         style={{ width: '100%' }}
         mode={dateMode}
-        showTime={showTime}
+        showTime={showTime ? { format: 'HH:mm' } : false}
         onOpenChange={onOpenChange}
         {...fieldProps}
       />
