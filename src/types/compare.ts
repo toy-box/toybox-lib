@@ -31,12 +31,22 @@ declare interface OptionValueType {
   value: string | number;
 }
 
+export interface SimpleNode {
+  id: string | number;
+  pId: string | number;
+  title: ReactNode;
+  value: string | number;
+  disabled?: boolean;
+}
+
 export interface FieldService extends FieldMeta {
   findOptions: (key: string, name: string) => Promise<OptionValueType[]>;
   findOfValues: (
     key: string,
     value: (string | number)[],
   ) => Promise<OptionValueType[]>;
-  findDataTrees: (key: string, parentId: string | number) => Promise<void>;
-  findOtherData: (field: FieldMeta) => Promise<void>;
+  findDataTrees: (
+    key: string,
+    parentId: string | number,
+  ) => Promise<SimpleNode[]>;
 }

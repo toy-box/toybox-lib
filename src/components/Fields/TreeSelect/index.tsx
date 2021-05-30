@@ -18,6 +18,7 @@ import {
 } from 'rc-tree-select/lib/interface';
 import { BaseFieldProps } from '../interface';
 import { makeArray } from '../../../utils';
+import { SimpleNode } from '../../../types';
 
 export interface LabeledValue extends AntLabeledValue {
   disabled?: boolean;
@@ -25,14 +26,6 @@ export interface LabeledValue extends AntLabeledValue {
 
 export declare type LabeledValueType = LabeledValue | LabeledValue[];
 export declare type DefaultValueType = RawValueType | RawValueType[];
-
-export interface SimpleNode {
-  id: string | number;
-  pId: string | number;
-  title: ReactNode;
-  value: string | number;
-  disabled?: boolean;
-}
 
 export interface FieldTreeSelectProps<ValueType = DefaultValueType>
   extends Omit<BaseFieldProps, 'value' | 'onChange' | 'onClick'>,
