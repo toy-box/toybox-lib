@@ -2,108 +2,108 @@ import { DateFilterUnitTypeGroup } from './interface';
 
 export const optionGroups: DateFilterUnitTypeGroup[] = [
   {
-    group: 'day',
+    group: 'DAY',
     options: [
       {
-        labelValue: 'TODAY',
+        labelValue: 'DAY:0:0',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 0,
           end: 0,
         },
       },
       {
-        labelValue: 'YESTODAY',
+        labelValue: 'DAY:-1:-1',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: -1,
           end: -1,
         },
       },
       {
-        labelValue: 'TOMORROW',
+        labelValue: 'DAY:1:1',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 1,
           end: 1,
         },
       },
       {
-        labelValue: 'LAST_DAYS:7',
+        labelValue: 'DAY:-6:0',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: -6,
           end: 0,
         },
       },
       {
-        labelValue: 'LAST_DAYS:30',
+        labelValue: 'DAY:-29:0',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: -29,
           end: 0,
         },
       },
       {
-        labelValue: 'LAST_DAYS:60',
+        labelValue: 'DAY:-59:0',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: -59,
           end: 0,
         },
       },
       {
-        labelValue: 'LAST_DAYS:90',
+        labelValue: 'DAY:-89:0',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: -89,
           end: 0,
         },
       },
       {
-        labelValue: 'LAST_DAYS:120',
+        labelValue: 'DAY:-119:0',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: -119,
           end: 0,
         },
       },
       {
-        labelValue: 'NEXT_DAYS:7',
+        labelValue: 'DAY:0:6',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 0,
           end: 6,
         },
       },
       {
-        labelValue: 'NEXT_DAYS:30',
+        labelValue: 'DAY:0:29',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 0,
           end: 29,
         },
       },
       {
-        labelValue: 'NEXT_DAYS:60',
+        labelValue: 'DAY:0:59',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 0,
           end: 59,
         },
       },
       {
-        labelValue: 'NEXT_DAYS:90',
+        labelValue: 'DAY:0:89',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 0,
           end: 89,
         },
       },
       {
-        labelValue: 'NEXT_DAYS:120',
+        labelValue: 'DAY:0:119',
         value: {
-          unit: 'day',
+          unit: 'DAY',
           begin: 0,
           end: 119,
         },
@@ -111,45 +111,74 @@ export const optionGroups: DateFilterUnitTypeGroup[] = [
     ],
   },
   {
-    group: 'month',
+    group: 'MONTH',
     options: [
       {
-        labelValue: 'CURRENT_MONTH',
+        labelValue: 'MONTH:0:0',
         value: {
-          unit: 'month',
+          unit: 'MONTH',
           begin: 0,
           end: 0,
         },
       },
       {
-        labelValue: 'LAST_MONTH',
+        labelValue: 'MONTH:-1:-1',
         value: {
-          unit: 'month',
+          unit: 'MONTH',
           begin: -1,
           end: -1,
         },
       },
       {
-        labelValue: 'NEXT_MONTH',
+        labelValue: 'MONTH:1:1',
         value: {
-          unit: 'month',
+          unit: 'MONTH',
           begin: 1,
           end: 1,
         },
       },
       {
-        labelValue: 'LAST_MONTHS:2',
+        labelValue: 'MONTH:-1:0',
         value: {
-          unit: 'month',
+          unit: 'MONTH',
           begin: -1,
           end: 0,
         },
       },
       {
-        labelValue: 'NEXT_MONTHS:2',
+        labelValue: 'MONTH:0:1',
         value: {
-          unit: 'month',
+          unit: 'MONTH',
           begin: 0,
+          end: 1,
+        },
+      },
+    ],
+  },
+  {
+    group: 'YEAR',
+    options: [
+      {
+        labelValue: 'YEAR:0:0',
+        value: {
+          unit: 'YEAR',
+          begin: 0,
+          end: 0,
+        },
+      },
+      {
+        labelValue: 'YEAR:-1:-1',
+        value: {
+          unit: 'YEAR',
+          begin: -1,
+          end: -1,
+        },
+      },
+      {
+        labelValue: 'YEAR:1:1',
+        value: {
+          unit: 'YEAR',
+          begin: 1,
           end: 1,
         },
       },
