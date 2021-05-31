@@ -46,9 +46,9 @@ const DateFilter: FC<DateFilterProps<DateFilterValueType>> = ({
       placeholder={placeholder || getText('placeholder')}
     >
       {optionGroups.map((optGroup, index) => (
-        <OptGroup label={getText(optGroup.group)} key={index}>
+        <OptGroup label={getText(optGroup.group)} key={optGroup.group}>
           {optGroup.options.map((opt, idx) => (
-            <Option value={opt.labelValue} key={idx}>
+            <Option value={opt.labelValue} key={opt.labelValue}>
               {getText(opt.labelValue)}
             </Option>
           ))}
