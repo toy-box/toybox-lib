@@ -190,6 +190,7 @@ export default () => {
 
   return (
     <MetaTable
+      resizableTitle
       dataSource={data}
       columnMetas={columnMetas}
       operateItems={[

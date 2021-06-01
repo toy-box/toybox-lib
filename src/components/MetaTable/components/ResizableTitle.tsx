@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { Resizable, ResizableProps, ResizeCallbackData } from 'react-resizable';
+import { Resizable, ResizableProps } from 'react-resizable';
 export { ResizeCallbackData } from 'react-resizable';
+
 declare type ResizableTitleProps = Pick<ResizableProps, 'onResize'> & {
   width: number;
   [key: string]: any;
@@ -11,9 +12,9 @@ const ResizableTitle: FC<ResizableTitleProps> = ({
   width,
   ...restProps
 }) => {
-  if (!width) {
-    return <th {...restProps} />;
-  }
+  // if (!width) {
+  //   return <th {...restProps} />;
+  // }
 
   return (
     <Resizable

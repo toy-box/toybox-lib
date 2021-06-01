@@ -113,7 +113,7 @@ const MetaTable: FC<MetaTableProps> = ({
   rowClassName,
 }) => {
   const [columnWidths, setColumnWidths] = useState<number[]>(
-    Array(columnMetas.length).fill(100),
+    Array(columnMetas.length).fill(resizableTitle ? 100 : undefined),
   );
 
   const mergeRenders = useMemo(() => {
@@ -177,7 +177,7 @@ const MetaTable: FC<MetaTableProps> = ({
   );
 
   const makeColumns = useCallback(
-    (columnMetas: ColumnMeta[], columnWidths: number[]) => {
+    (columnMetas: ColumnMeta[]) => {
       const columns: ColumnsType<Record<string, any>> = columnMetas.map(
         (columnMeta, index) => {
           return {
@@ -185,7 +185,7 @@ const MetaTable: FC<MetaTableProps> = ({
             title: columnMeta.name,
             dataIndex: columnMeta.key,
             align: columnMeta.align,
-            width: columnWidths[index] || columnMeta.width,
+            width: columnWidths[index],
             render: (text, record, index) => {
               const MetaRender = metaRender(
                 columnMeta,
@@ -214,11 +214,11 @@ const MetaTable: FC<MetaTableProps> = ({
       );
       return columns;
     },
-    [mergeRenders, posIndexes],
+    [mergeRenders, columnWidths, posIndexes],
   );
 
   const columns = useMemo(() => {
-    const columns = makeColumns(innerColumnMetas, columnWidths);
+    const columns = makeColumns(innerColumnMetas);
     if (operateItems != null && operateItems.length > 0) {
       columns.push({
         key: 'meta-table-operate',
@@ -226,6 +226,7 @@ const MetaTable: FC<MetaTableProps> = ({
         dataIndex: 'meta-table-operate',
         align: 'right',
         render: operateFactory(operateItems, OperateDropdown),
+        width: 100,
       });
     }
     return columns;
