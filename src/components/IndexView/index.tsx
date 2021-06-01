@@ -20,7 +20,7 @@ import { FieldType } from '../Fields/interface';
 import { RowData } from '../../types/interface';
 import { useQueryFilter } from '../../hooks';
 import TablePanel from './components/TablePanel';
-import Toolbar from './components/Toolbar';
+import IndexViewToolbar from './components/IndexViewToolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
 import {
@@ -33,6 +33,7 @@ import { FilterType } from '../FilterSearch/components/FilterSearch';
 import { QueryFilter } from '../../hooks/useQueryFilter';
 
 import './style.less';
+import { ButtonItem } from '../ButtonGroup';
 
 const LIST_RENDER = 'listRender';
 
@@ -93,6 +94,10 @@ export interface IndexViewProps {
    * @description 条件筛选配置
    */
   filterSearch?: FilterSearch;
+  /**
+   * @description 操作按钮
+   */
+  buttonItems?: ButtonItem[];
 }
 
 export interface ColumnVisible {
@@ -121,6 +126,7 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     loadData,
     urlQuery,
     filterSearch,
+    buttonItems,
   },
   ref: Ref<any>,
 ) => {
@@ -371,10 +377,11 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
   return (
     <IndexViewContext.Provider value={content}>
       <div className={classNames('tbox-index-view', className)} style={style}>
-        <Toolbar
+        <IndexViewToolbar
           filterSearch={filterSearchProps}
           onFilterChange={handleFilterChange}
           filterValue={simpleFilter as ICompareOperation[]}
+          buttonItems={buttonItems}
         />
         <TablePanel />
         <IndexContent />

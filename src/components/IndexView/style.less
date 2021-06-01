@@ -1,8 +1,11 @@
+@import '../../styles/theme.less';
+
 .tbox-index-view {
   &-panel {
     display: flex;
     font-size: 12px;
-    margin: 2px 0;
+    margin: 4px 0;
+    color: fade(@black, 45%);
     &.left {
       justify-content: flex-start;
     }
@@ -11,7 +14,7 @@
     }
   }
   &-toolbar {
-    margin: 12px 0;
+    margin: 8px 0;
     &-main {
       display: flex;
       justify-content: space-between;
@@ -24,7 +27,7 @@
       }
     }
     &-footer {
-      margin-top: 12px;
+      margin-top: 8px;
     }
   }
 }

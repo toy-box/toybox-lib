@@ -44,7 +44,7 @@ const TablePanel: FC<TablePanelProps> = ({
           }
           multiple
         >
-          <Button.Icon icon={<LayoutColumnLine />} />
+          <Button.Icon size="small" icon={<LayoutColumnLine />} />
         </SortableSelect>
       );
     }

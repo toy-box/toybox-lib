@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import update from 'immutability-helper';
-import { Button } from '../../';
+import { Button } from '../..';
 import {
   default as FilterSearch,
   IFilterSearchProps,
@@ -8,17 +8,21 @@ import {
 } from '../../FilterSearch/components/FilterSearch';
 import { default as FilterTags } from '../../FilterTags';
 import { IFieldMeta, BusinessFieldTypeWild } from '../../../types';
+import Toolbar from '../../Toolbar';
+import { default as ButtonGroup, ButtonItem } from '../../ButtonGroup';
 
-export declare interface ToolbarProps {
+export declare interface IndexViewToolbarProps {
   filterSearch?: Omit<IFilterSearchProps, 'value'>;
   filterValue?: FilterType;
   onFilterChange?: (value?: FilterType) => void;
+  buttonItems?: ButtonItem[];
 }
 
-const Toolbar: FC<ToolbarProps> = ({
+const IndexViewToolbar: FC<IndexViewToolbarProps> = ({
   filterSearch,
   filterValue = [],
   onFilterChange,
+  buttonItems = [],
 }) => {
   const removeTag = useCallback(
     index =>
@@ -67,19 +71,18 @@ const Toolbar: FC<ToolbarProps> = ({
   return (
     <div className="tbox-index-view-toolbar">
       <div className="tbox-index-view-toolbar-main">
-        <div className="tbox-index-view-toolbar-main-left">
-          {filterSearch && (
-            <FilterSearch
-              {...filterSearch}
-              value={filterValue}
-              onChange={handleChange}
-            />
-          )}
-        </div>
-        <div className="tbox-index-view-toolbar-main-right button-group">
-          <Button type="primary">新建</Button>
-          <Button>其他</Button>
-        </div>
+        <Toolbar
+          left={
+            filterSearch && (
+              <FilterSearch
+                {...filterSearch}
+                value={filterValue}
+                onChange={handleChange}
+              />
+            )
+          }
+          right={<ButtonGroup items={buttonItems} />}
+        />
       </div>
       <div className="tbox-index-view-toolbar-footer">
         {filterSearch && (
@@ -94,4 +97,4 @@ const Toolbar: FC<ToolbarProps> = ({
   );
 };
 
-export default Toolbar;
+export default IndexViewToolbar;

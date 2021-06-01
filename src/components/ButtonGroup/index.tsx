@@ -25,7 +25,7 @@ const ButtonGroup: FC<ButtonGroupProps> = ({ items, max = 3 }) => {
   const overSize = useMemo(() => items.length > max, []);
 
   const visiableItems = useMemo(
-    () => (overSize ? items.filter((item, idx) => idx < max) : items),
+    () => (overSize ? items.filter((item, idx) => idx < max - 1) : items),
     [],
   );
 
@@ -33,7 +33,7 @@ const ButtonGroup: FC<ButtonGroupProps> = ({ items, max = 3 }) => {
     () =>
       overSize
         ? items
-            .filter((item, idx) => idx >= max)
+            .filter((item, idx) => idx >= max - 1)
             .map(
               item =>
                 ({

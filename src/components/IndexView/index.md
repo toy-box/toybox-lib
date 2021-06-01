@@ -5,6 +5,7 @@
 ```tsx
 import React, { useCallback, useMemo } from 'react';
 import { IndexView } from '@toy-box/toybox-lib';
+import { HeartAddLine, DeleteBinLine } from '@airclass/icons';
 import 'antd/dist/antd.css';
 
 const objectMeta = {
@@ -221,6 +222,24 @@ export default () => {
       objectMeta={objectMeta}
       loadData={loadData}
       filterSearch={filterSearch}
+      buttonItems={[
+        {
+          text: '新建',
+          type: 'primary',
+          icon: <HeartAddLine />,
+        },
+        {
+          text: '选择',
+        },
+        {
+          text: '其他操作',
+        },
+        {
+          text: '删除',
+          danger: true,
+          icon: <DeleteBinLine />,
+        },
+      ]}
       visibleColumnSet
       urlQuery
     />

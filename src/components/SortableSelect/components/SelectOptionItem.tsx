@@ -1,6 +1,6 @@
-import React, { FC, useCallback, useContext, useMemo } from 'react';
+import React, { FC, ReactNode, useCallback, useContext, useMemo } from 'react';
 import classNames from 'classnames';
-import { MenuLine, CheckLine } from '@airclass/icons';
+import { MenuFill, CheckLine } from '@airclass/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import { SelectItem } from '../interface';
 import SortableSelectContext from '../context';
@@ -41,7 +41,7 @@ const SelectOptionItem: FC<SelectOptionItemProps> = ({
           })}
           onClick={handleCheck}
         >
-          <MenuLine {...provided.dragHandleProps} className="drag-handle" />
+          <MenuFill {...provided.dragHandleProps} className="drag-handle" />
           <div className="select-item__label">{label}</div>
           <CheckLine className={classNames('selec-item__check', { checked })} />
         </li>
