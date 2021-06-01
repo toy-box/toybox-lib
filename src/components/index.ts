@@ -18,6 +18,7 @@ export { default as FilterTags } from './FilterTags';
 export { default as Fields } from './Fields';
 export { default as Header } from './Header';
 export { default as ImpInput } from './ImpInput';
+export * from './Layout';
 export { default as Inbox } from './Inbox';
 export { default as IndexPage } from './IndexPage';
 export { default as IndexView } from './IndexView';

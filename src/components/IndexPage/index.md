@@ -118,6 +118,7 @@ export default () => {
 
   return (
     <IndexPage
+      style={{ minWidth: '600px' }}
       visibleColumns={visibleColumns}
       objectMeta={objectMeta}
       loadData={loadData}
@@ -248,6 +249,7 @@ export default () => {
 
   return (
     <IndexPage
+      style={{ minWidth: '600px' }}
       visibleColumns={visibleColumns}
       objectMeta={objectMeta}
       loadData={loadData}
@@ -378,6 +380,7 @@ export default () => {
   return (
     <div>
       <IndexPage
+        style={{ minWidth: '600px' }}
         visibleColumns={visibleColumns}
         selectionToggle={selectionToggle}
         objectMeta={objectMeta}
@@ -534,6 +537,7 @@ export default () => {
 
   return (
     <IndexPage
+      style={{ minWidth: '600px' }}
       visibleColumns={visibleColumns}
       objectMeta={objectMeta}
       loadData={loadData}
@@ -672,6 +676,7 @@ export default () => {
 
   return (
     <IndexPage
+      style={{ minWidth: '600px' }}
       visibleColumns={visibleColumns}
       objectMeta={objectMeta}
       loadData={loadData}

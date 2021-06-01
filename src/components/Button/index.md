@@ -4,10 +4,18 @@
 
 ```tsx
 import React from 'react';
+import { Space } from 'antd';
+import { ArrowLeftSLine } from '@airclass/icons';
 import { Button } from '@toy-box/toybox-lib';
 import 'antd/dist/antd.css';
 
-export default () => <Button tooltip="tooltip">this is a button</Button>;
+export default () => (
+  <Space>
+    <Button tooltip="tooltip">this is a button</Button>
+    <Button icon={<ArrowLeftSLine />} />
+    <Button>Normal button</Button>
+  </Space>
+);
 ```
 
 #### 图标按钮

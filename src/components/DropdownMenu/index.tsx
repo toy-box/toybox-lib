@@ -1,14 +1,16 @@
-import React, { FC, Fragment, ReactNode, useCallback, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { Dropdown, Menu } from 'antd';
 import { MoreFill } from '@airclass/icons';
 import { DropDownProps } from 'antd/lib/dropdown';
-import { default as Button } from '../Button';
+import { ButtonProps, default as Button } from '../Button';
 
-export interface DropdownMenuProps extends Omit<DropDownProps, 'overlay'> {
+export type DropdownMenuProps = Omit<DropDownProps, 'overlay'> & {
   items: MeunBaseItem[];
-}
+} & Pick<ButtonProps, 'type'>;
 
-export type MeunBaseItem = MenuItem | MenuSub | MenuDivider;
+export declare type MeunBaseItem = MenuItem | MenuSub | MenuDivider;
+
+export declare type MenuItemType = 'item' | 'subMenu' | 'divider';
 
 export interface MenuItem {
   type: 'item';
@@ -17,7 +19,7 @@ export interface MenuItem {
   color?: string;
   danger?: boolean;
   disabled?: boolean;
-  callback: (...args: any) => void;
+  callback?: (...args: any) => void;
 }
 
 export interface MenuDivider {
@@ -34,7 +36,12 @@ export interface MenuSub {
   items: MeunBaseItem[];
 }
 
-const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
+const DropdownMenu: FC<DropdownMenuProps> = ({
+  items,
+  type,
+  children,
+  ...props
+}) => {
   const menu = useMemo(() => {
     return (
       <Menu>
@@ -83,7 +90,7 @@ const DropdownMenu: FC<DropdownMenuProps> = ({ items, children, ...props }) => {
 
   return (
     <Dropdown overlay={menu} {...props}>
-      {children || <Button type="text" icon={<MoreFill />} />}
+      {children || <Button type={type} icon={<MoreFill />} />}
     </Dropdown>
   );
 };

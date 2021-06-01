@@ -18,8 +18,8 @@ import {
   LayoutColumnLine,
 } from '@airclass/icons';
 import useAntdTable from '../hooks/useTable';
-import { ContentWrapper } from './ContentWrapper';
 import MetaTable from '../../MetaTable';
+import { Page, PageWithHeader } from '../../Layout';
 import { default as Panel, PanelItem, PanelItemProps } from '../../Panel';
 import { BusinessObjectMeta } from '../../../types/interface';
 import { OperateItem } from '../../MetaTable/components/OperateColumn';
@@ -53,7 +53,7 @@ export type IndexMode = 'table' | 'list' | 'card';
 
 export interface IndexPageProps {
   objectMeta: BusinessObjectMeta;
-  title?: string;
+  header?: ReactNode;
   subTitle?: string;
   operateItems?: OperateItem[];
   operateHeader?: ReactNode;
@@ -97,8 +97,7 @@ export type IndexPagePanelItemProps = PanelItemProps & {
 
 const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   {
-    title,
-    subTitle,
+    header,
     objectMeta,
     operateItems,
     operateHeader,
@@ -414,17 +413,11 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   ]);
 
   return (
-    <div
-      className={classNames('tbox-page', 'tbox-index-page', className)}
-      style={style}
-    >
-      {title && <PageHeader title={title} subTitle={subTitle} />}
+    <PageWithHeader header={header} className={className} style={style}>
       {advanceSearch}
-      <ContentWrapper>
-        {tablePanel}
-        <IndexContent />
-      </ContentWrapper>
-    </div>
+      {tablePanel}
+      <IndexContent />
+    </PageWithHeader>
   );
 };
 
