@@ -56,6 +56,10 @@ export interface FilterSearch {
   filterFieldService?: FieldService;
 }
 
+export interface IndexButtonItem extends ButtonItem {
+  selection?: boolean;
+}
+
 export interface IndexViewProps {
   objectMeta: BusinessObjectMeta;
   operateItems?: OperateItem[];
@@ -92,7 +96,7 @@ export interface IndexViewProps {
   /**
    * @description 操作按钮
    */
-  buttonItems?: ButtonItem[];
+  buttonItems?: IndexButtonItem[];
 }
 
 const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
@@ -159,6 +163,7 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     [],
   );
   const [selectedRows, setSelectedRows] = useState<RowData[]>([]);
+  const selected = useMemo(() => selectedRows.length > 0, [selectedRows]);
   const [selectionType, setSelectionType] = useState(defaultSelectionType);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
 
@@ -361,6 +366,13 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
       : undefined;
   }, []);
 
+  const buttons = useMemo(() => {
+    return (buttonItems || []).map(item => ({
+      ...item,
+      disabled: item.selection && !selected ? true : item.disabled,
+    }));
+  }, [buttonItems, selected]);
+
   return (
     <IndexViewContext.Provider value={content}>
       <div className={classNames('tbox-index-view', className)} style={style}>
@@ -368,7 +380,7 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
           filterSearch={filterSearchProps}
           onFilterChange={handleFilterChange}
           filterValue={simpleFilter as ICompareOperation[]}
-          buttonItems={buttonItems}
+          buttonItems={buttons}
         />
         <TablePanel />
         <IndexContent />

@@ -26,7 +26,7 @@ const ButtonGroup: FC<ButtonGroupProps> = ({ items, max = 3 }) => {
 
   const visiableItems = useMemo(
     () => (overSize ? items.filter((item, idx) => idx < max - 1) : items),
-    [],
+    [overSize, items, max],
   );
 
   const dropDownItems = useMemo(
@@ -42,7 +42,7 @@ const ButtonGroup: FC<ButtonGroupProps> = ({ items, max = 3 }) => {
                 } as MenuItem),
             )
         : [],
-    [],
+    [overSize, items, max],
   );
 
   const dropDownRender = useMemo(

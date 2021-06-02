@@ -359,6 +359,18 @@ const visibleColumns = [
   },
 ];
 
+const buttonItems = [
+  {
+    text: 'Create',
+    type: 'primary',
+  },
+  {
+    text: 'Delete All',
+    danger: true,
+    selection: true,
+  },
+];
+
 export default () => {
   const [selectionToggle, setSelectionToggle] = useState(true);
   const loadData = () => {
@@ -385,6 +397,7 @@ export default () => {
         selectionToggle={selectionToggle}
         objectMeta={objectMeta}
         loadData={loadData}
+        buttonItems={buttonItems}
       />
     </div>
   );
@@ -507,31 +520,18 @@ export default () => {
     return promise;
   };
 
-  const panelItems = [
+  const buttonItems = [
     {
-      type: 'button',
-      props: {
-        items: [
-          {
-            text: 'Create',
-            type: 'primary',
-          },
-        ],
-      },
+      text: 'Create',
+      type: 'primary',
     },
     {
-      type: 'dropdownMenu',
-      props: {
-        items: [
-          {
-            text: 'import',
-          },
-          {
-            text: 'bulkDelete',
-            danger: true,
-          },
-        ],
-      },
+      text: 'Other',
+    },
+    {
+      text: 'Delete All',
+      danger: true,
+      selection: true,
     },
   ];
 
@@ -541,7 +541,7 @@ export default () => {
       visibleColumns={visibleColumns}
       objectMeta={objectMeta}
       loadData={loadData}
-      panelItems={panelItems}
+      buttonItems={buttonItems}
     />
   );
 };

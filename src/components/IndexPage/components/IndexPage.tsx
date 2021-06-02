@@ -48,6 +48,10 @@ const LIST_RENDER = 'listRender';
 
 export type IndexMode = 'table' | 'list' | 'card';
 
+export interface IndexButtonItem extends ButtonItem {
+  selection?: boolean;
+}
+
 export interface IndexPageProps {
   objectMeta: BusinessObjectMeta;
   header?: ReactNode;
@@ -61,7 +65,7 @@ export interface IndexPageProps {
   };
   style?: any;
   panelItems?: IndexPagePanelItemProps[];
-  buttonItems?: ButtonItem[];
+  buttonItems?: IndexButtonItem[];
   mode?: IndexMode;
   viewMode?: IndexMode[];
   className?: string;
@@ -117,6 +121,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   );
   const [selectedRows, setSelectedRows] = useState<RowData[]>([]);
   const [selectionType, setSelectionType] = useState(defaultSelectionType);
+  const selected = useMemo(() => selectedRows.length > 0, [selectedRows]);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
   const [showAdvanceSearch, setShowAdvanceSearch] = useState(false);
 
@@ -159,6 +164,8 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     if (selectionType == null) {
       setSelectionType('checkbox');
     } else {
+      setSelectedRows([]);
+      setSelectedRowKeys([]);
       setSelectionType(undefined);
     }
   }, [selectionType]);
@@ -318,7 +325,6 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         dataSource={columns}
         value={visibleKeys}
         onChange={(keys: ValueType) => {
-          console.log('keys', keys);
           setVisibleKeys(keys as string[]);
         }}
         onSortEnd={setColumns}
@@ -333,7 +339,10 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
 
   const buttons = useMemo(() => {
     if (buttonItems != null) {
-      return buttonItems;
+      return buttonItems.map(item => ({
+        ...item,
+        disabled: item.selection && !selected ? true : item.disabled,
+      }));
     }
     if (panelItems) {
       const items: ButtonItem[] = [];
@@ -347,15 +356,9 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
       return items;
     }
     return [];
-  }, [buttonItems, panelItems]);
+  }, [selected]);
 
-  const rightPanel = useMemo(() => {
-    return (
-      <React.Fragment>
-        <ButtonGroup items={buttons} />
-      </React.Fragment>
-    );
-  }, [columnSet, panelItems, selectionType]);
+  const rightPanel = useMemo(() => <ButtonGroup items={buttons} />, [buttons]);
 
   const content = useMemo(
     () => ({
