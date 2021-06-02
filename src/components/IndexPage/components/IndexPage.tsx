@@ -7,7 +7,7 @@ import React, {
   ReactNode,
   ForwardRefRenderFunction,
 } from 'react';
-import { Form, Button, Dropdown, Menu } from 'antd';
+import { Form, Dropdown, Menu } from 'antd';
 import classNames from 'classnames';
 import {
   CheckboxMultipleLine,
@@ -19,35 +19,32 @@ import {
 } from '@airclass/icons';
 import useAntdTable from '../hooks/useTable';
 import MetaTable from '../../MetaTable';
-import { Page, PageWithHeader } from '../../Layout';
-import { default as Panel, PanelItem, PanelItemProps } from '../../Panel';
-import { BusinessObjectMeta } from '../../../types/interface';
+import { PageWithHeader } from '../../Layout';
+import { PanelItemProps } from '../../Panel';
+import {
+  RowData,
+  BusinessObjectMeta,
+  ColumnVisible,
+  Pageable,
+  PageResult,
+} from '../../../types/interface';
 import { OperateItem } from '../../MetaTable/components/OperateColumn';
 import IndexSearch from './IndexSearch';
-import PageHeader from '../../PageHeader';
+import Toolbar from '../../Toolbar';
 import { FieldType } from '../../Fields/interface';
 import { AdvanceSearch } from './advanceSearch';
-import { RowData } from '../../../types/interface';
 import { useQuery } from '../../../hooks';
 import { SearchFindParam } from './interface';
 import SortableSelect from '../../SortableSelect';
 import { SelectItem, ValueType } from '../../SortableSelect/interface';
+import Button from '@/components/Button';
+import ButtonGroup, { ButtonItem } from '@/components/ButtonGroup';
+import { TablePanel } from '@/components/IndexView/components';
+import IndexViewContext from '@/components/IndexView/context';
 
 import '../style.less';
 
 const LIST_RENDER = 'listRender';
-
-export interface PageResult {
-  list: Record<string, any>[];
-  total: number;
-  pageSize?: number;
-  current?: number;
-}
-
-export interface Pageable {
-  pageSize: number;
-  current: number;
-}
 
 export type IndexMode = 'table' | 'list' | 'card';
 
@@ -64,6 +61,7 @@ export interface IndexPageProps {
   };
   style?: any;
   panelItems?: IndexPagePanelItemProps[];
+  buttonItems?: ButtonItem[];
   mode?: IndexMode;
   viewMode?: IndexMode[];
   className?: string;
@@ -83,14 +81,6 @@ export interface IndexPageProps {
   viewLink?: (...arg: any) => string;
 }
 
-export interface ColumnVisible {
-  key: string;
-  fixed?: boolean;
-  align?: 'left' | 'right' | 'center';
-  component?: string;
-  visiable?: boolean;
-}
-
 export type IndexPagePanelItemProps = PanelItemProps & {
   selection?: boolean;
 };
@@ -104,6 +94,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     visibleColumns,
     visibleColumnSet,
     panelItems,
+    buttonItems,
     mode = 'table',
     viewMode,
     searchOption,
@@ -139,7 +130,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     [visibleColumns],
   );
 
-  const defaultDataSource = useMemo(() => {
+  const defaultColumns = useMemo(() => {
     return metaColumnKeys.map(key => {
       const column = objectMeta.properties[key];
       return {
@@ -149,7 +140,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     });
   }, [metaColumnKeys, objectMeta]);
 
-  const [dataSource, setDataSource] = useState<SelectItem[]>(defaultDataSource);
+  const [columns, setColumns] = useState<SelectItem[]>(defaultColumns);
   const [visibleKeys, setVisibleKeys] = useState(defaultColumnKeys);
 
   const { search, tableProps } = useAntdTable(
@@ -207,7 +198,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         },
       ];
     }
-    return dataSource
+    return columns
       .filter(col => visibleKeys.some(k => k === col.value))
       .map(col => {
         const fieldMeta = objectMeta.properties[col.value];
@@ -226,14 +217,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         );
       })
       .filter(c => c != null);
-  }, [
-    currentMode,
-    dataSource,
-    visibleKeys,
-    objectMeta,
-    viewLink,
-    visibleColumns,
-  ]);
+  }, [currentMode, columns, visibleKeys, objectMeta, viewLink, visibleColumns]);
 
   const components: Record<
     string,
@@ -278,6 +262,7 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         {selectionToggle ? (
           <Button
             type="text"
+            tooltip
             onClick={toggleSelection}
             icon={
               selectionType == null ? (
@@ -286,7 +271,9 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
                 <CheckboxMultipleFill />
               )
             }
-          />
+          >
+            多选
+          </Button>
         ) : null}
         {(viewMode || []).length > 1 ? modeMenu : null}
         {searchOption ? (
@@ -328,13 +315,13 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
     return visibleColumnSet ? (
       <SortableSelect
         title="配置表格字段"
-        dataSource={dataSource}
+        dataSource={columns}
         value={visibleKeys}
         onChange={(keys: ValueType) => {
           console.log('keys', keys);
           setVisibleKeys(keys as string[]);
         }}
-        onSortEnd={setDataSource}
+        onSortEnd={setColumns}
         multiple
       >
         <Button type="text">
@@ -342,35 +329,43 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
         </Button>
       </SortableSelect>
     ) : null;
-  }, [
-    visibleColumnSet,
-    dataSource,
-    visibleKeys,
-    setVisibleKeys,
-    setDataSource,
-  ]);
+  }, [visibleColumnSet, columns, visibleKeys, setVisibleKeys, setColumns]);
+
+  const buttons = useMemo(() => {
+    if (buttonItems != null) {
+      return buttonItems;
+    }
+    if (panelItems) {
+      const items: ButtonItem[] = [];
+      (panelItems || [])
+        .filter(item => item.type === 'button')
+        .forEach(item => {
+          if (item.type === 'button' && item.props) {
+            items.push(...item.props.items);
+          }
+        });
+      return items;
+    }
+    return [];
+  }, [buttonItems, panelItems]);
 
   const rightPanel = useMemo(() => {
     return (
       <React.Fragment>
-        {(panelItems || [])
-          .filter(item => !item.selection || selectionType != null)
-          .map((item, index) => (
-            <PanelItem key={index} {...item} />
-          ))}
-        {columnSet}
+        <ButtonGroup items={buttons} />
       </React.Fragment>
     );
   }, [columnSet, panelItems, selectionType]);
 
-  const tablePanel = useMemo(
-    () =>
-      rightPanel != null || leftPanel != null ? (
-        <React.Fragment>
-          <Panel left={leftPanel} right={rightPanel} />
-        </React.Fragment>
-      ) : null,
-    [rightPanel, leftPanel],
+  const content = useMemo(
+    () => ({
+      visibleColumnSet,
+      columns,
+      setColumns,
+      visibleKeys,
+      setVisibleKeys,
+    }),
+    [columns, setColumns, visibleColumnSet, visibleKeys, setVisibleKeys],
   );
 
   const IndexContent = useCallback(() => {
@@ -413,11 +408,14 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
   ]);
 
   return (
-    <PageWithHeader header={header} className={className} style={style}>
-      {advanceSearch}
-      {tablePanel}
-      <IndexContent />
-    </PageWithHeader>
+    <IndexViewContext.Provider value={content}>
+      <PageWithHeader header={header} className={className} style={style}>
+        {advanceSearch}
+        <Toolbar left={leftPanel} right={rightPanel} />
+        <TablePanel />
+        <IndexContent />
+      </PageWithHeader>
+    </IndexViewContext.Provider>
   );
 };
 

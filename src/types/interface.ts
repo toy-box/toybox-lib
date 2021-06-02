@@ -32,15 +32,31 @@ export type OptionItemsType = OptionsType;
 
 export type OptionReturnType = OptionsType | OptionData | OptionGroupData;
 
-export type ColumnMeta = {
-  component?: string;
+export interface PageResult {
+  list: Record<string, any>[];
+  total: number;
+  pageSize?: number;
+  current?: number;
+}
+
+export interface Pageable {
+  pageSize: number;
+  current: number;
+}
+
+export interface ColumnVisible {
+  key: string;
   fixed?: boolean;
   align?: 'left' | 'right' | 'center';
-  link?: (...args: any) => string | string;
+  component?: string;
+  width?: number;
   sorter?: boolean;
   sortDirections?: SortOrder[];
-  width?: number;
-} & FieldMeta;
+  link?: (...args: any) => string;
+  visiable?: boolean;
+}
+
+export type ColumnMeta = ColumnVisible & FieldMeta;
 
 export type MetaPageMode = 'list' | 'view';
 

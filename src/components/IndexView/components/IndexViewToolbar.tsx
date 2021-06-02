@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import update from 'immutability-helper';
-import { Button } from '../..';
 import {
   default as FilterSearch,
   IFilterSearchProps,

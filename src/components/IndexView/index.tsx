@@ -14,26 +14,28 @@ import classNames from 'classnames';
 import { ListUnordered, TableLine, ArrowDownSLine } from '@airclass/icons';
 import useAntdTable, { PaginatedParams } from './hooks/useTable';
 import MetaTable from '../MetaTable';
-import { BusinessObjectMeta } from '../../types/interface';
 import { OperateItem } from '../MetaTable/components/OperateColumn';
 import { FieldType } from '../Fields/interface';
-import { RowData } from '../../types/interface';
 import { useQueryFilter } from '../../hooks';
-import TablePanel from './components/TablePanel';
+import { TablePanel } from './components';
 import IndexViewToolbar from './components/IndexViewToolbar';
 import { SelectItem } from '../SortableSelect/interface';
 import IndexViewContext from './context';
+import { FilterType } from '../FilterSearch/components/FilterSearch';
+import { QueryFilter } from '../../hooks/useQueryFilter';
+import { ButtonItem } from '../ButtonGroup';
 import {
+  RowData,
+  BusinessObjectMeta,
+  ColumnVisible,
+  PageResult,
   FieldService,
   ILogicFilter,
   ICompareOperation,
   LogicOP,
 } from '../../types';
-import { FilterType } from '../FilterSearch/components/FilterSearch';
-import { QueryFilter } from '../../hooks/useQueryFilter';
 
 import './style.less';
-import { ButtonItem } from '../ButtonGroup';
 
 const LIST_RENDER = 'listRender';
 
@@ -47,13 +49,6 @@ const DEFAULT_QUERY_FILTER = {
 };
 
 export declare type IndexMode = 'table' | 'list' | 'card';
-
-export interface PageResult {
-  list: Record<string, any>[];
-  total: number;
-  pageSize?: number;
-  current?: number;
-}
 
 export interface FilterSearch {
   filterKeys: string[];
@@ -98,14 +93,6 @@ export interface IndexViewProps {
    * @description 操作按钮
    */
   buttonItems?: ButtonItem[];
-}
-
-export interface ColumnVisible {
-  key: string;
-  fixed?: boolean;
-  align?: 'left' | 'right' | 'center';
-  component?: string;
-  visiable?: boolean;
 }
 
 const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (

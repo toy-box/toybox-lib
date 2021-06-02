@@ -19,21 +19,16 @@ export interface TablePanelProps {
   viewModes?: IndexMode[];
 }
 
-const TitleWrapper = styled.h4`
-  margin: 6px 0;
-`;
-
 const TablePanel: FC<TablePanelProps> = ({
   placement = 'right',
   viewModes,
 }) => {
   const context = useContext(IndexViewContext);
-  const title = useMemo(() => <TitleWrapper>配置表格字段</TitleWrapper>, []);
   const columnFilter = useMemo(() => {
     if (context.visibleColumnSet) {
       return (
         <SortableSelect
-          title={title}
+          title={<h4 style={{ margin: '6px 0' }}>配置表格字段</h4>}
           dataSource={context.columns || []}
           value={context.visibleKeys}
           onChange={(keys: ValueType) => {
