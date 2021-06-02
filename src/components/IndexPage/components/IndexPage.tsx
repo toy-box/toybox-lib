@@ -37,10 +37,10 @@ import { useQuery } from '../../../hooks';
 import { SearchFindParam } from './interface';
 import SortableSelect from '../../SortableSelect';
 import { SelectItem, ValueType } from '../../SortableSelect/interface';
-import Button from '@/components/Button';
-import ButtonGroup, { ButtonItem } from '@/components/ButtonGroup';
-import { TablePanel } from '@/components/IndexView/components';
-import IndexViewContext from '@/components/IndexView/context';
+import Button from '../../Button';
+import ButtonGroup, { ButtonItem } from '../../ButtonGroup';
+import { TablePanel } from '../../IndexView/components';
+import IndexViewContext from '../../IndexView/context';
 
 import '../style.less';
 

@@ -3,7 +3,7 @@ import update from 'immutability-helper';
 import { Button } from 'antd';
 import { ReactSortable, ReactSortableProps } from 'react-sortablejs';
 import classNames from 'classnames';
-import { omit } from '@/utils';
+import { omit } from '../../utils';
 
 export interface ItemRenderProps<T> {
   dataSource: T;
