@@ -76,6 +76,16 @@ export const CompareOperation: FC<CompareOperationProps> = ({
           CompareOP.LTE,
         ]);
       case BusinessFieldType.STRING:
+        return compareOperationData([
+          CompareOP.EQ,
+          CompareOP.NE,
+          CompareOP.IN,
+          CompareOP.NIN,
+          CompareOP.GT,
+          CompareOP.LT,
+          CompareOP.GTE,
+          CompareOP.LTE,
+        ]);
       case BusinessFieldType.SINGLE_OPTION:
       case BusinessFieldType.OBJECT_ID:
         if (filterFieldMeta.parentKey != null) {
