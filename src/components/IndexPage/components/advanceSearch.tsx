@@ -16,7 +16,7 @@ export interface AdvanceSearchProps {
 
 const AdvanceSearchWrapper = styled.div`
   margin-bottom: 16px;
-  padding: 24px 24px 0px;
+  padding: 24px 16px;
   background: white;
 `;
 

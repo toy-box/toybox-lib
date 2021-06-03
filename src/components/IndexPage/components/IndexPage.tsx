@@ -7,7 +7,7 @@ import React, {
   ReactNode,
   ForwardRefRenderFunction,
 } from 'react';
-import { Form, Dropdown, Menu } from 'antd';
+import { Form, Dropdown, Menu, Space } from 'antd';
 import classNames from 'classnames';
 import {
   CheckboxMultipleLine,
@@ -265,25 +265,25 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
 
   const leftPanel = useMemo(() => {
     return (
-      <React.Fragment>
+      <Space>
         {selectionToggle ? (
           <Button
             type="text"
             tooltip
             onClick={toggleSelection}
             icon={
-              selectionType == null ? (
-                <CheckboxMultipleLine />
-              ) : (
+              selectionType ? (
                 <CheckboxMultipleFill />
+              ) : (
+                <CheckboxMultipleLine />
               )
             }
           >
             多选
           </Button>
         ) : null}
-        {(viewMode || []).length > 1 ? modeMenu : null}
-        {searchOption ? (
+        {(viewMode || []).length > 1 && modeMenu}
+        {searchOption && (
           <IndexSearch
             form={queryForm}
             submit={search.submit}
@@ -291,8 +291,8 @@ const IndexPage: ForwardRefRenderFunction<any, IndexPageProps> = (
             showAdvance={showAdvanceSearch}
             triggerAdvance={() => setShowAdvanceSearch(!showAdvanceSearch)}
           />
-        ) : null}
-      </React.Fragment>
+        )}
+      </Space>
     );
   }, [
     queryForm,
