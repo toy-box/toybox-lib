@@ -5,7 +5,7 @@ import { FieldMeta, ICompareOperation } from '../../types';
 export interface FilterMetaTag {
   fieldMeta: FieldMeta;
   ellipsis?: boolean;
-  width?: string;
+  maxWidth?: number;
   remote?: (
     key: string,
     value: (string | number)[],
@@ -31,10 +31,10 @@ const FilterTags: FC<FilterTagsProps> = ({
     [filterFieldTags],
   );
 
-  const getWidth = useCallback(
+  const getMaxWidth = useCallback(
     tag => {
       const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
-      return (meta && meta.width) || '100px';
+      return meta?.maxWidth ? `${meta.maxWidth}px` : '100px';
     },
     [filterFieldTags],
   );
@@ -86,7 +86,7 @@ const FilterTags: FC<FilterTagsProps> = ({
       {filterTags.map((tag, idx) => (
         <FilterTag
           key={idx}
-          style={{ width: getWidth(tag) }}
+          style={{ maxWidth: getMaxWidth(tag) }}
           remote={remote(tag) ? value => remoteMethod(tag, value) : undefined}
           filter={tag}
           remove={remove ? () => remove(idx) : undefined}
