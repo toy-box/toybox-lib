@@ -1,11 +1,15 @@
 import { useMemo } from 'react';
-import { ColumnMeta } from '../../../types';
+import { BusinessFieldType, ColumnMeta } from '../../../types';
 
 declare type RowType = Record<string, any>;
 declare type PosIndex = number[];
 
 const compare = (columnMeta: ColumnMeta, prev: any, current: any) => {
-  if (columnMeta.type === 'businessObject' || columnMeta.type === 'document') {
+  if (
+    columnMeta.type === BusinessFieldType.OBJECT ||
+    columnMeta.type === 'businessObject' ||
+    columnMeta.type === 'document'
+  ) {
     const prevObj = prev != null ? prev[columnMeta.key] : null;
     const currentObj = current != null ? current[columnMeta.key] : null;
     const prevValue = prevObj ? prevObj[columnMeta.idKey || 'id'] : null;
