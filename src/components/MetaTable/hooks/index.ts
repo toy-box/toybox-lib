@@ -1,2 +1,3 @@
-export { default as useColumnLink } from './useColumnLink';
-export { default as usePivot } from './usePivot';
+export * from './useColumnLink';
+export * from './usePivot';
+export * from './useSortColumns';

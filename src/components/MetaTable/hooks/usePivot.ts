@@ -109,7 +109,7 @@ const mulSortPosIndex = (
   return newPosIndex;
 };
 
-const usePivot = (
+export const usePivot = (
   dataSource: RowType[],
   columnMetas: ColumnMeta[],
   dimensions: string[] = [],
@@ -138,5 +138,3 @@ const usePivot = (
 
   return [pivotData.rows, pivotData.posIndexes] as [RowType[], PosIndex[]];
 };
-
-export default usePivot;

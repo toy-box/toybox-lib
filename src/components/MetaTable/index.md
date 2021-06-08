@@ -17,6 +17,7 @@ const objectMeta = {
       name: 'ID',
       description: 'ID',
       type: 'string',
+      fixed: 'left',
     },
     name: {
       key: 'name',
@@ -36,7 +37,7 @@ const objectMeta = {
     user: {
       key: 'user',
       name: '用户',
-      type: 'businessObject',
+      type: 'object',
       titleKey: 'name',
       properties: {
         id: {
@@ -92,7 +93,14 @@ export default () => {
   }, [objectMeta]);
 
   return (
-    <MetaTable resizableTitle dataSource={data} columnMetas={columnMetas} />
+    <MetaTable
+      width={1000}
+      resizableTitle
+      dataSource={data}
+      columnMetas={columnMetas}
+      scroll={{ x: true }}
+      sort
+    />
   );
 };
 ```
@@ -133,7 +141,7 @@ const objectMeta = {
     user: {
       key: 'user',
       name: '用户',
-      type: 'businessObject',
+      type: 'object',
       titleKey: 'name',
       properties: {
         id: {
@@ -256,7 +264,7 @@ const objectMeta = {
     user: {
       key: 'user',
       name: '用户',
-      type: 'businessObject',
+      type: 'object',
       titleKey: 'name',
       properties: {
         id: {
@@ -376,7 +384,7 @@ const objectMeta = {
     user: {
       key: 'user',
       name: '用户',
-      type: 'businessObject',
+      type: 'object',
       titleKey: 'name',
       properties: {
         id: {

@@ -44,13 +44,14 @@ export interface Pageable {
   current: number;
 }
 
+type sorterFun = (prev: any, current: any) => number;
 export interface ColumnVisible {
   key: string;
-  fixed?: boolean;
+  fixed?: boolean | 'left' | 'right';
   align?: 'left' | 'right' | 'center';
   component?: string;
   width?: number;
-  sorter?: boolean;
+  sorter?: boolean | sorterFun;
   sortDirections?: SortOrder[];
   link?: (...args: any) => string;
   visiable?: boolean;

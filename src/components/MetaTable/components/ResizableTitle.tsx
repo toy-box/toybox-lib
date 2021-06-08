@@ -12,10 +12,6 @@ const ResizableTitle: FC<ResizableTitleProps> = ({
   width,
   ...restProps
 }) => {
-  // if (!width) {
-  //   return <th {...restProps} />;
-  // }
-
   return (
     <Resizable
       width={width}

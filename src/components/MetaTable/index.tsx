@@ -16,15 +16,15 @@ import {
 import { ArrowRightSLine } from '@airclass/icons';
 import { ColumnFCProps } from './interface';
 import { ColumnMeta } from '../../types/interface';
-
-import './style.less';
 import { metaRender } from '../../utils/meta';
 import {
   DefaultColumnRenderMap,
   ResizableTitle,
   ResizeCallbackData,
 } from './components';
-import { usePivot } from './hooks';
+import { usePivot, useSortColumns } from './hooks';
+
+import './style.less';
 
 export type RowData = Record<string, any>;
 
@@ -46,6 +46,7 @@ export interface MetaTableProps
     | 'showHeader'
     | 'summary'
     | 'title'
+    | 'scroll'
   > {
   resizableTitle?: boolean;
   /**
@@ -81,6 +82,13 @@ export interface MetaTableProps
    * @description 表格交叉显示配置
    */
   pivotOption?: PivotOption;
+
+  /**
+   * @description 表格宽度
+   */
+  width?: number;
+
+  sort?: boolean;
 }
 
 export const columnFactory = (
@@ -107,13 +115,26 @@ const MetaTable: FC<MetaTableProps> = ({
   bordered,
   rowSelection,
   pivotOption,
+  scroll,
+  width,
+  sort,
   summary,
   title,
   onChange,
   rowClassName,
 }) => {
+  // TODO: 宽度调整功能需要完善，初始化值问题、及显示字段变动问题
+  const avgColWidth = useMemo(
+    () =>
+      width
+        ? width / columnMetas.length > 100
+          ? width / columnMetas.length
+          : 100
+        : 100,
+    [],
+  );
   const [columnWidths, setColumnWidths] = useState<number[]>(
-    Array(columnMetas.length).fill(resizableTitle ? 100 : undefined),
+    Array(columnMetas.length).fill(resizableTitle ? avgColWidth : undefined),
   );
 
   const mergeRenders = useMemo(() => {
@@ -138,10 +159,14 @@ const MetaTable: FC<MetaTableProps> = ({
     return [];
   }, [columnMetas]);
 
-  const innerColumnMetas = useMemo(() => [...leftMetas, ...rightMetas], [
-    columnMetas,
-    pivotOption,
-  ]);
+  const innerColumnMetas = useMemo(() => {
+    if (pivotOption) {
+      return [...leftMetas, ...rightMetas];
+    } else if (sort) {
+      return useSortColumns([...leftMetas, ...rightMetas]);
+    }
+    return [...leftMetas, ...rightMetas];
+  }, [columnMetas, pivotOption]);
 
   const [rows, posIndexes] = usePivot(
     (dataSource || []).map(item => item),
@@ -180,12 +205,15 @@ const MetaTable: FC<MetaTableProps> = ({
     (columnMetas: ColumnMeta[]) => {
       const columns: ColumnsType<Record<string, any>> = columnMetas.map(
         (columnMeta, index) => {
+          console.log('columnMeta.sorter', columnMeta.sorter);
           return {
             key: columnMeta.key,
             title: columnMeta.name,
             dataIndex: columnMeta.key,
             align: columnMeta.align,
-            width: columnWidths[index],
+            width: columnMeta.width || columnWidths[index],
+            fixed: columnMeta.fixed,
+            sorter: columnMeta.sorter,
             render: (text, record, index) => {
               const MetaRender = metaRender(
                 columnMeta,
@@ -301,6 +329,7 @@ const MetaTable: FC<MetaTableProps> = ({
       expandable={mixExpandable}
       bordered={bordered}
       rowSelection={rowSelection}
+      scroll={scroll}
     />
   );
 };
