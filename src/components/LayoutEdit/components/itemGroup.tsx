@@ -25,9 +25,6 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   className,
   itemClassName,
   groupName = 'storeItem',
-  onDragStart,
-  onDragMove,
-  onDragEnd,
   forceFallback = true,
 }) => {
   const context = useContext(LayoutEditContext);
@@ -42,16 +39,25 @@ export const StoreGroup: FC<StoreGroupProps> = ({
   ]);
 
   const handleDragStart = (evt: Sortable.SortableEvent) => {
-    onDragStart && onDragStart(items[evt.oldIndex as number], evt);
+    context.setDraging && context.setDraging(items[evt.oldIndex as number]);
   };
 
-  const handleDragMove = (evt: Sortable.MoveEvent, originalEvent: Event) => {
-    onDragMove && onDragMove(evt, originalEvent);
+  const handleDragEnd = () => {
+    context.setDraging && context.setDraging(undefined);
+    context.messager && context.messager.broadcast('palaceholderEnd', null);
   };
 
-  const handleDragEnd = (evt: Sortable.SortableEvent) => {
-    onDragEnd && onDragEnd(items[evt.oldIndex as number], evt);
-  };
+  // const handleDragStart = (evt: Sortable.SortableEvent) => {
+  //   onDragStart && onDragStart(items[evt.oldIndex as number], evt);
+  // };
+
+  // const handleDragMove = (evt: Sortable.MoveEvent, originalEvent: Event) => {
+  //   onDragMove && onDragMove(evt, originalEvent);
+  // };
+
+  // const handleDragEnd = (evt: Sortable.SortableEvent) => {
+  //   onDragEnd && onDragEnd(items[evt.oldIndex as number], evt);
+  // };
 
   return (
     <ReactSortable
@@ -67,7 +73,6 @@ export const StoreGroup: FC<StoreGroupProps> = ({
       sort={false}
       setList={() => undefined}
       onStart={handleDragStart}
-      onMove={handleDragMove}
       onEnd={handleDragEnd}
       forceFallback={forceFallback}
     >

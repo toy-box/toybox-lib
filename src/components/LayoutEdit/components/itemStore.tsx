@@ -37,9 +37,6 @@ export const ItemStore: FC<ItemStoreProps> = ({
   itemClassName,
   style,
   forceFallback,
-  onDragStart,
-  onDragEnd,
-  onDragMove,
 }) => {
   const prefixCls = 'tbox-layout-edit__item-store';
   const mixStyle = {
@@ -68,9 +65,6 @@ export const ItemStore: FC<ItemStoreProps> = ({
         width={width}
         numPreRow={numPreRow}
         itemClassName={itemClassName}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-        onDragMove={onDragMove}
         forceFallback={forceFallback}
       />
     </div>
