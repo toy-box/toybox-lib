@@ -1,0 +1,27 @@
+@import '../../styles/theme.less';
+
+.@{prefix}-field-segment {
+  min-height: 104px;
+  border-bottom: 1px dashed @border-color-split;
+  &-header {
+    &__title {
+      font-size: 18px;
+      position: relative;
+      margin-left: 16px;
+      &::before {
+        content: '';
+        background-color: @primary-color;
+        position: absolute;
+        height: calc(100% - 8px);
+        width: 4px;
+        left: -12px;
+        top: 4px;
+      }
+    }
+  }
+  &-content {
+    &--hidden {
+      display: none;
+    }
+  }
+}

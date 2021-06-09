@@ -16,6 +16,7 @@ export { default as FilterSearch, FilterContainer } from './FilterSearch';
 export { FilterBuilder, MultiFilterBuilder } from './FilterBuilder';
 export { default as FilterTags } from './FilterTags';
 export { default as Fields } from './Fields';
+export { default as FieldSegment } from './FieldSegment';
 export { default as Header } from './Header';
 export { default as ImpInput } from './ImpInput';
 export * from './Layout';

@@ -49,6 +49,7 @@
     "nanoid": "^3.1.22",
     "numbro": "^2.3.2",
     "qs": "^6.10.1",
+    "rc-motion": "^2.4.4",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^16.14.0",
     "react-grid-layout": "^1.2.2",
