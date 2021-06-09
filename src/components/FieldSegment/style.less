@@ -2,10 +2,14 @@
 
 .@{prefix}-field-segment {
   min-height: 104px;
-  border-bottom: 1px dashed @border-color-split;
   &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
     &__title {
       font-size: 18px;
+      font-weight: bolder;
       position: relative;
       margin-left: 16px;
       &::before {
@@ -20,8 +24,12 @@
     }
   }
   &-content {
+    padding: 4px 0;
     &--hidden {
       display: none;
     }
+  }
+  + .@{prefix}-field-segment {
+    border-top: 1px solid @border-color-split;
   }
 }

@@ -1,6 +1,6 @@
-import React, { FC, useCallback, useMemo, useState, useEffect } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import update from 'immutability-helper';
-import { Button, Form, Select, Input } from 'antd';
+import { Button, Select, Input, Space } from 'antd';
 import { CloseLine } from '@airclass/icons';
 import get from 'lodash.get';
 import { FilterValueInput } from './FilterValueInput';
@@ -178,30 +178,24 @@ export const CompareOperation: FC<CompareOperationProps> = ({
 
   return (
     <div className="tbox-filter-compare">
-      <Form layout="inline">
-        <Form.Item>
-          <Select
-            style={{ width: '154px' }}
-            value={compare.source}
-            options={fieldOptions}
-            placeholder={get(localeData.lang, 'filed.placeholderOp.select')}
-            onChange={onKeyChange}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Select
-            style={{ width: '92px' }}
-            value={compare.op}
-            options={filterOperations}
-            onChange={onOperationChange}
-            showArrow={false}
-          />
-        </Form.Item>
-        <Form.Item>{filterValueInput}</Form.Item>
-        <Form.Item style={{ marginRight: 0 }}>
-          <Button type="text" onClick={remove} icon={<CloseLine />}></Button>
-        </Form.Item>
-      </Form>
+      <Space>
+        <Select
+          style={{ width: '154px' }}
+          value={compare.source}
+          options={fieldOptions}
+          placeholder={get(localeData.lang, 'filed.placeholderOp.select')}
+          onChange={onKeyChange}
+        />
+        <Select
+          style={{ width: '92px' }}
+          value={compare.op}
+          options={filterOperations}
+          onChange={onOperationChange}
+          showArrow={false}
+        />
+        {filterValueInput}
+        <Button type="text" onClick={remove} icon={<CloseLine />}></Button>
+      </Space>
     </div>
   );
 };
