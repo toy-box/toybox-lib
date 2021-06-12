@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import update from 'immutability-helper';
 import { Button, Select, Input, Space } from 'antd';
 import { CloseLine } from '@airclass/icons';
@@ -9,31 +9,77 @@ import {
   BusinessFieldType,
   FieldService,
   FieldMeta,
-  BusinessFieldTypeWild,
   CompareOP,
   DateCompareOP,
   UniteCompareOP,
 } from '../../../types/';
+import { FilterBuilderContext } from '../context';
 
 const inputStyle = { width: '320px' };
 
 export interface CompareOperationProps {
+  index: number;
   filterFieldMetas: FieldMeta[];
   compare: Partial<ICompareOperation>;
   filterFieldService?: FieldService;
   localeData: any;
-  onChange: (compare: Partial<ICompareOperation>) => void;
-  remove: () => void;
 }
 
+const numberOps = [
+  CompareOP.EQ,
+  CompareOP.NE,
+  CompareOP.GT,
+  CompareOP.LT,
+  CompareOP.GTE,
+  CompareOP.LTE,
+];
+
+const dateOps = [
+  DateCompareOP.UNIT_DATE_RANGE,
+  DateCompareOP.BETWEEN,
+  CompareOP.EQ,
+  CompareOP.NE,
+  CompareOP.GT,
+  CompareOP.LT,
+  CompareOP.GTE,
+  CompareOP.LTE,
+];
+
+const stringOps = [
+  CompareOP.EQ,
+  CompareOP.NE,
+  CompareOP.IN,
+  CompareOP.NIN,
+  CompareOP.GT,
+  CompareOP.LT,
+  CompareOP.GTE,
+  CompareOP.LTE,
+];
+
+const optionOps = [CompareOP.EQ, CompareOP.NE, CompareOP.IN, CompareOP.NIN];
+
+const booleanOps = [CompareOP.EQ, CompareOP.NE];
+
+const FieldOpMap: Record<string, Array<UniteCompareOP>> = {
+  [BusinessFieldType.INTEGER]: numberOps,
+  [BusinessFieldType.NUMBER]: numberOps,
+  [BusinessFieldType.STRING]: stringOps,
+  [BusinessFieldType.TEXT]: stringOps,
+  [BusinessFieldType.BOOLEAN]: booleanOps,
+  [BusinessFieldType.DATE]: dateOps,
+  [BusinessFieldType.DATETIME]: dateOps,
+  [BusinessFieldType.SINGLE_OPTION]: optionOps,
+  [BusinessFieldType.OBJECT_ID]: optionOps,
+};
+
 export const CompareOperation: FC<CompareOperationProps> = ({
+  index,
   filterFieldMetas,
   compare,
-  onChange,
-  remove,
   localeData,
   filterFieldService,
 }) => {
+  const context = useContext(FilterBuilderContext);
   const fieldOptions = useMemo(() => {
     return filterFieldMetas.map(field => ({
       label: field.name,
@@ -47,58 +93,12 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   );
 
   const filterOperations = useMemo(() => {
-    let compareOperation: UniteCompareOP[] = [
-      CompareOP.EQ,
-      CompareOP.NE,
-      CompareOP.IN,
-      CompareOP.NIN,
-    ];
-    switch (filterFieldMeta?.type) {
-      case BusinessFieldType.NUMBER:
-        return compareOperationData([
-          CompareOP.EQ,
-          CompareOP.NE,
-          CompareOP.GT,
-          CompareOP.LT,
-          CompareOP.GTE,
-          CompareOP.LTE,
-        ]);
-      case BusinessFieldType.DATE:
-      case BusinessFieldType.DATETIME:
-        return compareOperationData([
-          DateCompareOP.UNIT_DATE_RANGE,
-          DateCompareOP.BETWEEN,
-          CompareOP.EQ,
-          CompareOP.NE,
-          CompareOP.GT,
-          CompareOP.LT,
-          CompareOP.GTE,
-          CompareOP.LTE,
-        ]);
-      case BusinessFieldType.STRING:
-        return compareOperationData([
-          CompareOP.EQ,
-          CompareOP.NE,
-          CompareOP.IN,
-          CompareOP.NIN,
-          CompareOP.GT,
-          CompareOP.LT,
-          CompareOP.GTE,
-          CompareOP.LTE,
-        ]);
-      case BusinessFieldType.SINGLE_OPTION:
-      case BusinessFieldType.OBJECT_ID:
-        if (filterFieldMeta.parentKey != null) {
-          compareOperation = [CompareOP.IN, CompareOP.NIN];
-          return compareOperationData(compareOperation);
-        }
-        return compareOperationData(compareOperation);
-      case BusinessFieldTypeWild.SEARCH_ICON:
-        compareOperation = [CompareOP.EQ];
-        return compareOperationData(compareOperation);
-      default:
-        return compareOperationData(compareOperation);
+    if (filterFieldMeta?.type) {
+      return compareOperationData(
+        FieldOpMap[filterFieldMeta.type] || [CompareOP.EQ],
+      );
     }
+    return [];
   }, [filterFieldMeta]);
 
   function compareOperationData(compareOperation: UniteCompareOP[]) {
@@ -120,14 +120,21 @@ export const CompareOperation: FC<CompareOperationProps> = ({
 
   const onKeyChange = useCallback(
     (source: string) => {
-      onChange(
-        update(compare, {
-          target: { $set: undefined },
-          source: { $set: source },
-        }),
+      const fieldMeta = filterFieldMetas.find(meta => meta.key === source);
+      const op =
+        fieldMeta && FieldOpMap[fieldMeta.type].some(op => op === compare.op)
+          ? compare.op
+          : undefined;
+      const newCompare = update(compare, {
+        source: { $set: source },
+        op: { $set: op },
+        target: { $set: undefined },
+      });
+      context.onChange(
+        update(context.value, { [index]: { $set: newCompare } }),
       );
     },
-    [onChange, compare, filterFieldMeta],
+    [context, compare, filterFieldMeta, index],
   );
 
   const onOperationChange = useCallback(
@@ -138,22 +145,40 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         op === DateCompareOP.UNIT_DATE_RANGE ||
         op === DateCompareOP.BETWEEN
       ) {
-        onChange(
-          update(compare, { op: { $set: op }, target: { $set: undefined } }),
+        // onChange(
+        //   update(compare, { op: { $set: op }, target: { $set: undefined } }),
+        // );
+        const newCompare = update(compare, {
+          op: { $set: op },
+          target: { $set: undefined },
+        });
+        context.onChange(
+          update(context.value, { [index]: { $set: newCompare } }),
         );
       } else {
-        onChange(update(compare, { op: { $set: op } }));
+        const newCompare = update(compare, { op: { $set: op } });
+        context.onChange(
+          update(context.value, { [index]: { $set: newCompare } }),
+        );
       }
     },
-    [compare],
+    [compare, context, index],
   );
 
   const onValueChange = useCallback(
     (value: any) => {
       if (value === compare.target) return;
-      onChange(update(compare, { target: { $set: value } }));
+      const newCompare = update(compare, { target: { $set: value } });
+      context.onChange(
+        update(context.value, { [index]: { $set: newCompare } }),
+      );
     },
-    [compare, onChange],
+    [compare, context, index],
+  );
+
+  const handleRemove = useCallback(
+    () => context.onChange(update(context.value, { $splice: [[index, 1]] })),
+    [context, index],
   );
 
   const filterValueInput = useMemo(() => {
@@ -194,7 +219,11 @@ export const CompareOperation: FC<CompareOperationProps> = ({
           showArrow={false}
         />
         {filterValueInput}
-        <Button type="text" onClick={remove} icon={<CloseLine />}></Button>
+        <Button
+          type="text"
+          onClick={handleRemove}
+          icon={<CloseLine />}
+        ></Button>
       </Space>
     </div>
   );

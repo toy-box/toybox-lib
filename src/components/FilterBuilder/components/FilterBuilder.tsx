@@ -9,6 +9,7 @@ import { CompareOperation } from './CompareOperation';
 import Button from '../../Button';
 
 import '../styles/index.less';
+import { FilterBuilderContext } from '../context';
 
 export type IUncheckCompares = Partial<ICompareOperation>[];
 
@@ -34,43 +35,28 @@ export const FilterBuilder = ({
   );
   const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
 
-  const handleFilterItem = useCallback(
-    (filterItem: Partial<ICompareOperation>, index: number) => {
-      onChange && onChange(update(value, { [index]: { $set: filterItem } }));
-    },
-    [onChange, value],
-  );
-
-  const addFilter = useCallback(() => {
+  const addFilter = () => {
     onChange && onChange(update(value, { $push: [{}] }));
-  }, [onChange, value]);
-
-  const handleRemove = useCallback(
-    idx => {
-      onChange && onChange(update(value, { $splice: [[idx, 1]] }));
-    },
-    [onChange, value],
-  );
+  };
 
   return (
-    <div>
-      {value.map((filterItem, idx) => (
-        <CompareOperation
-          key={idx}
-          filterFieldMetas={filterFieldMetas}
-          compare={filterItem}
-          localeData={localeData}
-          filterFieldService={filterFieldService}
-          remove={() => handleRemove(idx)}
-          onChange={(filterItem: Partial<ICompareOperation>) =>
-            handleFilterItem(filterItem, idx)
-          }
-        />
-      ))}
-      <Button onClick={addFilter} type="dashed" icon={<AddCircleLine />}>
-        {addText || localeData.lang.operate['add']}
-      </Button>
-    </div>
+    <FilterBuilderContext.Provider value={{ value, onChange }}>
+      <div>
+        {value.map((filterItem, idx) => (
+          <CompareOperation
+            key={idx}
+            index={idx}
+            filterFieldMetas={filterFieldMetas}
+            compare={filterItem}
+            localeData={localeData}
+            filterFieldService={filterFieldService}
+          />
+        ))}
+        <Button onClick={addFilter} type="dashed" icon={<AddCircleLine />}>
+          {addText || localeData.lang.operate['add']}
+        </Button>
+      </div>
+    </FilterBuilderContext.Provider>
   );
 };
 
