@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useState,
   useContext,
   CSSProperties,
 } from 'react';
@@ -66,8 +65,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
   fieldMetaService,
   locale = 'zh_CN',
 }) => {
-  const [treeData, setTreeData] = useState([]);
-
   const antLocale = useContext(LocaleContext);
   const localeName = useMemo(
     () => (antLocale && antLocale.locale ? antLocale.locale : locale),
@@ -313,7 +310,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               multiple={multiple}
               value={value}
               onChange={handleValue}
-              treeData={treeData}
               loadData={findDataTrees}
               loadByValue={searchByValue}
             />
