@@ -13,7 +13,7 @@ export interface FieldRateProps
     RateProps {}
 
 const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
-  { mode, value, defaultValue, fieldProps, disabled, style, onChange, onClick },
+  { mode, value, defaultValue, fieldProps, disabled, style, field, onChange },
   ref: Ref<any>,
 ) => {
   const inputRef = useRef();
@@ -26,8 +26,15 @@ const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
   );
 
   if (mode === 'read') {
-    const dom = value || '-';
-    return <span onClick={onClick}>{dom}</span>;
+    return (
+      <Rate
+        value={value}
+        disabled
+        style={style}
+        count={field.maximum}
+        {...fieldProps}
+      />
+    );
   }
   if (mode === 'edit' || mode === 'update') {
     return (
@@ -37,7 +44,8 @@ const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
         defaultValue={defaultValue}
         ref={inputRef}
         disabled={disabled}
-        style={Object.assign({ width: '100%' }, style)}
+        style={style}
+        count={field.maximum}
         {...fieldProps}
       />
     );

@@ -7,7 +7,7 @@ import React, {
   useContext,
   CSSProperties,
 } from 'react';
-import { InputNumber } from 'antd';
+import { InputNumber, Switch } from 'antd';
 import { SelectValue } from 'antd/lib/select';
 import { RawValueType } from 'rc-tree-select/lib/interface';
 import LocaleContext from 'antd/lib/locale-provider/context';
@@ -25,6 +25,7 @@ import {
   OptionItem,
   UniteCompareOP,
   DateCompareOP,
+  CompareOP,
 } from '../../../types';
 
 declare type RangeValue = [
@@ -73,26 +74,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     [antLocale],
   );
   const localeData = useMemo(() => localeMap[localeName], [localeName]);
-
-  const remote = useMemo(
-    () =>
-      fieldMeta &&
-      (fieldMeta.type === BusinessFieldType.OBJECT_ID ||
-        fieldMeta.type === BusinessFieldType.OBJECT ||
-        fieldMeta.type === 'businessObject' ||
-        fieldMeta.type === 'document'),
-    [fieldMeta],
-  );
-
-  const inputType = useMemo(() => {
-    switch (fieldMeta.type) {
-      case BusinessFieldType.STRING:
-        return 'stirng';
-      default:
-        return;
-    }
-    return;
-  }, [fieldMeta]);
 
   const handleValue = useCallback(
     (value?: any, text?: string[]) => {
@@ -177,13 +158,17 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
     }
   }, [value, multiple]);
 
-  const treeFieldMeta = {
-    key: 'tree',
-    name: 'Tree',
-    type: 'treeSelect',
-  };
-
   const input = useMemo(() => {
+    if (operation === CompareOP.IS_NULL) {
+      return (
+        <Switch
+          checked={value}
+          onChange={(checked, event) => handleValue(checked)}
+          checkedChildren="是"
+          unCheckedChildren="否"
+        />
+      );
+    }
     switch (fieldMeta?.type) {
       case BusinessFieldType.STRING:
         return (
@@ -289,7 +274,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             allowClear
             style={style}
             showSearch
-            options={fieldMeta.options}
+            options={fieldMeta.enum}
             value={filterValue}
             onChange={(value, options) =>
               handleSelectOptions(value, options as OptionItem)
@@ -301,7 +286,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
-            options={fieldMeta.options}
+            options={fieldMeta.enum}
             mode={multiple ? 'multiple' : undefined}
             value={filterValue}
             params={fieldMeta}
@@ -338,7 +323,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
-            options={fieldMeta.options}
+            options={fieldMeta.enum}
             mode={multiple ? 'multiple' : undefined}
             value={filterValue}
             params={fieldMeta}
@@ -348,6 +333,15 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             onChange={(value, options) =>
               handleSelectOptions(value, options as OptionItem)
             }
+          />
+        );
+      case BusinessFieldType.BOOLEAN:
+        return (
+          <Switch
+            checked={value}
+            onChange={(checked, event) => handleValue(checked)}
+            checkedChildren="是"
+            unCheckedChildren="否"
           />
         );
       default:

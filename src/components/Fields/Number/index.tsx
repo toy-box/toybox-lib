@@ -15,7 +15,7 @@ export type FieldNumberProps = Omit<
   InputNumberProps;
 
 const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = (
-  { mode, value, style, onChange, onClick, ...otherProps },
+  { mode, value, style, onChange, onClick, field, ...otherProps },
   ref: Ref<any>,
 ) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -38,6 +38,7 @@ const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = (
         value={value}
         onChange={onChange}
         style={Object.assign({ width: '100%' }, style)}
+        precision={field.precision}
         {...otherProps}
       />
     );

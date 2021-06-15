@@ -19,7 +19,7 @@ export interface IFieldMeta {
   type: string;
   description?: string;
   primary?: boolean;
-  options?: IFieldOption[];
+  enum?: IFieldOption[];
   refObjectId?: string;
   unique?: boolean;
   required?: boolean;
@@ -29,7 +29,7 @@ export interface IFieldMeta {
   exclusiveMinimum?: number;
   maxLength?: number;
   minLength?: number;
-  decimalScale?: number;
+  precision?: number;
   multipleOf?: number;
   minProperties?: number;
   maxProperties?: number;

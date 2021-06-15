@@ -42,6 +42,7 @@ export enum CompareOP {
   LTE = '$lte',
   NE = '$ne',
   NIN = '$nin',
+  IS_NULL = '$isNull',
 }
 
 export enum DateCompareOP {

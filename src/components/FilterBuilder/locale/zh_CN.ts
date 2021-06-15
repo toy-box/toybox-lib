@@ -14,6 +14,7 @@ const lang = {
     $nin: '不包含',
     $unitDateRange: '在',
     $between: '介于',
+    $isNull: '值为空',
   },
   filed: {
     placeholderOp: {

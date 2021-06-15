@@ -32,6 +32,7 @@ const numberOps = [
   CompareOP.LT,
   CompareOP.GTE,
   CompareOP.LTE,
+  CompareOP.IS_NULL,
 ];
 
 const dateOps = [
@@ -43,6 +44,7 @@ const dateOps = [
   CompareOP.LT,
   CompareOP.GTE,
   CompareOP.LTE,
+  CompareOP.IS_NULL,
 ];
 
 const stringOps = [
@@ -54,11 +56,18 @@ const stringOps = [
   CompareOP.LT,
   CompareOP.GTE,
   CompareOP.LTE,
+  CompareOP.IS_NULL,
 ];
 
-const optionOps = [CompareOP.EQ, CompareOP.NE, CompareOP.IN, CompareOP.NIN];
+const optionOps = [
+  CompareOP.EQ,
+  CompareOP.NE,
+  CompareOP.IN,
+  CompareOP.NIN,
+  CompareOP.IS_NULL,
+];
 
-const booleanOps = [CompareOP.EQ, CompareOP.NE];
+const booleanOps = [CompareOP.EQ, CompareOP.NE, CompareOP.IS_NULL];
 
 const FieldOpMap: Record<string, Array<UniteCompareOP>> = {
   [BusinessFieldType.INTEGER]: numberOps,
@@ -145,9 +154,14 @@ export const CompareOperation: FC<CompareOperationProps> = ({
         op === DateCompareOP.UNIT_DATE_RANGE ||
         op === DateCompareOP.BETWEEN
       ) {
-        // onChange(
-        //   update(compare, { op: { $set: op }, target: { $set: undefined } }),
-        // );
+        const newCompare = update(compare, {
+          op: { $set: op },
+          target: { $set: undefined },
+        });
+        context.onChange(
+          update(context.value, { [index]: { $set: newCompare } }),
+        );
+      } else if (op === CompareOP.IS_NULL) {
         const newCompare = update(compare, {
           op: { $set: op },
           target: { $set: undefined },
