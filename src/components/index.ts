@@ -34,7 +34,6 @@ export {
 export { default as FreeGrid, LayoutType } from './FreeGrid';
 export { default as LoadingWrapper } from './LoadingWrapper';
 export { default as MetaDescriptons } from './MetaDescriptions';
-export { default as MetaForm } from './MetaForm';
 export { default as MetaList } from './MetaList';
 export { default as MetaTable } from './MetaTable';
 export { default as MetaVerticalTable } from './MetaVerticalTable';
