@@ -160,6 +160,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       return (
         <Switch
           checked={value}
+          defaultChecked={false}
           onChange={(checked, event) => handleValue(checked)}
           checkedChildren="是"
           unCheckedChildren="否"
@@ -198,7 +199,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       case BusinessFieldType.DATE:
       case BusinessFieldType.DATETIME:
         const format =
-          fieldMeta.type === BusinessFieldType.DATE
+          fieldMeta.format || fieldMeta.type === BusinessFieldType.DATE
             ? 'YYYY/MM/DD'
             : 'YYYY/MM/DD HH:mm:ss';
         if (operation === DateCompareOP.UNIT_DATE_RANGE) {
@@ -221,18 +222,12 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               format={format}
               onChange={value => {
                 const doValue = value
-                  ? ([
-                      value[0] ? value[0].toJSON() : undefined,
-                      value[1] ? value[1].toJSON() : undefined,
-                    ] as RangeValue)
-                  : undefined;
-                const doValues = value
                   ? [
                       value[0] ? value[0].format(format) : '',
                       value[1] ? value[1].format(format) : '',
                     ]
                   : [];
-                handleValue(doValue, doValues);
+                handleValue(doValue);
               }}
               style={style}
               showTime={
@@ -253,7 +248,6 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
                 localeData.lang,
                 'filed.placeholderOp.paramSelect',
               )}${fieldMeta.name}`}
-              format={fieldMeta.format || format}
               onChange={value =>
                 handleValue(value?.format(fieldMeta.format || format))
               }
@@ -335,6 +329,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
         return (
           <Switch
             checked={value}
+            defaultChecked={false}
             onChange={(checked, event) => handleValue(checked)}
             checkedChildren="是"
             unCheckedChildren="否"

@@ -164,7 +164,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
       } else if (op === CompareOP.IS_NULL) {
         const newCompare = update(compare, {
           op: { $set: op },
-          target: { $set: undefined },
+          target: { $set: false },
         });
         context.onChange(
           update(context.value, { [index]: { $set: newCompare } }),
@@ -198,6 +198,7 @@ export const CompareOperation: FC<CompareOperationProps> = ({
   const filterValueInput = useMemo(() => {
     return filterFieldMeta ? (
       <FilterValueInput
+        key={compare.source}
         value={compare.target}
         multiple={multiple}
         fieldMeta={filterFieldMeta}

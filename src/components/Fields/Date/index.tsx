@@ -17,7 +17,7 @@ dayjs.extend(LocalizedFormat);
 
 export declare type FieldBasePickerProps = Omit<
   PickerBaseProps<Dayjs>,
-  'mode' | 'picker'
+  'mode' | 'picker' | 'format'
 > &
   Omit<BaseFieldProps, 'value' | 'onChange'>;
 
@@ -26,7 +26,8 @@ export declare type FieldDateProps = FieldBasePickerProps & {
   dateMode?: PickerBaseProps<Dayjs>['mode'];
 };
 
-const defaultFormat = 'YYYY/MM/DD';
+const DateFormat = 'YYYY/MM/DD';
+const DatetimeFormat = 'YYYY/MM/DD HH:mm:ss';
 
 const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   {
@@ -36,7 +37,6 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     placeholder,
     mode,
     field,
-    format = defaultFormat,
     fieldProps,
     picker,
     open,
@@ -51,43 +51,40 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   const showTime = useMemo(() => field.type === BusinessFieldType.DATETIME, [
     field.type,
   ]);
-  const innerOnChange = useCallback(
-    (date: Dayjs) => {
-      onChange &&
-        onChange(
-          date,
-          typeof format === 'function'
-            ? format(date)
-            : date?.format(format as string),
-        );
-    },
-    [format, onChange],
+
+  const innerFormat = useMemo(
+    () =>
+      field.format || field.type === BusinessFieldType.DATE
+        ? DateFormat
+        : DatetimeFormat,
+    [field.format],
   );
 
-  const formatFn = useCallback(
-    (date: string | number | Date | dayjs.Dayjs | null | undefined) => {
-      if (typeof format === 'function') {
-        return date != null ? format(dayjs(date)) : undefined;
-      }
-      return date != null ? dayjs(date).format(format as string) : undefined;
+  const innerOnChange = useCallback(
+    (date: Dayjs) => {
+      const dateString = date?.format(innerFormat);
+      onChange && onChange(dayjs(dateString), dateString);
     },
-    [format],
+    [innerFormat, onChange],
   );
 
   const innerValue = useMemo(
     () =>
-      typeof format === 'string'
-        ? parseValueToMoment(value, format)
+      typeof innerFormat === 'string'
+        ? parseValueToMoment(value, innerFormat)
         : parseValueToMoment(value),
-    [format, value],
+    [innerFormat, value],
   );
 
-  const text = useMemo(() => formatFn(value), [value, format]);
+  const text = useMemo(() => (value ? dayjs(value).format(innerFormat) : '-'), [
+    value,
+    innerFormat,
+  ]);
 
   if (mode === 'read') {
     return (
       <span ref={ref} onClick={onClick}>
-        {value != null ? text : '-'}
+        {text}
       </span>
     );
   }
