@@ -16,18 +16,6 @@ export const DateColumn: FC<DataColumnProps> = ({
   const { align, component, fixed, link, ...field } = columnMeta;
   const linkHandle = useColumnLink(record, link);
 
-  const format = useMemo(() => {
-    switch (columnMeta.type) {
-      case 'yearMonth':
-        return 'YYYY MMMM';
-      case 'date':
-        return 'LL';
-      case 'datetime':
-      default:
-        return 'LLL';
-    }
-  }, [columnMeta.type]);
-
   const value = useMemo(() => {
     if (text == null) {
       return null;
@@ -41,7 +29,6 @@ export const DateColumn: FC<DataColumnProps> = ({
       onClick={linkHandle}
       value={value}
       mode="read"
-      format={format}
     />
   );
 };
