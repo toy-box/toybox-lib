@@ -13,7 +13,7 @@ export interface FieldRateProps
     RateProps {}
 
 const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
-  { mode, value, fieldProps, disabled, style, field, onChange },
+  { mode, value, disabled, style, field, onChange },
   ref: Ref<any>,
 ) => {
   const inputRef = useRef();
@@ -46,7 +46,6 @@ const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
         disabled={disabled}
         style={style}
         count={field.maximum}
-        {...fieldProps}
       />
     );
   }

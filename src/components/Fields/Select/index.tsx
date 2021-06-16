@@ -17,7 +17,7 @@ export declare type FieldSelectProps = Omit<
   };
 
 const FieldSelect: ForwardRefRenderFunction<any, FieldSelectProps> = (
-  { mode, fieldProps, field, selectMode, onClick, ...otherProps },
+  { mode, field, selectMode, onClick, ...otherProps },
   ref,
 ) => {
   const inputRef = useRef<any>();

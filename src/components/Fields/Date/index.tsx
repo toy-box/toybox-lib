@@ -38,7 +38,6 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
     placeholder,
     mode,
     field,
-    fieldProps,
     picker,
     open,
     bordered,
@@ -66,17 +65,14 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   );
 
   const innerOnChange = useCallback(
-    (date: Dayjs) => {
-      const dateString = date?.format(innerFormat);
-      onChange && onChange(dayjs(dateString).toISOString(), dateString);
+    (date: Dayjs | null, dateString: string = '') => {
+      onChange &&
+        onChange(date ? dayjs(dateString).toISOString() : null, dateString);
     },
     [innerFormat, onChange],
   );
 
-  const innerValue = useMemo(() => parseValueToMoment(value), [
-    innerFormat,
-    value,
-  ]);
+  const innerValue = useMemo(() => (value ? dayjs(value) : undefined), [value]);
 
   const text = useMemo(() => (value ? dayjs(value).format(innerFormat) : '-'), [
     value,
@@ -106,7 +102,6 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         mode={dateMode}
         showTime={showTime ? { format: 'HH:mm:ss' } : false}
         onOpenChange={onOpenChange}
-        {...fieldProps}
       />
     );
   }
