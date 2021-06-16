@@ -12,7 +12,7 @@ export declare type FieldSelectProps = Omit<
   BaseFieldProps,
   'onChange' | 'value'
 > &
-  Omit<SelectProProps, 'mode'> & {
+  Omit<SelectProProps, 'mode' | 'defaultValue'> & {
     selectMode?: SelectProProps['mode'];
   };
 
@@ -30,6 +30,7 @@ const FieldSelect: ForwardRefRenderFunction<any, FieldSelectProps> = (
       <SelectPro
         ref={inputRef}
         mode={selectMode}
+        defaultValue={field.defaultValue}
         options={field.options}
         readMode={mode === 'read'}
         {...otherProps}

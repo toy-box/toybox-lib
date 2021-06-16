@@ -5,20 +5,24 @@ import React, {
   useImperativeHandle,
   Ref,
 } from 'react';
+import get from 'lodash.get';
 import { Switch } from 'antd';
 import { BaseFieldProps } from '../interface';
+import localeMap from './locale';
+import { useLocale } from '../../../hooks';
 
 export interface FieldBooleanProps extends BaseFieldProps {
   value?: boolean;
   textValues?: [string, string];
-  defaultValue?: boolean;
   onChange?: (value: boolean) => void;
 }
 
 const FieldBoolean: ForwardRefRenderFunction<any, FieldBooleanProps> = (
-  { onChange, value, textValues, defaultValue, mode, fieldProps, onClick },
+  { onChange, value, textValues, field, mode, fieldProps, onClick },
   ref: Ref<any>,
 ) => {
+  const locale = useLocale();
+  const localeData = useMemo(() => localeMap[locale], [locale]);
   const inputRef = useRef();
   useImperativeHandle(
     ref,
@@ -28,8 +32,14 @@ const FieldBoolean: ForwardRefRenderFunction<any, FieldBooleanProps> = (
     [],
   );
   const innerTextValues = useMemo(() => {
-    return textValues ? textValues : ['否', '是'];
+    return textValues
+      ? textValues
+      : [
+          get(localeData.lang, 'value.false'),
+          get(localeData.lang, 'value.true'),
+        ];
   }, [textValues]);
+
   const textValue = useMemo(() => {
     if (value === true) {
       return innerTextValues[1];
@@ -50,7 +60,7 @@ const FieldBoolean: ForwardRefRenderFunction<any, FieldBooleanProps> = (
           checkedChildren={innerTextValues[1]}
           unCheckedChildren={innerTextValues[0]}
           checked={value}
-          defaultChecked={defaultValue}
+          defaultChecked={field.defaultValue}
           {...fieldProps}
         />
       );

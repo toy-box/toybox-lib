@@ -13,7 +13,7 @@ export declare type FieldStringProps = Omit<
   BaseFieldProps,
   'value' | 'onChange'
 > &
-  Omit<InputProps, 'onChange'> & {
+  Omit<InputProps, 'onChange' | 'defaultValue'> & {
     onChange: (value: string) => void;
   };
 
@@ -44,13 +44,12 @@ const FieldString: ForwardRefRenderFunction<any, FieldStringProps> = (
     return <span onClick={onClick}>{dom}</span>;
   }
   if (mode === 'edit' || mode === 'update') {
-    const { defaultValue } = field;
     return (
       <Input
         ref={inputRef}
         value={value}
         onChange={e => onChange && onChange(e.target.value)}
-        defaultValue={defaultValue}
+        defaultValue={field.defaultValue}
         placeholder={placeholder}
         disabled={disabled}
         {...otherProps}

@@ -35,7 +35,6 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   {
     disabled,
     value,
-    defaultValue,
     placeholder,
     mode,
     field,
@@ -52,6 +51,10 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
 ) => {
   const showTime = useMemo(() => field.type === BusinessFieldType.DATETIME, [
     field.type,
+  ]);
+
+  const defaultValue = useMemo(() => dayjs(field.defaultValue), [
+    field.defaultValue,
   ]);
 
   const innerFormat = useMemo(
@@ -101,7 +104,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         open={open}
         style={{ width: '100%' }}
         mode={dateMode}
-        showTime={showTime ? { format: 'HH:mm' } : false}
+        showTime={showTime ? { format: 'HH:mm:ss' } : false}
         onOpenChange={onOpenChange}
         {...fieldProps}
       />

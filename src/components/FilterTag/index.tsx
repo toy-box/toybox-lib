@@ -11,6 +11,7 @@ import get from 'lodash.get';
 import LocaleContext from 'antd/lib/locale-provider/context';
 import localeMap from './locale';
 import { UniteCompareOP } from '../../types';
+import { useLocale } from '../../hooks';
 
 export interface LabelValue {
   value: any;
@@ -47,12 +48,8 @@ const FilterTag: FC<FilterTagProps> = ({
   ...tagProps
 }) => {
   const { title, op } = filter;
-  const antLocale = useContext(LocaleContext);
-  const locale = useMemo(
-    () => (antLocale && antLocale.locale ? antLocale.locale : 'zh_CN'),
-    [antLocale],
-  );
-  const localeData = useMemo(() => localeMap[locale || 'zh_CN'], [locale]);
+  const locale = useLocale();
+  const localeData = useMemo(() => localeMap[locale], [locale]);
   const [labelValues, setLabelValues] = useState<(string | number)[]>([]);
 
   const handleRemove = useCallback(

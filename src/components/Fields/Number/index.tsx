@@ -12,7 +12,7 @@ export type FieldNumberProps = Omit<
   BaseFieldProps,
   'value' | 'onChange' | 'onClick'
 > &
-  InputNumberProps;
+  Omit<InputNumberProps, 'defaultValue' | 'min' | 'max'>;
 
 const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = (
   { mode, value, style, onChange, onClick, field, ...otherProps },
@@ -31,14 +31,18 @@ const FieldNumber: ForwardRefRenderFunction<any, FieldNumberProps> = (
     const dom = value || '-';
     return <span onClick={onClick}>{dom}</span>;
   }
+
   if (mode === 'edit' || mode === 'update') {
     return (
       <InputNumber
         ref={inputRef}
         value={value}
         onChange={onChange}
-        style={Object.assign({ width: '100%' }, style)}
+        defaultValue={field.defaultValue}
+        style={{ ...style, width: '100%' }}
         precision={field.precision}
+        min={field.minimum}
+        max={field.maximum}
         {...otherProps}
       />
     );

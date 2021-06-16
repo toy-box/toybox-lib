@@ -1,11 +1,13 @@
 import { InputNumber } from 'antd';
 import React, {
   useRef,
+  useMemo,
+  useCallback,
   useImperativeHandle,
   Fragment,
   Ref,
-  ReactNode,
   ForwardRefRenderFunction,
+  CSSProperties,
 } from 'react';
 import { BaseFieldProps } from '../interface';
 import {
@@ -16,37 +18,53 @@ import {
 
 export interface FieldPercentProps extends BaseFieldProps {
   value?: number;
-  defaultValue?: number;
   placeholder?: string;
-  onChange?: (value: number) => void;
+  onChange?: (value?: number) => void;
   showColor?: boolean;
   showSymbol?: boolean;
-  prefix?: ReactNode;
-  suffix?: ReactNode;
+  suffix?: string;
   precision?: number;
-  style?: any;
+  style?: CSSProperties;
 }
 
 const FieldPercent: ForwardRefRenderFunction<any, FieldPercentProps> = (
   {
     mode,
     value,
-    defaultValue,
+    field,
     placeholder,
-    fieldProps,
     disabled,
     onChange,
     onClick,
     showColor = false,
     showSymbol,
-    prefix,
     suffix = '%',
-    precision,
+    precision = 2,
     style,
   }: FieldPercentProps,
   ref: Ref<any>,
 ) => {
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const innerValue = useMemo(
+    () =>
+      value != null
+        ? Math.round(value * Math.pow(10, precision + 2)) /
+          Math.pow(10, precision)
+        : undefined,
+    [value],
+  );
+  const handleChange = useCallback(
+    (value?: number) =>
+      onChange &&
+      onChange(
+        value != null
+          ? Math.round(Number(value) * Math.pow(10, precision)) /
+              Math.pow(10, precision + 2)
+          : value,
+      ),
+    [onChange],
+  );
+
   useImperativeHandle(
     ref,
     () => ({
@@ -66,36 +84,32 @@ const FieldPercent: ForwardRefRenderFunction<any, FieldPercentProps> = (
     }
     return (
       <span style={style} onClick={onClick}>
-        {prefix && <span>{prefix}</span>}
         {showSymbol && <Fragment>{getSymbolByRealValue(value)} </Fragment>}
         {getRealTextWithPrecision(Math.abs(value), precision)}
-        {suffix && suffix}
+        {suffix}
       </span>
     );
   }
   if (mode === 'edit' || mode === 'update') {
     return (
       <InputNumber
-        value={value}
-        onChange={onChange}
-        defaultValue={defaultValue}
+        value={innerValue}
+        onChange={handleChange}
+        defaultValue={field.defaultValue}
         placeholder={placeholder}
         ref={inputRef}
         disabled={disabled}
-        formatter={value => {
-          if (value && prefix) {
-            return `${prefix} ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        formatter={value => (value != null ? `${value}${suffix}` : undefined)}
+        parser={value => {
+          if (value != null) {
+            return value == suffix
+              ? undefined
+              : Number(value.replace(suffix, ''));
           }
-          return value;
+          return undefined;
         }}
-        parser={value =>
-          value
-            ? value.replace(new RegExp(`\\${prefix}\\s?|(,*)`, 'g'), '')
-            : ''
-        }
-        style={Object.assign({ width: '100%' }, style)}
-        precision={2}
-        {...fieldProps}
+        style={{ ...style, width: '100%' }}
+        precision={precision}
       />
     );
   }

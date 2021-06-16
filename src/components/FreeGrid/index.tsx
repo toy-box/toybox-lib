@@ -77,7 +77,7 @@ const FreeGrid: FC<FreeGridProps> = ({
 
   return (
     <FreeGridContext.Provider value={{ removeItem }}>
-      <div className="free-grid" ref={ref}>
+      <div className="free-grid">
         <div className="gird">
           {editable && (
             <Background

@@ -8,7 +8,7 @@ export declare type FieldTextProps = Omit<
   BaseFieldProps,
   'value' | 'onChange'
 > &
-  Omit<TextAreaProps, 'onChange'> & {
+  Omit<TextAreaProps, 'onChange' | 'defaultValue'> & {
     onChange?: (value: string) => void;
   };
 
@@ -16,7 +16,7 @@ const FieldString = (
   {
     mode,
     value,
-    defaultValue,
+    field,
     onChange,
     placeholder,
     disabled,
@@ -47,7 +47,7 @@ const FieldString = (
     return (
       <Input.TextArea
         ref={inputRef}
-        defaultValue={defaultValue}
+        defaultValue={field.defaultValue}
         value={value}
         onChange={handleChange}
         placeholder={placeholder}

@@ -12,12 +12,11 @@ import { BaseFieldProps } from '../interface';
 
 export interface FieldCheckGroupProps extends BaseFieldProps {
   value: ReactText[];
-  defaultValue?: ReactText[];
   onChange?: (value: CheckboxValueType[]) => void;
 }
 
 const FieldCheckGroup: ForwardRefRenderFunction<any, FieldCheckGroupProps> = (
-  { field, mode, value, defaultValue, fieldProps, disabled, onChange },
+  { field, mode, value, fieldProps, disabled, onChange },
   ref: Ref<any>,
 ) => {
   const inputRef = useRef();
@@ -51,7 +50,7 @@ const FieldCheckGroup: ForwardRefRenderFunction<any, FieldCheckGroupProps> = (
     return (
       <Checkbox.Group
         disabled={disabled}
-        defaultValue={defaultValue}
+        defaultValue={field.defaultValue}
         options={field.options}
         value={value}
         onChange={onChange}

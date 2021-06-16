@@ -13,7 +13,7 @@ export interface FieldRateProps
     RateProps {}
 
 const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
-  { mode, value, defaultValue, fieldProps, disabled, style, field, onChange },
+  { mode, value, fieldProps, disabled, style, field, onChange },
   ref: Ref<any>,
 ) => {
   const inputRef = useRef();
@@ -41,7 +41,7 @@ const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
       <Rate
         value={value}
         onChange={onChange}
-        defaultValue={defaultValue}
+        defaultValue={field.defaultValue}
         ref={inputRef}
         disabled={disabled}
         style={style}

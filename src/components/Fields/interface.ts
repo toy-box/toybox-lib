@@ -27,7 +27,6 @@ export declare type FieldMode = 'read' | 'edit' | 'update';
 export interface BaseFieldProps {
   field: FieldMeta;
   mode: FieldMode;
-  fieldProps?: any;
   disabled?: boolean;
   value?: any;
   onClick?: () => void;
