@@ -26,15 +26,7 @@ const FieldRate: ForwardRefRenderFunction<any, FieldRateProps> = (
   );
 
   if (mode === 'read') {
-    return (
-      <Rate
-        value={value}
-        disabled
-        style={style}
-        count={field.maximum}
-        {...fieldProps}
-      />
-    );
+    return <Rate value={value} disabled style={style} count={field.maximum} />;
   }
   if (mode === 'edit' || mode === 'update') {
     return (

@@ -23,7 +23,7 @@ const FieldBoolean: ForwardRefRenderFunction<any, FieldBooleanProps> = (
 ) => {
   const locale = useLocale();
   const localeData = useMemo(() => localeMap[locale], [locale]);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLElement>(null);
   useImperativeHandle(
     ref,
     () => ({
