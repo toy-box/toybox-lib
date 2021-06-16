@@ -63,7 +63,22 @@ const FieldPercent: ForwardRefRenderFunction<any, FieldPercentProps> = (
           : value,
       ),
     [onChange],
-  );
+  ) as (value: number) => void;
+
+  const hanldeParser = useCallback(
+    value => {
+      if (value != null) {
+        return value == suffix ? undefined : Number(value.replace(suffix, ''));
+      }
+      return undefined;
+    },
+    [suffix],
+  ) as (value?: string) => number;
+
+  const handleFormatter = useCallback(
+    value => (value != null ? `${value}${suffix}` : undefined),
+    [suffix],
+  ) as (value?: number) => string;
 
   useImperativeHandle(
     ref,
@@ -99,15 +114,8 @@ const FieldPercent: ForwardRefRenderFunction<any, FieldPercentProps> = (
         placeholder={placeholder}
         ref={inputRef}
         disabled={disabled}
-        formatter={value => (value != null ? `${value}${suffix}` : undefined)}
-        parser={value => {
-          if (value != null) {
-            return value == suffix
-              ? undefined
-              : Number(value.replace(suffix, ''));
-          }
-          return undefined;
-        }}
+        formatter={handleFormatter}
+        parser={hanldeParser}
         style={{ ...style, width: '100%' }}
         precision={precision}
       />

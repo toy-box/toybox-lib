@@ -16,7 +16,7 @@ export interface FieldCheckGroupProps extends BaseFieldProps {
 }
 
 const FieldCheckGroup: ForwardRefRenderFunction<any, FieldCheckGroupProps> = (
-  { field, mode, value, fieldProps, disabled, onChange },
+  { field, mode, value, disabled, onChange },
   ref: Ref<any>,
 ) => {
   const inputRef = useRef();
@@ -35,18 +35,6 @@ const FieldCheckGroup: ForwardRefRenderFunction<any, FieldCheckGroupProps> = (
       .join(', ');
   }, [options, value]);
   if (mode === 'edit' || mode === 'update') {
-    const { span } = fieldProps;
-    if (Number.isSafeInteger(span)) {
-      <Checkbox.Group>
-        <Row>
-          {options.map((opt, idx) => (
-            <Col key={idx} span={span}>
-              <Checkbox value={opt.value}>{opt.label}</Checkbox>
-            </Col>
-          ))}
-        </Row>
-      </Checkbox.Group>;
-    }
     return (
       <Checkbox.Group
         disabled={disabled}
