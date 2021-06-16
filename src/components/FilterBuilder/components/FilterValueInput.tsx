@@ -74,6 +74,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
 
   const handleValue = useCallback(
     (value?: any, text?: string[]) => {
+      console.log('value', value);
       onChange(value === undefined ? null : value, text);
     },
     [onChange],
@@ -186,8 +187,24 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
       case BusinessFieldType.NUMBER:
       case BusinessFieldType.INTEGER:
         return (
-          <InputNumber
+          <Fields.FieldNumber
             disabled={fieldMeta == null}
+            field={fieldMeta}
+            mode={'edit'}
+            placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
+              fieldMeta.name
+            }`}
+            style={style}
+            value={value}
+            onChange={value => handleValue(value)}
+          />
+        );
+      case BusinessFieldType.PERCENT:
+        return (
+          <Fields.FieldPercent
+            disabled={fieldMeta == null}
+            field={fieldMeta}
+            mode={'edit'}
             placeholder={`${get(localeData.lang, 'filed.placeholderOp.param')}${
               fieldMeta.name
             }`}
@@ -223,8 +240,12 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
               onChange={value => {
                 const doValue = value
                   ? [
-                      value[0] ? value[0].format(format) : '',
-                      value[1] ? value[1].format(format) : '',
+                      value[0]
+                        ? dayjs(value[0].format(format)).toISOString()
+                        : undefined,
+                      value[1]
+                        ? dayjs(value[1].format(format)).toISOString()
+                        : undefined,
                     ]
                   : [];
                 handleValue(doValue);
@@ -248,9 +269,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
                 localeData.lang,
                 'filed.placeholderOp.paramSelect',
               )}${fieldMeta.name}`}
-              onChange={value =>
-                handleValue(value?.format(fieldMeta.format || format))
-              }
+              onChange={value => handleValue(value)}
             />
           </div>
         );

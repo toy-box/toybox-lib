@@ -114,7 +114,7 @@ const FilterTag: FC<FilterTagProps> = ({
     return ellipsis ? (
       <span style={styleMixs}>{text}</span>
     ) : (
-      <span style={styleMixs}>text</span>
+      <span style={styleMixs}>{text}</span>
     );
   }, [ellipsis, text]);
 

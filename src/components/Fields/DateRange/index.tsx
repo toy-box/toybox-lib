@@ -7,7 +7,7 @@ import React, {
 import dayjs, { Dayjs } from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import { DatePickerProps } from 'antd/lib/date-picker';
-import { PickerBaseProps } from 'antd/lib/date-picker/generatePicker';
+import { RangePickerProps } from 'antd/lib/date-picker/generatePicker';
 import DatePicker from '../../DatePicker';
 import { BaseFieldProps } from '../interface';
 import { parseValueToMoment } from '../../../utils';
@@ -17,21 +17,21 @@ dayjs.extend(LocalizedFormat);
 
 type ISODateString = string;
 
-export declare type FieldBasePickerProps = Omit<
-  PickerBaseProps<ISODateString>,
+export declare type FieldDateRangePickerProps = Omit<
+  RangePickerProps<ISODateString>,
   'mode' | 'picker' | 'format'
 > &
   Omit<BaseFieldProps, 'value' | 'onChange'>;
 
-export declare type FieldDateProps = FieldBasePickerProps & {
+export declare type FieldDateRangeProps = FieldDateRangePickerProps & {
   picker?: DatePickerProps['picker'];
-  dateMode?: PickerBaseProps<ISODateString>['mode'];
+  dateMode?: RangePickerProps<ISODateString>['mode'];
 };
 
 const DateFormat = 'YYYY/MM/DD';
 const DatetimeFormat = 'YYYY/MM/DD HH:mm:ss';
 
-const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
+const FieldDateRange: ForwardRefRenderFunction<any, FieldDateRangeProps> = (
   {
     disabled,
     value,
@@ -63,22 +63,32 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   );
 
   const innerOnChange = useCallback(
-    (date: Dayjs) => {
-      const dateString = date?.format(innerFormat);
-      onChange && onChange(dayjs(dateString).toISOString(), dateString);
+    (values: Dayjs[]) => {
+      const dateStrings = [
+        values[0]?.format(innerFormat),
+        values[1]?.format(innerFormat),
+      ] as [string, string];
+      const doValues = [
+        dayjs(dateStrings[0]).toISOString(),
+        dayjs(dateStrings[1]).toISOString(),
+      ] as [ISODateString, ISODateString];
+      onChange && onChange(doValues, dateStrings);
     },
     [innerFormat, onChange],
   );
 
-  const innerValue = useMemo(() => parseValueToMoment(value), [
-    innerFormat,
-    value,
-  ]);
+  const innerValue = useMemo(
+    () =>
+      value ? [parseValueToMoment(value[0]), parseValueToMoment(value[1])] : [],
+    [innerFormat, value],
+  );
 
-  const text = useMemo(() => (value ? dayjs(value).format(innerFormat) : '-'), [
-    value,
-    innerFormat,
-  ]);
+  const text = useMemo(() => {
+    if (value) {
+      return value.map(v => parseValueToMoment(v)).join(' - ');
+    }
+    return '-';
+  }, [value, innerFormat]);
 
   if (mode === 'read') {
     return (
@@ -89,7 +99,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   }
   if (mode === 'edit' || mode === 'update') {
     return (
-      <DatePicker
+      <DatePicker.RangePicker
         ref={ref}
         value={innerValue}
         defaultValue={defaultValue}
@@ -110,4 +120,4 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   return null;
 };
 
-export default React.forwardRef(FieldDate);
+export default React.forwardRef(FieldDateRange);

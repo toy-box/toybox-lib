@@ -1,6 +1,13 @@
 import React, { FC, useMemo, useCallback, useState } from 'react';
+import dayjs from 'dayjs';
 import FilterTag from '../FilterTag/index';
-import { FieldMeta, ICompareOperation } from '../../types';
+import {
+  BusinessFieldType,
+  CompareOP,
+  DateCompareOP,
+  FieldMeta,
+  ICompareOperation,
+} from '../../types';
 
 export interface FilterMetaTag {
   fieldMeta: FieldMeta;
@@ -60,21 +67,56 @@ const FilterTags: FC<FilterTagsProps> = ({
     let tags: any[] = [];
     filterFieldTags.forEach(tag => {
       const { fieldMeta } = tag;
-      const meta = value?.filter(val => val.source === fieldMeta.key);
-      if (meta) {
-        meta.forEach(met => {
-          tags.push({
-            title: fieldMeta.name,
-            key: met.source,
-            op: met.op,
-            value: met.target,
-            labelValue: [
-              {
-                label: met.target,
-                value: met.target,
-              },
-            ],
-          });
+      const compares = value?.filter(val => val.source === fieldMeta.key);
+      if (compares) {
+        compares.forEach(compare => {
+          if (
+            (fieldMeta.type === BusinessFieldType.DATE ||
+              fieldMeta.type === BusinessFieldType.DATETIME) &&
+            (compare.op === CompareOP.EQ ||
+              compare.op === CompareOP.NE ||
+              CompareOP.GT ||
+              CompareOP.GTE ||
+              CompareOP.LT ||
+              CompareOP.LTE ||
+              compare.op === DateCompareOP.BETWEEN)
+          ) {
+            if (compare.op === DateCompareOP.BETWEEN) {
+              tags.push({
+                title: fieldMeta.name,
+                key: compare.source,
+                op: compare.op,
+                value: [
+                  dayjs((compare.target as string[])[0]).format(
+                    fieldMeta.format,
+                  ),
+                  dayjs((compare.target as string[])[1]).format(
+                    fieldMeta.format,
+                  ),
+                ],
+              });
+            } else {
+              tags.push({
+                title: fieldMeta.name,
+                key: compare.source,
+                op: compare.op,
+                value: dayjs(compare.target as string).format(fieldMeta.format),
+              });
+            }
+          } else {
+            tags.push({
+              title: fieldMeta.name,
+              key: compare.source,
+              op: compare.op,
+              value: compare.target,
+              labelValue: [
+                {
+                  label: compare.target,
+                  value: compare.target,
+                },
+              ],
+            });
+          }
         });
       }
     });

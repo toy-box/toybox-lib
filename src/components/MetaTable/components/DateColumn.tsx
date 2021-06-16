@@ -5,7 +5,7 @@ import Fields from '../../Fields';
 import { useColumnLink } from '../hooks';
 
 export interface DataColumnProps extends ColumnFCProps {
-  text?: string | Date | number;
+  text?: string;
 }
 
 export const DateColumn: FC<DataColumnProps> = ({
@@ -16,18 +16,11 @@ export const DateColumn: FC<DataColumnProps> = ({
   const { align, component, fixed, link, ...field } = columnMeta;
   const linkHandle = useColumnLink(record, link);
 
-  const value = useMemo(() => {
-    if (text == null) {
-      return null;
-    }
-    return dayjs(text);
-  }, [text]);
-
   return (
     <Fields.FieldDate
       field={field}
       onClick={linkHandle}
-      value={value}
+      value={text}
       mode="read"
     />
   );
