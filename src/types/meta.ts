@@ -19,7 +19,7 @@ export interface IFieldMeta {
   type: string;
   description?: string;
   primary?: boolean;
-  enum?: IFieldOption[];
+  options?: IFieldOption[];
   refObjectId?: string;
   unique?: boolean;
   required?: boolean;

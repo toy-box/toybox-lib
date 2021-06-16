@@ -30,7 +30,7 @@ const FieldSelect: ForwardRefRenderFunction<any, FieldSelectProps> = (
       <SelectPro
         ref={inputRef}
         mode={selectMode}
-        options={field.enum}
+        options={field.options}
         readMode={mode === 'read'}
         {...otherProps}
       />

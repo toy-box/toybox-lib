@@ -28,7 +28,7 @@ const FieldCheckGroup: ForwardRefRenderFunction<any, FieldCheckGroupProps> = (
     }),
     [],
   );
-  const options = useMemo(() => field.enum || [], [field.enum]);
+  const options = useMemo(() => field.options || [], [field.options]);
   const text = useMemo(() => {
     return options
       .filter(opt => value.some(v => v === opt.value))
@@ -52,7 +52,7 @@ const FieldCheckGroup: ForwardRefRenderFunction<any, FieldCheckGroupProps> = (
       <Checkbox.Group
         disabled={disabled}
         defaultValue={defaultValue}
-        options={field.enum}
+        options={field.options}
         value={value}
         onChange={onChange}
       />

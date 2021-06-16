@@ -271,7 +271,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
             allowClear
             style={style}
             showSearch
-            options={fieldMeta.enum}
+            options={fieldMeta.options}
             value={filterValue}
             onChange={(value, options) =>
               handleSelectOptions(value, options as OptionItem)
@@ -283,7 +283,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
-            options={fieldMeta.enum}
+            options={fieldMeta.options}
             mode={multiple ? 'multiple' : undefined}
             value={filterValue}
             params={fieldMeta}
@@ -319,7 +319,7 @@ export const FilterValueInput: FC<FilterValueInputProps> = ({
           <SelectPro
             placeholder={get(localeData.lang, 'filed.placeholderOp.value')}
             style={style}
-            options={fieldMeta.enum}
+            options={fieldMeta.options}
             mode={multiple ? 'multiple' : undefined}
             value={filterValue}
             params={fieldMeta}

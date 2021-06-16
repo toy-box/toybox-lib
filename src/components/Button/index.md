@@ -70,6 +70,26 @@ export default () => (
 );
 ```
 
+#### 图标组
+
+```tsx
+import React from 'react';
+import { Space, Button } from 'antd';
+// import { Button } from '@toy-box/toybox-lib';
+import { HomeFill } from '@airclass/icons';
+import 'antd/dist/antd.css';
+
+export default () => (
+  <Space>
+    <Button.Group>
+      <Button size="small" icon={<HomeFill />} />
+      <Button size="small" type="primary" tooltip="Home" icon={<HomeFill />} />
+      <Button size="small" type="primary" icon={<HomeFill />} />
+    </Button.Group>
+  </Space>
+);
+```
+
 <API></API>
 
 ## IconButton
