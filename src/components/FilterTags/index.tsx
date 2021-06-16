@@ -63,6 +63,15 @@ const FilterTags: FC<FilterTagsProps> = ({
     [filterFieldTags],
   );
 
+  const formatter = (
+    type: BusinessFieldType.DATE | BusinessFieldType.DATETIME,
+    format?: string,
+  ) => {
+    return format || type === BusinessFieldType.DATE
+      ? 'YYYY/MM/DD'
+      : 'YYYY/MM/DD HH:mm';
+  };
+
   const filterTags = useMemo(() => {
     let tags: any[] = [];
     filterFieldTags.forEach(tag => {
@@ -88,10 +97,10 @@ const FilterTags: FC<FilterTagsProps> = ({
                 op: compare.op,
                 value: [
                   dayjs((compare.target as string[])[0]).format(
-                    fieldMeta.format,
+                    formatter(fieldMeta.type, fieldMeta.format),
                   ),
                   dayjs((compare.target as string[])[1]).format(
-                    fieldMeta.format,
+                    formatter(fieldMeta.type, fieldMeta.format),
                   ),
                 ],
               });
@@ -100,7 +109,9 @@ const FilterTags: FC<FilterTagsProps> = ({
                 title: fieldMeta.name,
                 key: compare.source,
                 op: compare.op,
-                value: dayjs(compare.target as string).format(fieldMeta.format),
+                value: dayjs(compare.target as string).format(
+                  formatter(fieldMeta.type, fieldMeta.format),
+                ),
               });
             }
           } else {

@@ -94,6 +94,7 @@ const FieldPercent: ForwardRefRenderFunction<any, FieldPercentProps> = (
             : ''
         }
         style={Object.assign({ width: '100%' }, style)}
+        precision={2}
         {...fieldProps}
       />
     );
