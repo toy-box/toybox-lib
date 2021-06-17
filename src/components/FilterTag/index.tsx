@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { Tag, TagProps, Tooltip } from 'antd';
 import get from 'lodash.get';
-import LocaleContext from 'antd/lib/locale-provider/context';
 import localeMap from './locale';
 import { UniteCompareOP } from '../../types';
 import { useLocale } from '../../hooks';

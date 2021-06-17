@@ -1,5 +1,6 @@
-import React, { FC, useMemo, useCallback, useState } from 'react';
+import React, { FC, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
+import get from 'lodash.get';
 import FilterTag from '../FilterTag/index';
 import {
   BusinessFieldType,
@@ -8,7 +9,8 @@ import {
   FieldMeta,
   ICompareOperation,
 } from '../../types';
-
+import { useLocale } from '../../hooks';
+import dateFilterLocales from '../DateFilter/locales';
 export interface FilterMetaTag {
   fieldMeta: FieldMeta;
   ellipsis?: boolean;
@@ -30,6 +32,8 @@ const FilterTags: FC<FilterTagsProps> = ({
   value,
   remove,
 }) => {
+  const locale = useLocale();
+
   const ellipsis = useCallback(
     tag => {
       const meta = filterFieldTags?.find(val => val.fieldMeta.key === tag.key);
@@ -88,7 +92,8 @@ const FilterTags: FC<FilterTagsProps> = ({
               CompareOP.GTE ||
               CompareOP.LT ||
               CompareOP.LTE ||
-              compare.op === DateCompareOP.BETWEEN)
+              compare.op === DateCompareOP.BETWEEN ||
+              compare.op === DateCompareOP.UNIT_DATE_RANGE)
           ) {
             if (compare.op === DateCompareOP.BETWEEN) {
               tags.push({
@@ -103,6 +108,13 @@ const FilterTags: FC<FilterTagsProps> = ({
                     formatter(fieldMeta.type, fieldMeta.format),
                   ),
                 ],
+              });
+            } else if (compare.op === DateCompareOP.UNIT_DATE_RANGE) {
+              tags.push({
+                title: fieldMeta.name,
+                key: compare.source,
+                op: compare.op,
+                value: get(dateFilterLocales[locale].lang, `${compare.target}`),
               });
             } else {
               tags.push({
