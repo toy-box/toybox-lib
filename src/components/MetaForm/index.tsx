@@ -3,24 +3,13 @@ import { Form } from 'antd';
 import { FormProps, FormInstance } from 'antd/lib/form';
 import { Store } from 'antd/lib/form/interface';
 import { FieldMetaProfile } from '../../types/interface';
-import Fields, { defaultFieldMap } from '../Fields';
+import { defaultFormFieldMap } from '../Fields';
 import {
   FieldMap,
   FieldItem,
   FieldItemProps,
 } from '../MetaDescriptions/components/FieldItem';
 import { fieldRules } from './rule';
-
-// const defaultFormFieldMap = {
-//   string: Fields.FieldString,
-//   text: Fields.FieldText,
-//   number: Fields.FieldNumber,
-//   date: Fields.FieldDate,
-//   datetime: Fields.FieldDate,
-//   singleOption: Fields.FieldSelect,
-//   boolean: Fields.FieldBoolean,
-//   businessObject: Fields.FieldSelect,
-// };
 
 export interface MetaFormProps extends FormProps {
   fieldMetaProfiles: FieldMetaProfile[];
@@ -40,7 +29,7 @@ const MetaForm: FC<MetaFormProps> = ({
 }) => {
   const [form] = Form.useForm();
   const mergeFieldMap = useMemo(
-    () => Object.assign({}, defaultFieldMap, fieldMap),
+    () => Object.assign({}, defaultFormFieldMap, fieldMap),
     [fieldMap],
   );
   const formItems = useMemo(() => {

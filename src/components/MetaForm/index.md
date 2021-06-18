@@ -19,7 +19,7 @@ const fieldMetaProfiles = [
   {
     key: 'sellerId',
     name: '销售',
-    type: 'businessObject',
+    type: 'object',
     refObjectId: 'user',
     remote: async (key?: string) => {
       if (key === '' || key == null) {

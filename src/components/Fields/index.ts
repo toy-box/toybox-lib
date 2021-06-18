@@ -25,6 +25,30 @@ export const defaultFieldMap: FieldMap = {
   object: FieldBusinessObject,
 };
 
+export const defaultFormMap: FieldMap = {
+  string: FieldString,
+  text: FieldText,
+  number: FieldNumber,
+  date: FieldDate,
+  datetime: FieldDate,
+  singleOption: FieldSelect,
+  boolean: FieldBoolean,
+  businessObject: FieldBusinessObject,
+  object: FieldBusinessObject,
+};
+
+export const defaultFormFieldMap = {
+  string: FieldString,
+  text: FieldText,
+  number: FieldNumber,
+  date: FieldDate,
+  datetime: FieldDate,
+  singleOption: FieldSelect,
+  boolean: FieldBoolean,
+  businessObject: FieldSelect,
+  object: FieldSelect,
+};
+
 const Fields = {
   FieldDate,
   FieldString,
