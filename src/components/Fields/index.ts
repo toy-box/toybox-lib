@@ -22,6 +22,7 @@ export const defaultFieldMap: FieldMap = {
   singleOption: FieldSelect,
   boolean: FieldBoolean,
   businessObject: FieldBusinessObject,
+  object: FieldBusinessObject,
 };
 
 const Fields = {
