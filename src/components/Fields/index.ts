@@ -9,6 +9,7 @@ import FieldPercent from './Percent';
 import FieldBoolean from './Boolean';
 import FieldBusinessObject from './BusinessObject';
 import FieldTreeSelect from './TreeSelect';
+import FieldTimestamp from './Timestamp';
 import { FieldMap, FieldMode } from './interface';
 
 export { FieldMode, FieldMap };
@@ -19,6 +20,7 @@ export const defaultFieldMap: FieldMap = {
   number: FieldNumber,
   date: FieldDate,
   datetime: FieldDate,
+  timestamp: FieldTimestamp,
   singleOption: FieldSelect,
   boolean: FieldBoolean,
   businessObject: FieldBusinessObject,

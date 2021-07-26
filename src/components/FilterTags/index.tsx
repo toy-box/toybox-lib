@@ -88,10 +88,10 @@ const FilterTags: FC<FilterTagsProps> = ({
               fieldMeta.type === BusinessFieldType.DATETIME) &&
             (compare.op === CompareOP.EQ ||
               compare.op === CompareOP.NE ||
-              CompareOP.GT ||
-              CompareOP.GTE ||
-              CompareOP.LT ||
-              CompareOP.LTE ||
+              compare.op === CompareOP.GT ||
+              compare.op === CompareOP.GTE ||
+              compare.op === CompareOP.LT ||
+              compare.op === CompareOP.LTE ||
               compare.op === DateCompareOP.BETWEEN ||
               compare.op === DateCompareOP.UNIT_DATE_RANGE)
           ) {

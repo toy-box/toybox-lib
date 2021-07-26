@@ -1,12 +1,12 @@
 import React, {
-  useMemo,
-  useImperativeHandle,
   Ref,
+  useMemo,
+  ForwardRefRenderFunction,
+  useImperativeHandle,
   useCallback,
   useEffect,
   useState,
   ReactNode,
-  ForwardRefRenderFunction,
 } from 'react';
 import { Button, Dropdown, Menu } from 'antd';
 import update from 'immutability-helper';
@@ -163,9 +163,9 @@ const IndexView: ForwardRefRenderFunction<any, IndexViewProps> = (
     [],
   );
   const [selectedRows, setSelectedRows] = useState<RowData[]>([]);
-  const selected = useMemo(() => selectedRows.length > 0, [selectedRows]);
   const [selectionType, setSelectionType] = useState(defaultSelectionType);
   const [currentMode, setCurrentMode] = useState<IndexMode>(mode);
+  const selected = useMemo(() => selectedRows.length > 0, [selectedRows]);
 
   // 可配置的字段key
   const metaColumnKeys = useMemo(() => visibleColumns.map(col => col.key), [

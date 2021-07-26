@@ -14,23 +14,21 @@ import { BusinessFieldType } from '../../../types';
 
 dayjs.extend(LocalizedFormat);
 
-type ISODateString = string;
-
 export declare type FieldBasePickerProps = Omit<
-  PickerBaseProps<ISODateString>,
+  PickerBaseProps<number>,
   'mode' | 'picker' | 'format'
 > &
   Omit<BaseFieldProps, 'value' | 'onChange'>;
 
-export declare type FieldDateProps = FieldBasePickerProps & {
+export declare type FieldTimestampProps = FieldBasePickerProps & {
   picker?: DatePickerProps['picker'];
-  dateMode?: PickerBaseProps<ISODateString>['mode'];
+  dateMode?: PickerBaseProps<number>['mode'];
 };
 
 const DateFormat = 'YYYY/MM/DD';
 const DatetimeFormat = 'YYYY/MM/DD HH:mm:ss';
 
-const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
+const FieldTimestamp: ForwardRefRenderFunction<any, FieldTimestampProps> = (
   {
     disabled,
     value,
@@ -47,38 +45,18 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   },
   ref: Ref<any>,
 ) => {
-  const showTime = useMemo(() => field.type === BusinessFieldType.DATETIME, [
-    field.type,
-  ]);
-
   const defaultValue = useMemo(() => dayjs(field.defaultValue), [
     field.defaultValue,
   ]);
 
   const innerFormat = useMemo(
-    () =>
-      field.format || field.type === BusinessFieldType.DATE
-        ? DateFormat
-        : DatetimeFormat,
+    () => (field.format ? DateFormat : DatetimeFormat),
     [field.format],
   );
 
   const innerOnChange = useCallback(
     (date: Dayjs | null, dateString: string = '') => {
-      if (field.type === BusinessFieldType.DATE) {
-        onChange &&
-          onChange(
-            date
-              ? dayjs(date)
-                  .startOf('day')
-                  .toISOString()
-              : null,
-            dateString,
-          );
-      } else {
-        onChange &&
-          onChange(date ? dayjs(date).toISOString() : null, dateString);
-      }
+      onChange && onChange(date ? dayjs(date).unix() : null, dateString);
     },
     [innerFormat, onChange],
   );
@@ -111,7 +89,7 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
         open={open}
         style={{ width: '100%' }}
         mode={dateMode}
-        showTime={showTime ? { format: 'HH:mm:ss' } : false}
+        showTime={{ format: 'HH:mm:ss' }}
         onOpenChange={onOpenChange}
       />
     );
@@ -119,4 +97,4 @@ const FieldDate: ForwardRefRenderFunction<any, FieldDateProps> = (
   return null;
 };
 
-export default React.forwardRef(FieldDate);
+export default React.forwardRef(FieldTimestamp);
